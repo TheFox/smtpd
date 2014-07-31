@@ -35,7 +35,7 @@ class PhpMailerTest extends PHPUnit_Framework_TestCase{
 		
 		$this->assertTrue($mail->send());
 		
-		fwrite(STDOUT, 'mail info: '.$mail->ErrorInfo."\n");
+		fwrite(STDOUT, 'mail info: /'.$mail->ErrorInfo.'/'."\n");
 	}
 	
 }
