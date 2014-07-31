@@ -2,14 +2,7 @@
 
 namespace TheFox\Smtp;
 
-#use Exception;
-#use RuntimeException;
-#use InvalidArgumentException;
-
-use Zend\Mail\Storage\Writable\Maildir;
-use Zend\Mail\Message;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Filesystem\Filesystem;
+use Exception;
 
 use TheFox\Logger\Logger;
 use TheFox\Logger\StreamHandler;
@@ -25,7 +18,6 @@ class Server extends Thread{
 	private $port;
 	private $clientsId = 0;
 	private $clients = array();
-	private $storageMaildir;
 	private $eventsId = 0;
 	private $events = array();
 	
@@ -220,6 +212,32 @@ class Server extends Thread{
 		
 		$clientsId = $client->getId();
 		unset($this->clients[$clientsId]);
+	}
+	
+	public function eventAdd(Event $event){
+		#fwrite(STDOUT, __CLASS__.'->'.__FUNCTION__.''."\n");
+		
+		$this->eventsId++;
+		$this->events[$this->eventsId] = $event;
+	}
+	
+	private function eventExecute($trigger, $args = array()){
+		#fwrite(STDOUT, __CLASS__.'->'.__FUNCTION__.''."\n");
+		
+		foreach($this->events as $eventId => $event){
+			#fwrite(STDOUT, __CLASS__.'->'.__FUNCTION__.' event: '.$eventId."\n");
+			if($event->getTrigger() == $trigger){
+				$event->execute($args);
+			}
+		}
+	}
+	
+	public function mailNew($from, $rcpt, $mail){
+		#$this->log->debug('mailNew: /'.$from.'/ /'.join(', ', $rcpt).'/');
+		#$this->log->debug('mail:');
+		#$this->log->debug("\n".$mail);
+		
+		$this->eventExecute(Event::TRIGGER_MAIL_NEW, array($from, $rcpt, $mail));
 	}
 	
 }

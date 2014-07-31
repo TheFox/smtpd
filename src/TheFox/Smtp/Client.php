@@ -7,6 +7,8 @@ namespace TheFox\Smtp;
 #use InvalidArgumentException;
 #use DateTime;
 
+use Zend\Mail\Message;
+
 use TheFox\Network\AbstractSocket;
 use TheFox\Smtp\StringParser;
 
@@ -245,9 +247,12 @@ class Client{
 					
 					$this->mail = substr($this->mail, 0, -strlen(static::MSG_SEPARATOR));
 					
-					#ve($this->from);
-					#ve($this->rcpt);
-					#ve($this->mail);
+					$zmail = Message::fromString($this->mail);
+					
+					$this->getServer()->mailNew($this->from, $this->rcpt, $zmail);
+					$this->from = '';
+					$this->rcpt = array();
+					$this->mail = '';
 					
 					return $this->sendOk();
 				}
