@@ -8,7 +8,7 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 	
 	public function testMsgHandleHello(){
 		$server = new Server('', 0);
-		#$server->setLog(new Logger('test_application'));
+		$server->setLog(new Logger('test_application'));
 		$server->init();
 		
 		$client = new Client();
@@ -28,7 +28,7 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 	
 	public function testMsgHandleMail(){
 		$server = new Server('', 0);
-		#$server->setLog(new Logger('test_application'));
+		$server->setLog(new Logger('test_application'));
 		$server->init();
 		
 		$client = new Client();

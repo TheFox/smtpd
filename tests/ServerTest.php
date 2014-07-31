@@ -20,7 +20,7 @@ class ServerTest extends PHPUnit_Framework_TestCase{
 	
 	public function testEvent(){
 		$server = new Server('', 0);
-		#$server->setLog(new Logger('test_application'));
+		$server->setLog(new Logger('test_application'));
 		$server->init();
 		
 		$testData = 21;

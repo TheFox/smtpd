@@ -151,7 +151,7 @@ class Client{
 	}
 	
 	public function msgHandle($msgRaw){
-		$this->log('debug', 'client '.$this->id.' raw: /'.$msgRaw.'/');
+		#$this->log('debug', 'client '.$this->id.' raw: /'.$msgRaw.'/');
 		
 		$rv = '';
 		
@@ -164,18 +164,18 @@ class Client{
 		
 		
 		if($commandcmp == 'helo'){
-			$this->log('debug', 'client '.$this->id.' helo');
+			#$this->log('debug', 'client '.$this->id.' helo');
 			$this->setStatus('hasHello', true);
 			
 			return $this->sendOk('localhost.localdomain');
 		}
 		elseif($commandcmp == 'ehlo'){
-			$this->log('debug', 'client '.$this->id.' helo');
+			#$this->log('debug', 'client '.$this->id.' helo');
 			
 			return $this->sendCommandNotImplemented();
 		}
 		elseif($commandcmp == 'mail'){
-			$this->log('debug', 'client '.$this->id.' mail');
+			#$this->log('debug', 'client '.$this->id.' mail');
 			
 			#ve($args);
 			
@@ -186,7 +186,7 @@ class Client{
 					if(substr(strtolower($from), 0, 6) == 'from:<'){
 						$from = substr(substr($from, 6), 0, -1);
 					}
-					$this->log('debug', 'client '.$this->id.' from: /'.$from.'/');
+					#$this->log('debug', 'client '.$this->id.' from: /'.$from.'/');
 					$this->from = $from;
 					$this->mail = '';
 					return $this->sendOk();
@@ -200,7 +200,7 @@ class Client{
 			}
 		}
 		elseif($commandcmp == 'rcpt'){
-			$this->log('debug', 'client '.$this->id.' rcpt');
+			#$this->log('debug', 'client '.$this->id.' rcpt');
 			
 			#ve($args);
 			
@@ -212,7 +212,7 @@ class Client{
 						$rcpt = substr(substr($rcpt, 4), 0, -1);
 						$this->rcpt[] = $rcpt;
 					}
-					$this->log('debug', 'client '.$this->id.' rcpt: /'.$rcpt.'/');
+					#$this->log('debug', 'client '.$this->id.' rcpt: /'.$rcpt.'/');
 					return $this->sendOk();
 				}
 				else{
@@ -224,7 +224,7 @@ class Client{
 			}
 		}
 		elseif($commandcmp == 'data'){
-			$this->log('debug', 'client '.$this->id.' data');
+			#$this->log('debug', 'client '.$this->id.' data');
 			
 			if($this->getStatus('hasHello')){
 				$this->setStatus('hasData', true);
