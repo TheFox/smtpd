@@ -3,7 +3,7 @@
 	"description": "SMTP server in PHP.",
 	"license": "GPLv3",
 	"type": "library",
-	"keywords": [ "smtp", "server", "email", "mail" ],
+	"keywords": [ "smtp", "email", "mail", "server", "daemon" ],
 	"homepage": "http://fox21.at",
 	"authors": [
 		{
