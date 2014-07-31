@@ -190,7 +190,7 @@ class Server extends Thread{
 	
 	private function clientNew($socket){
 		$this->clientsId++;
-		print __CLASS__.'->'.__FUNCTION__.' ID: '.$this->clientsId."\n";
+		#print __CLASS__.'->'.__FUNCTION__.' ID: '.$this->clientsId."\n";
 		
 		$client = new Client();
 		$client->setSocket($socket);
@@ -198,7 +198,7 @@ class Server extends Thread{
 		$client->setServer($this);
 		
 		$this->clients[$this->clientsId] = $client;
-		print __CLASS__.'->'.__FUNCTION__.' clients: '.count($this->clients)."\n";
+		#print __CLASS__.'->'.__FUNCTION__.' clients: '.count($this->clients)."\n";
 		
 		return $client;
 	}
