@@ -41,15 +41,17 @@ release:
 	$(TAR) -cpf $(RELEASE_NAME)-$(RELEASE_VERSION).tar \
 		README.md \
 		application.php \
-		composer.json \
 		bootstrap.php \
+		composer.json \
+		functions.php \
 		src \
 		vendor/autoload.php \
 		vendor/composer \
 		vendor/liip \
 		vendor/sebastian \
 		vendor/symfony \
-		vendor/thefox
+		vendor/thefox \
+		vendor/zendframework
 	$(GZIP) -9 -f $(RELEASE_NAME)-$(RELEASE_VERSION).tar
 	$(MV) ${RELEASE_NAME}-${RELEASE_VERSION}.tar.gz releases
 
