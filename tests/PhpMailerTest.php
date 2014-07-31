@@ -29,9 +29,16 @@ class PhpMailerTest extends PHPUnit_Framework_TestCase{
 		$mail->addBCC('bcc@example.com');
 		$mail->isHTML(false);
 		
+		$body = '';
+		$body .= 'This is the message body.'.Client::MSG_SEPARATOR;
+		$body .= '.'.Client::MSG_SEPARATOR;
+		$body .= '..'.Client::MSG_SEPARATOR;
+		$body .= '.test.'.Client::MSG_SEPARATOR;
+		$body .= 'END'.Client::MSG_SEPARATOR;
+		
 		$mail->Subject = 'Here is the subject';
-		$mail->Body    = 'This is the message body.'.Client::MSG_SEPARATOR.'.'.Client::MSG_SEPARATOR.'..'.Client::MSG_SEPARATOR.'.test.'.Client::MSG_SEPARATOR.'END'.Client::MSG_SEPARATOR;
-		#$mail->AltBody = 'This is the body in plain text for non-HTML mail clients.';
+		$mail->Body = $body;
+		#$mail->AltBody = 'This is the body in plain text.';
 		
 		$this->assertTrue($mail->send());
 		

@@ -29,7 +29,8 @@ class ServerTest extends PHPUnit_Framework_TestCase{
 			$testData = 24;
 			
 			$this->assertEquals('from@example.com', $from);
-			$this->assertEquals(array('to1@example.com', 'to2@example.com', 'cc@example.com', 'bcc@example.com'), $rcpt);
+			$this->assertEquals(array('to1@example.com', 'to2@example.com', 'cc@example.com', 'bcc@example.com'),
+				$rcpt);
 			
 			$current = array();
 			foreach($mail->getTo() as $n => $address){
@@ -59,7 +60,8 @@ class ServerTest extends PHPUnit_Framework_TestCase{
 		
 		$zmail = Message::fromString($mail);
 		
-		$server->mailNew('from@example.com', array('to1@example.com', 'to2@example.com', 'cc@example.com', 'bcc@example.com'), $zmail);
+		$rcpt = array('to1@example.com', 'to2@example.com', 'cc@example.com', 'bcc@example.com');
+		$server->mailNew('from@example.com', $rcpt, $zmail);
 		
 		$this->assertEquals(24, $testData);
 		$this->assertEquals(42, $event1->getReturnValue());

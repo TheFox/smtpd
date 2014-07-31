@@ -11,6 +11,7 @@ class StringParser{
 	private $argsMax;
 	private $argsId = -1;
 	private $args = array();
+	private $argsLen = 0;
 	
 	public function __construct($str, $argsMax = null){
 		$this->str = $str;
@@ -19,30 +20,41 @@ class StringParser{
 		$this->argsMax = $argsMax;
 	}
 	
+	private function debug($text){
+		if(static::DEBUG)
+			fwrite(STDOUT, $text."\n");
+	}
+	
 	private function reset(){
 		$this->argsId = -1;
 		$this->args = array();
+		$this->argsLen = 0;
 	}
 	
 	private function fixPrev(){
 		if($this->argsId >= 0){
-			if(static::DEBUG) fwrite(STDOUT, '    fix old A /'.$this->args[$this->argsId].'/'."\n");
-			if($this->args[$this->argsId] && $this->args[$this->argsId][0] == '"' && substr($this->args[$this->argsId], -1) == '"'){
+			#$this->debug('    fix old A /'.$this->args[$this->argsId].'/');
+			if($this->args[$this->argsId]
+				&& $this->args[$this->argsId][0] == '"'
+				&& substr($this->args[$this->argsId], -1) == '"'
+			){
 				$tmp = substr(substr($this->args[$this->argsId], 1), 0, -1);
 				if(strpos($tmp, '"') === false){
 					$this->args[$this->argsId] = $tmp;
+					$this->argsLen = count($this->args);
 				}
 			}
-			if(static::DEBUG) fwrite(STDOUT, '    fix old B /'.$this->args[$this->argsId].'/'."\n");
+			#$this->debug('    fix old B /'.$this->args[$this->argsId].'/');
 		}
 	}
 	
 	private function charNew($char = ''){
-		if($this->argsMax === null || count($this->args) < $this->argsMax){
+		if($this->argsMax === null || $this->argsLen < $this->argsMax){
 			$this->fixPrev();
-			if(static::DEBUG) fwrite(STDOUT, '    new /'.$char.'/'."\n");
+			#$this->debug('    new /'.$char.'/');
 			$this->argsId++;
 			$this->args[$this->argsId] = $char;
+			$this->argsLen = count($this->args);
 		}
 		else{
 			$this->charAppend($char);
@@ -54,7 +66,7 @@ class StringParser{
 			$this->charNew($char);
 		}
 		else{
-			if(static::DEBUG) fwrite(STDOUT, '    append /'.$char.'/'."\n");
+			#$this->debug('    append /'.$char.'/');
 			$this->args[$this->argsId] .= $char;
 		}
 	}
@@ -67,32 +79,27 @@ class StringParser{
 		$prevChar = ' ';
 		$endChar = '';
 		
-		if(static::DEBUG) fwrite(STDOUT, 'len: '.$this->len."\n");
-		
-		#for($pos = 0; $pos < $this->len; $pos++){ fwrite(STDOUT, sprintf('%2s', $pos).' '); } fwrite(STDOUT, "\n");
-		
-		#for($pos = 0; $pos < $this->len; $pos++){ $char = $str[$pos]; fwrite(STDOUT, sprintf('%2s', $char).' '); }; fwrite(STDOUT, "\n");
-		
-		#for($pos = 0; $pos < $this->len; $pos++){ fwrite(STDOUT, '/'.substr($str, 0, $pos).'/'."\n"); }; fwrite(STDOUT, "\n");
+		#$this->debug('len: '.$this->len);
 		
 		for($pos = 0; $pos < $this->len; $pos++){
 			$char = $str[$pos];
 			$nextChar = ($pos < $this->len - 1) ? $str[$pos + 1] : '';
 			
-			if(static::DEBUG) fwrite(STDOUT, 'raw '.$pos.'/'.$this->len.'['.$this->argsId.']: /'.$char.'/'."\n");
+			#$this->debug('raw '.$pos.'/'.$this->len.'['.$this->argsId.']: /'.$char.'/');
 			
 			if($in){
-				if(static::DEBUG) fwrite(STDOUT, '    in '."\n");
+				#$this->debug('    in ');
 				if($char == $endChar){
-					if(static::DEBUG) fwrite(STDOUT, '    is end char: '.(int)($this->argsMax === null).', '.(int)count($this->args).', '.(int)$this->argsMax.' '."\n");
+					#$this->debug('    is null: '.(int)($this->argsMax === null));
+					#$this->debug('    is end char: '.$this->argsLen.', '.(int)$this->argsMax);
 					
-					if($pos == $this->len - 1 || $this->argsMax === null || count($this->args) < $this->argsMax){
+					if($pos == $this->len - 1 || $this->argsMax === null || $this->argsLen < $this->argsMax){
 						if($char == '"'){
 							$this->charAppend($char);
 						}
 						
 						$in = false;
-						if(static::DEBUG) fwrite(STDOUT, '    close '."\n");
+						#$this->debug('    close ');
 					}
 					else{
 						$this->charAppend($char);
@@ -103,41 +110,47 @@ class StringParser{
 				}
 			}
 			else{
-				if($this->argsMax === null || count($this->args) < $this->argsMax){
+				if($this->argsMax === null || $this->argsLen < $this->argsMax){
 					if($char == '"'){
-						if(static::DEBUG) fwrite(STDOUT, '    new Ab (next /'.$nextChar.'/)'."\n");
+						#$this->debug('    new Ab (next /'.$nextChar.'/)');
 						$this->charNew($char);
 						$endChar = '"';
 						$in = true;
 					}
 					elseif($char == ' '){
-						if($nextChar == ' '){
-							if(static::DEBUG) fwrite(STDOUT, '    new Ba (next / /)'."\n");
+						/*if($nextChar == ' '){
+							#$this->debug('    new Ba (next / /)');
 						}
 						elseif($nextChar == '"'){
-							if(static::DEBUG) fwrite(STDOUT, '    new Bb (next /"/)'."\n");
+							#$this->debug('    new Bb (next /"/)');
 						}
 						else{
-							if(static::DEBUG) fwrite(STDOUT, '    new Bc (next /'.$nextChar.'/)'."\n");
+							#$this->debug('    new Bc (next /'.$nextChar.'/)');
+							$this->charNew();
+							$endChar = ' ';
+							$in = true;
+						}*/
+						if($nextChar != ' ' && $nextChar != '"'){
+							#$this->debug('    new Bc (next /'.$nextChar.'/)');
 							$this->charNew();
 							$endChar = ' ';
 							$in = true;
 						}
 					}
 					else{
-						if(static::DEBUG) fwrite(STDOUT, '    new C'."\n");
+						#$this->debug('    new C');
 						$this->charNew($char);
 						$endChar = ' ';
 						$in = true;
 					}
 				}
 				else{
-					if(static::DEBUG) fwrite(STDOUT, '    limit'."\n");
+					#$this->debug('    limit');
 					$this->charAppend($char);
 				}
 			}
 			
-			if(static::DEBUG) fwrite(STDOUT, '    text /'.$this->args[$this->argsId].'/'."\n");
+			#$this->debug('    text /'.$this->args[$this->argsId].'/');
 			
 			$prevChar = $char;
 			

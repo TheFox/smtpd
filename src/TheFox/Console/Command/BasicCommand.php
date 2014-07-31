@@ -28,7 +28,7 @@ class BasicCommand extends Command{
 		return $this->settings;
 	}
 	
-	public function executePre(InputInterface $input, OutputInterface $output){
+	public function executePre(InputInterface $input){
 		$this->log = new Logger('application');
 		$this->log->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
 		$this->log->pushHandler(new StreamHandler('log/application.log', Logger::DEBUG));

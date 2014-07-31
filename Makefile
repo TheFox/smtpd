@@ -34,7 +34,6 @@ test_phpcs: $(PHPCS) vendor/thefox/phpcsrs/Standards/TheFox
 
 test_phpunit: $(PHPUNIT) phpunit.xml
 	$(PHPUNIT)
-	$(RM) tests/test_mailbox_*
 
 release:
 	find . -name .DS_Store -exec rm {} \;

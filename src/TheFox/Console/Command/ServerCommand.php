@@ -19,9 +19,12 @@ class ServerCommand extends BasicCommand{
 	protected function configure(){
 		$this->setName('server');
 		$this->setDescription('Run SMTP server.');
-		$this->addOption('daemon', 'd', InputOption::VALUE_NONE, 'Run in daemon mode.');
-		$this->addOption('address', 'a', InputOption::VALUE_REQUIRED, 'The address of the network interface. Default = 127.0.0.1');
-		$this->addOption('port', 'p', InputOption::VALUE_REQUIRED, 'The port of the network interface. Default = 20025');
+		$this->addOption('daemon', 'd', InputOption::VALUE_NONE,
+			'Run in daemon mode.');
+		$this->addOption('address', 'a', InputOption::VALUE_REQUIRED,
+			'The address of the network interface. Default = 127.0.0.1');
+		$this->addOption('port', 'p', InputOption::VALUE_REQUIRED,
+			'The port of the network interface. Default = 20025');
 		$this->addOption('shutdown', 's', InputOption::VALUE_NONE, 'Shutdown.');
 	}
 	
