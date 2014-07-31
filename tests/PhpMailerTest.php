@@ -30,7 +30,7 @@ class PhpMailerTest extends PHPUnit_Framework_TestCase{
 		$mail->isHTML(false);
 		
 		$mail->Subject = 'Here is the subject';
-		$mail->Body    = 'This is the message body.'.Client::MSG_SEPARATOR.'.'.Client::MSG_SEPARATOR.'..'.Client::MSG_SEPARATOR.'.test.'.Client::MSG_SEPARATOR.'ENDE'.Client::MSG_SEPARATOR;
+		$mail->Body    = 'This is the message body.'.Client::MSG_SEPARATOR.'.'.Client::MSG_SEPARATOR.'..'.Client::MSG_SEPARATOR.'.test.'.Client::MSG_SEPARATOR.'END'.Client::MSG_SEPARATOR;
 		#$mail->AltBody = 'This is the body in plain text for non-HTML mail clients.';
 		
 		$this->assertTrue($mail->send());
