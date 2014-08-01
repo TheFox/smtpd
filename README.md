@@ -54,10 +54,10 @@ $server->loop();
 `loop()` is only a loop with `run()` executed. So you need to execute `run()` in your own project to keep the SMTP server updated.
 
 ## RFC 821 Implementation
-### Complete
+### Complete implementation
 - 3.5 OPENING AND CLOSING
 
-### Incomplete
+### Incomplete implementation
 - 3.1 MAIL
 - 4.1.1 COMMAND SEMANTICS
 	- HELO
@@ -68,7 +68,7 @@ $server->loop();
 	- QUIT
 
 ## RFC 1651 Implementation
-### Complete
+### Complete implementation
 - 4.1.1 First command
 - 4.5 Error responses from extended servers
 
