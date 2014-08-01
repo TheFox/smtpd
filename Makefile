@@ -1,5 +1,5 @@
 
-RELEASE_VERSION = 0.1.0-dev
+RELEASE_VERSION = 0.1.0
 RELEASE_NAME = smtpd
 
 RM = rm -rfd

@@ -7,6 +7,6 @@ use Symfony\Component\Console\Application;
 
 use TheFox\Console\Command\ServerCommand;
 
-$application = new Application('SMTPd', '0.1.x-dev');
+$application = new Application('SMTPd', '0.1.0');
 $application->add(new ServerCommand());
 $application->run();
