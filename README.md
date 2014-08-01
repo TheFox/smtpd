@@ -19,27 +19,29 @@ You can change the IP and port (default port is 20025):
 
 `./application.php server -a 0.0.0.0 -p 25`
 
-*Note:* The stand-alone server is only for testing. If you want to use it for production you need to define a save function. See example below.
+**Note:** The stand-alone server is only for testing. If you want to use it for production you need to define a save/deliver function. See example below.
 
 ## Use in your project
 You also can use this library to provide an IMAP server in your own project.
 
-	<?php
-	require_once __DIR__.'/vendor/autoload.php';
-	use TheFox\Smtp\Server;
-	use TheFox\Smtp\Event;
-	
-	$server = new Server('127.0.0.1', 20025);
-	$server->init();
-	$server->listen();
-	
-	$testData = 21;
-	$event1 = new Event(Event::TRIGGER_MAIL_NEW, null, function($event, $from, $rcpt, $mail){
-		// Do stuff: DNS lookup the MX record for the recipient's domain, ...
-	});
-	$server->eventAdd($event1);
-	
-	$server->run();
+```php
+<?php
+require_once __DIR__.'/vendor/autoload.php';
+use TheFox\Smtp\Server;
+use TheFox\Smtp\Event;
+
+$server = new Server('127.0.0.1', 20025);
+$server->init();
+$server->listen();
+
+$testData = 21;
+$event1 = new Event(Event::TRIGGER_MAIL_NEW, null, function($event, $from, $rcpt, $mail){
+	// Do stuff: DNS lookup the MX record for the recipient's domain, ...
+});
+$server->eventAdd($event1);
+
+$server->loop();
+```
 
 `loop()` is only a loop with `run()` executed. So you need to execute `run()` in your own project to keep the SMTP server updated.
 
