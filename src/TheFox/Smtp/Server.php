@@ -148,20 +148,8 @@ class Server extends Thread{
 	}
 	
 	public function loop(){
-		$s = time();
-		$r1 = 0;
-		
 		while(!$this->getExit()){
 			$this->run();
-			
-			if(time() - $s >= 10 && !$r1){
-				$r1 = 1;
-				
-				#print __CLASS__.'->'.__FUNCTION__.' add msg A'."\n";
-				
-				
-			}
-			
 			usleep(static::LOOP_USLEEP);
 		}
 		
