@@ -34,7 +34,6 @@ $server = new Server('127.0.0.1', 20025);
 $server->init();
 $server->listen();
 
-$testData = 21;
 $event1 = new Event(Event::TRIGGER_MAIL_NEW, null, function($event, $from, $rcpt, $mail){
 	// Do stuff: DNS lookup the MX record for the recipient's domain, ...
 });
