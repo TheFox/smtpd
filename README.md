@@ -21,8 +21,8 @@ You can change the IP and port (default port is 20025):
 
 **Note:** The stand-alone server is only for testing. If you want to use it for production you need to define a save/deliver function. See example below.
 
-## Use in your project
-You also can use this library to provide an IMAP server in your own project.
+## Usage
+Use this library to provide an IMAP server in your own project.
 
 ```php
 <?php
