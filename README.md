@@ -1,6 +1,15 @@
 # SMTPd
 SMTP server (library) written in PHP. This library only provides an interface to the SMTP protocol with PHP. You need to deliver the mails by yourself.
 
+## Why this project?
+Believe it or not, **email is still the killer feature of the Internet**. There are tons of projects like [PHPMailer](https://github.com/PHPMailer/PHPMailer): to send emails programmatically (with PHP). But there are not so many to receive emails from SMTP.
+
+With this interface you can do something like this for your app users:
+
+	User <-> MUA (like Thunderbird) <-> SMTP <-> Your PHP App
+
+This is useful when you have a messaging application written in PHP but no graphical user interface for it. So your graphical user interface can be any [email client](http://en.wikipedia.org/wiki/Email_client). [Thunderbird](https://www.mozilla.org/en-US/thunderbird/) for instance.
+
 ## Installation
 The preferred method of installation is via [Packagist](https://packagist.org/packages/thefox/smtpd) and [Composer](https://getcomposer.org/). Run the following command to install the package and add it as a requirement to composer.json:
 
