@@ -1,4 +1,4 @@
-# smtpd
+# SMTPd
 SMTP server (library) written in PHP. This library only provides an interface to the SMTP protocol with PHP. You need to deliver the mails by yourself.
 
 ## Installation
