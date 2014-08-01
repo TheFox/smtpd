@@ -1,5 +1,5 @@
 # smtpd
-SMTP server (library) written in PHP. This library only provides an interface to the SMTP protocol.
+SMTP server (library) written in PHP. This library only provides an interface to the SMTP protocol with PHP. You need to deliver the mails by yourself.
 
 ## Installation
 The preferred method of installation is via [Packagist](https://packagist.org/packages/thefox/smtpd) and [Composer](https://getcomposer.org/). Run the following command to install the package and add it as a requirement to composer.json:
