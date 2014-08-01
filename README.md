@@ -55,6 +55,8 @@ $server->loop();
 	- MAIL
 	- RCPT
 	- DATA
+	- NOOP
+	- QUIT
 
 ## RFC 1651 Implementation
 ### Complete
