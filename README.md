@@ -63,6 +63,9 @@ $server->loop();
 - 4.1.1 First command
 - 4.5 Error responses from extended servers
 
+## Related Projects
+- [IMAPd](https://github.com/TheFox/imapd)
+
 ## Contribute
 You're welcome to contribute to this project. Fork this project at <https://github.com/TheFox/smtpd>. You should read GitHub's [How to Fork a Repo](https://help.github.com/articles/fork-a-repo).
 
