@@ -16,17 +16,25 @@ The preferred method of installation is via [Packagist](https://packagist.org/pa
 `composer.phar require "thefox/smtpd=~0.1"`
 
 ## Stand-alone server
-To start a stand-alone server you can type the following command in your shell:
+1. Clone project from GitHub.
 
-`./application.php server -d`
+	`git clone https://github.com/TheFox/smtpd.git`
 
-To show the usage options use `-h`:
+2. Install dependencies.
 
-`./application.php server -h`
+	`make`
 
-You can change the IP and port (default port is 20025):
+3. To start a stand-alone server you can type the following command in your shell:
 
-`./application.php server -a 0.0.0.0 -p 25`
+	`./application.php server -d`
+	
+	To show the usage options use `-h`:
+	
+	`./application.php server -h`
+
+	You can change the IP and port. Default port is 20025.
+	
+	`./application.php server -a 0.0.0.0 -p 25`
 
 **Note:** The stand-alone server is only for testing. If you want to use it for production you need to define a save/deliver function. See example below.
 

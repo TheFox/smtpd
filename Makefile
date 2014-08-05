@@ -19,7 +19,7 @@ install: composer.phar
 
 update: composer.phar
 	./composer.phar selfupdate
-	./composer.phar update -vv
+	./composer.phar update
 
 composer.phar:
 	curl -sS https://getcomposer.org/installer | php
