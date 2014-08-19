@@ -1,6 +1,6 @@
 {
 	"name": "thefox/smtpd",
-	"description": "SMTP server in PHP.",
+	"description": "SMTP server (library) written in PHP.",
 	"license": "GPLv3",
 	"type": "library",
 	"keywords": [ "smtp", "email", "mail", "server", "daemon" ],
