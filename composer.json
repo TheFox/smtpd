@@ -1,7 +1,7 @@
 {
 	"name": "thefox/smtpd",
 	"description": "SMTP server (library) written in PHP.",
-	"license": "GPLv3",
+	"license": "GPL-3.0",
 	"type": "library",
 	"keywords": [ "smtp", "email", "mail", "server", "daemon" ],
 	"homepage": "http://fox21.at",
