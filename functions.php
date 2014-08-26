@@ -7,7 +7,7 @@ function ve($v = null){
 		fwrite(STDOUT, $rv."\n");
 	}
 	catch(Exception $e){
-		print "ERROR: ".$e->getMessage()."\n";
+		print 'ERROR: '.$e->getMessage()."\n";
 	}
 }
 
@@ -16,6 +16,6 @@ function vej($v = null){
 		ve(json_encode($v));
 	}
 	catch(Exception $e){
-		print "ERROR: ".$e->getMessage()."\n";
+		print 'ERROR: '.$e->getMessage()."\n";
 	}
 }
