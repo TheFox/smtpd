@@ -39,7 +39,7 @@ The preferred method of installation is via [Packagist](https://packagist.org/pa
 **Note:** The stand-alone server is only for testing. If you want to use it for production you need to define a save/deliver function. See example below.
 
 ## Usage
-See [`example.php`](blob/master/example.php) file for more information.
+See [`example.php`](example.php) file for more information.
 
 ## RFC 821 Implementation
 ### Complete implementation
