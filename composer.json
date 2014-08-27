@@ -28,7 +28,8 @@
 	"autoload": {
 		"psr-0": {
 			"TheFox": "src"
-		}
+		},
+		"files": [ "functions.php" ]
 	},
 	"extra": {
 		"branch-alias": {
