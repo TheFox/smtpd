@@ -35,5 +35,16 @@
 		"branch-alias": {
 			"dev-master": "0.2.x-dev"
 		}
+	},
+	"scripts": {
+		"post-install-cmd": [
+			"echo post-install-cmd",
+			"chmod 755 application.php",
+			"php bootstrap.php"
+		],
+		"post-update-cmd": [
+			"echo post-update-cmd",
+			"php bootstrap.php"
+		]
 	}
 }
