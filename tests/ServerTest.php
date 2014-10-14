@@ -24,21 +24,22 @@ class ServerTest extends PHPUnit_Framework_TestCase{
 		$server->init();
 		
 		$testData = 21;
-		$event1 = new Event(Event::TRIGGER_MAIL_NEW, null, function($event, $from, $rcpt, $mail) use(&$testData) {
+		$phpunit = $this;
+		$event1 = new Event(Event::TRIGGER_MAIL_NEW, null, function($event, $from, $rcpt, $mail) use($phpunit, &$testData) {
 			#fwrite(STDOUT, 'my function: '.$event->getTrigger().', '.$testData."\n");
 			$testData = 24;
 			
-			$this->assertEquals('from@example.com', $from);
-			$this->assertEquals(array('to1@example.com', 'to2@example.com', 'cc@example.com', 'bcc@example.com'),
+			$phpunit->assertEquals('from@example.com', $from);
+			$phpunit->assertEquals(array('to1@example.com', 'to2@example.com', 'cc@example.com', 'bcc@example.com'),
 				$rcpt);
 			
 			$current = array();
 			foreach($mail->getTo() as $n => $address){
 				$current[] = $address->toString();
 			}
-			$this->assertEquals(array('Joe User <to1@example.com>', '<to2@example.com>'), $current);
+			$phpunit->assertEquals(array('Joe User <to1@example.com>', '<to2@example.com>'), $current);
 			
-			$this->assertEquals('Here is the subject', $mail->getSubject());
+			$phpunit->assertEquals('Here is the subject', $mail->getSubject());
 			
 			return 42;
 		});
