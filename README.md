@@ -66,6 +66,10 @@ See [`example.php`](example.php) file for more information.
 ## Contribute
 You're welcome to contribute to this project. Fork this project at <https://github.com/TheFox/smtpd>. You should read GitHub's [How to Fork a Repo](https://help.github.com/articles/fork-a-repo).
 
+## Links
+- [Packagist Package](https://packagist.org/packages/thefox/smtpd)
+- [Travis CI Repository](https://travis-ci.org/TheFox/smtpd)
+
 ## License
 Copyright (C) 2014 Christian Mayer <http://fox21.at>
 
