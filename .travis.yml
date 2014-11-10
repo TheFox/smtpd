@@ -16,7 +16,3 @@ matrix:
 env:
     global:
         - COMPOSER_PREFER_SOURCE=--prefer-source
-notifications:
-    irc: 'irc.freenode.org#thefox'
-    on_success: never
-    on_failure: always
