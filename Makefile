@@ -3,6 +3,7 @@ RM = rm -rfd
 CHMOD = chmod
 PHPCS = vendor/bin/phpcs
 PHPUNIT = vendor/bin/phpunit
+COMPOSER_PREFER_SOURCE := $(shell echo $(COMPOSER_PREFER_SOURCE))
 
 
 .PHONY: all install update test test_phpcs test_phpunit release clean
@@ -10,7 +11,7 @@ PHPUNIT = vendor/bin/phpunit
 all: install test
 
 install: composer.phar
-	./composer.phar install --prefer-source --no-interaction --dev
+	./composer.phar install $(COMPOSER_PREFER_SOURCE) --no-interaction --dev
 
 update: composer.phar
 	./composer.phar selfupdate

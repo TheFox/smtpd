@@ -13,6 +13,9 @@ script: make test
 matrix:
     allow_failures:
         - php: hhvm
+env:
+    global:
+        - COMPOSER_PREFER_SOURCE=--prefer-source
 notifications:
     irc: 'irc.freenode.org#thefox'
     on_success: never
