@@ -22,6 +22,7 @@
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.1",
+		"satooshi/php-coveralls": "dev-master",
 		"thefox/phpcsrs": "~1.0",
 		"thefox/utilities": "~1.1"
 	},

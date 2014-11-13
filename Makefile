@@ -3,10 +3,9 @@ RM = rm -rfd
 CHMOD = chmod
 PHPCS = vendor/bin/phpcs
 PHPUNIT = vendor/bin/phpunit
-COMPOSER_PREFER_SOURCE := $(shell echo $(COMPOSER_PREFER_SOURCE))
 
 
-.PHONY: all install update test test_phpcs test_phpunit release clean
+.PHONY: all install update test test_phpcs test_phpunit test_phpunit_cc release clean
 
 all: install test
 
@@ -29,7 +28,10 @@ test_phpcs: $(PHPCS) vendor/thefox/phpcsrs/Standards/TheFox
 	$(PHPCS) -v -s --report=full --report-width=160 --standard=vendor/thefox/phpcsrs/Standards/TheFox src tests
 
 test_phpunit: $(PHPUNIT) phpunit.xml
-	$(PHPUNIT)
+	$(PHPUNIT) $(PHPUNIT_COVERAGE_HTML)
+
+test_phpunit_cc:
+	$(MAKE) test_phpunit PHPUNIT_COVERAGE_HTML="--coverage-html build/report"
 
 release: release.sh
 	./release.sh

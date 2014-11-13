@@ -1,6 +1,7 @@
 vendor
 composer.lock
 composer.phar
+build
 log
 pid
 releases
