@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 RM="rm -rf"
 MKDIR="mkdir -p"
