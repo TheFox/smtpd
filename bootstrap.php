@@ -14,6 +14,13 @@ chdir(__DIR__);
 #define('DEBUG', 1, true);
 define('PHP_EOL_LEN', strlen(PHP_EOL), true);
 
+if(getenv('TEST')){
+	define('TEST', true, true);
+}
+else{
+	define('TEST', false, true);
+}
+
 
 if(PHP_SAPI != 'cli'){
 	print 'FATAL ERROR: you need to run this in your shell'."\n";

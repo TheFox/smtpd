@@ -4,32 +4,35 @@ RM="rm -rf"
 MKDIR="mkdir -p"
 MV="mv -i"
 CP="cp -rp"
+COMPOSER_PREFER_SOURCE=--prefer-source
+COMPOSER_PREFER_SOURCE=
 
 SCRIPT_BASEDIR=$(dirname $0)
 RELEASE_NAME=$(./application.php info --name_lc)
 RELEASE_VERSION=$(./application.php info --version_number)
+DST="$RELEASE_NAME-$RELEASE_VERSION"
 
+
+set -e
+export COMPOSER_PREFER_SOURCE
 
 cd $SCRIPT_BASEDIR
-$MKDIR releases $RELEASE_NAME-$RELEASE_VERSION
+$MKDIR releases/$DST
 
-$CP application.php $RELEASE_NAME-$RELEASE_VERSION
-$CP bootstrap.php $RELEASE_NAME-$RELEASE_VERSION
-$CP composer.json $RELEASE_NAME-$RELEASE_VERSION
-$CP functions.php $RELEASE_NAME-$RELEASE_VERSION
-$CP README.md $RELEASE_NAME-$RELEASE_VERSION
-$CP src $RELEASE_NAME-$RELEASE_VERSION
+for file in application.php bootstrap.php composer.json Makefile README.md src; do
+	$CP $file releases/$DST
+done
 
-cd $RELEASE_NAME-$RELEASE_VERSION
-curl -sS https://getcomposer.org/installer | php
-./composer.phar install --no-dev
-$RM ./composer.*
+
+cd releases/$DST
+make install_release
+make clean_release
 cd ..
+#exit
 
-find $RELEASE_NAME-$RELEASE_VERSION -name .DS_Store -exec rm -v {} \;
-tar -cpzf $RELEASE_NAME-$RELEASE_VERSION.tar.gz $RELEASE_NAME-$RELEASE_VERSION
-$MV $RELEASE_NAME-$RELEASE_VERSION.tar.gz releases
-chmod -R 777 $RELEASE_NAME-$RELEASE_VERSION
-$RM $RELEASE_NAME-$RELEASE_VERSION
+find $DST -name .DS_Store -exec rm -vf {} \;
+tar -cpzf $DST.tar.gz $DST
+chmod -R 777 $DST
+$RM $DST
 
-echo "release '$RELEASE_NAME-$RELEASE_VERSION' done"
+echo "release '$DST' done"
