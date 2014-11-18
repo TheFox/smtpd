@@ -60,9 +60,9 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$msg = $client->msgHandle('DATA');
 		$this->assertEquals('354 Start mail input; end with <CRLF>.<CRLF>'.Client::MSG_SEPARATOR, $msg);
 		
-		$msg = $client->msgHandle('From: TheFox <thefox@fox21.at>');
+		$msg = $client->msgHandle('From: Dev1 <dev1@fox21.at>');
 		$this->assertEquals('', $msg);
-		$msg = $client->msgHandle('To: TheFox <thefox@fox21.at>');
+		$msg = $client->msgHandle('To: Dev1 <dev1@fox21.at>');
 		$this->assertEquals('', $msg);
 		$msg = $client->msgHandle('Subject: Test');
 		$this->assertEquals('', $msg);

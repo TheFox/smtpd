@@ -5,7 +5,7 @@ MKDIR="mkdir -p"
 MV="mv -i"
 CP="cp -rp"
 COMPOSER_PREFER_SOURCE=--prefer-source
-COMPOSER_PREFER_SOURCE=
+#COMPOSER_PREFER_SOURCE=
 
 SCRIPT_BASEDIR=$(dirname $0)
 RELEASE_NAME=$(./application.php info --name_lc)
