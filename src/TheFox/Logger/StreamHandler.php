@@ -2,6 +2,9 @@
 
 namespace TheFox\Logger;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StreamHandler{
 	
 	private $path;

@@ -4,6 +4,9 @@ namespace TheFox\Network;
 
 use RuntimeException;
 
+/**
+ * @codeCoverageIgnore
+ */
 class StreamSocket extends AbstractSocket{
 	
 	private $ip = '';

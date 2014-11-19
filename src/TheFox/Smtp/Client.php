@@ -63,10 +63,16 @@ class Client{
 		return $this->server;
 	}
 	
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function setSocket(AbstractSocket $socket){
 		$this->socket = $socket;
 	}
 	
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function getSocket(){
 		return $this->socket;
 	}
@@ -94,7 +100,12 @@ class Client{
 	}
 	
 	public function setIpPort($ip = '', $port = 0){
-		$this->getSocket()->getPeerName($ip, $port);
+		// @codeCoverageIgnoreStart
+		if(!TEST){
+			$this->getSocket()->getPeerName($ip, $port);
+		}
+		// @codeCoverageIgnoreEnd
+		
 		$this->setIp($ip);
 		$this->setPort($port);
 	}
@@ -103,7 +114,7 @@ class Client{
 		return $this->getIp().':'.$this->getPort();
 	}
 	
-	private function getLog(){
+	public function getLog(){
 		#print __CLASS__.'->'.__FUNCTION__.''."\n";
 		
 		if($this->getServer()){
@@ -124,6 +135,9 @@ class Client{
 		}
 	}
 	
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function dataRecv(){
 		$data = $this->getSocket()->read();
 		
@@ -269,6 +283,9 @@ class Client{
 		return $rv;
 	}
 	
+	/**
+	 * @codeCoverageIgnore
+	 */
 	private function dataSend($msg){
 		$output = $msg.static::MSG_SEPARATOR;
 		if($this->getSocket()){
@@ -281,11 +298,14 @@ class Client{
 		return $output;
 	}
 	
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function sendReady(){
 		return $this->dataSend('220 localhost.localdomain SMTP Service Ready');
 	}
 	
-	private function sendQuit(){
+	public function sendQuit(){
 		return $this->dataSend('221 localhost.localdomain Service closing transmission channel');
 	}
 	
@@ -313,10 +333,12 @@ class Client{
 		if(!$this->getStatus('hasShutdown')){
 			$this->setStatus('hasShutdown', true);
 			
+			// @codeCoverageIgnoreStart
 			if($this->getSocket()){
 				$this->getSocket()->shutdown();
 				$this->getSocket()->close();
 			}
+			// @codeCoverageIgnoreEnd
 		}
 	}
 	

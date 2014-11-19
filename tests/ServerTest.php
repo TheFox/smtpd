@@ -6,6 +6,16 @@ use TheFox\Logger\Logger;
 use TheFox\Smtp\Server;
 use TheFox\Smtp\Client;
 use TheFox\Smtp\Event;
+use TheFox\Network\Socket;
+
+class TestObj{
+	
+	public function test1($event, $from, $rcpt, $mail){
+		#fwrite(STDOUT, 'my function: '.$event->getTrigger()."\n");
+		return 43;
+	}
+	
+}
 
 class ServerTest extends PHPUnit_Framework_TestCase{
 	
@@ -16,6 +26,61 @@ class ServerTest extends PHPUnit_Framework_TestCase{
 		$server = new Server('', 0);
 		$server->setLog(new Logger('test_application'));
 		$this->assertTrue($server->getLog() !== null);
+	}
+	
+	public function testInit(){
+		$server = new Server('', 0);
+		$server->init();
+		$log = $server->getLog();
+		
+		$this->assertTrue($log instanceof Logger);
+	}
+	
+	public function testClientNew(){
+		$socket = new Socket();
+		
+		$server = new Server('', 0);
+		$server->setLog(new Logger('test_application'));
+		$server->init();
+		
+		$client = $server->clientNew($socket);
+		$this->assertTrue($client instanceof Client);
+	}
+	
+	public function testClientGetByHandle(){
+		$socket = new Socket();
+		$socket->bind('127.0.0.1', 22143);
+		$socket->listen();
+		$handle1 = $socket->getHandle();
+		
+		$server = new Server('', 0);
+		$server->setLog(new Logger('test_application'));
+		$server->init();
+		
+		$client1 = $server->clientNew($socket);
+		$client2 = $server->clientGetByHandle($handle1);
+		#\Doctrine\Common\Util\Debug::dump($handle2);
+		$this->assertEquals($client1, $client2);
+		
+		$server->shutdown();
+	}
+	
+	public function testClientRemove(){
+		$socket = new Socket();
+		$socket->bind('127.0.0.1', 22143);
+		$socket->listen();
+		
+		$server = new Server('', 0);
+		$server->setLog(new Logger('test_application'));
+		$server->init();
+		
+		$client = $server->clientNew($socket);
+		$server->clientRemove($client);
+		
+		#\Doctrine\Common\Util\Debug::dump($server);
+		$this->assertTrue($client->getStatus('hasShutdown'));
+		
+		$server->shutdown();
 	}
 	
 	public function testEvent(){
@@ -45,6 +110,10 @@ class ServerTest extends PHPUnit_Framework_TestCase{
 		});
 		$server->eventAdd($event1);
 		
+		$testObj = new TestObj();
+		$event2 = new Event(Event::TRIGGER_MAIL_NEW, $testObj, 'test1');
+		$server->eventAdd($event2);
+		
 		$mail = '';
 		$mail .= 'Date: Thu, 31 Jul 2014 22:18:51 +0200'.Client::MSG_SEPARATOR;
 		$mail .= 'To: Joe User <to1@example.com>, to2@example.com'.Client::MSG_SEPARATOR;
@@ -66,6 +135,7 @@ class ServerTest extends PHPUnit_Framework_TestCase{
 		
 		$this->assertEquals(24, $testData);
 		$this->assertEquals(42, $event1->getReturnValue());
+		$this->assertEquals(43, $event2->getReturnValue());
 	}
 	
 }

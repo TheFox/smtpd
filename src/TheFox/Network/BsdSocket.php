@@ -4,6 +4,9 @@ namespace TheFox\Network;
 
 use RuntimeException;
 
+/**
+ * @codeCoverageIgnore
+ */
 class BsdSocket extends AbstractSocket{
 	
 	public function __construct(){

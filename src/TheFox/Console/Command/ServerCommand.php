@@ -8,6 +8,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use TheFox\Smtp\Server;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ServerCommand extends BasicCommand{
 	
 	private $server;

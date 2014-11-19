@@ -13,6 +13,9 @@ use Liip\ProcessManager\PidFile;
 use TheFox\Logger\Logger;
 use TheFox\Logger\StreamHandler;
 
+/**
+ * @codeCoverageIgnore
+ */
 class BasicCommand extends Command{
 	
 	public $log;

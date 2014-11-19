@@ -53,11 +53,18 @@ class Server extends Thread{
 				$this->log->pushHandler(new StreamHandler('log/server.log', Logger::DEBUG));
 			}
 		}
-		$this->log->info('start');
-		$this->log->info('ip = "'.$this->ip.'"');
-		$this->log->info('port = "'.$this->port.'"');
+		// @codeCoverageIgnoreStart
+		if(!TEST){
+			$this->log->info('start');
+			$this->log->info('ip = "'.$this->ip.'"');
+			$this->log->info('port = "'.$this->port.'"');
+		}
+		// @codeCoverageIgnoreEnd
 	}
 	
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function listen(){
 		if($this->ip && $this->port){
 			#$this->log->notice('listen on '.$this->ip.':'.$this->port);
@@ -89,6 +96,9 @@ class Server extends Thread{
 		}
 	}
 	
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function run(){
 		#print __CLASS__.'->'.__FUNCTION__.''."\n";
 		#print __CLASS__.'->'.__FUNCTION__.': client '.count($this->clients)."\n";
@@ -152,6 +162,9 @@ class Server extends Thread{
 		}
 	}
 	
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function loop(){
 		while(!$this->getExit()){
 			$this->run();
@@ -161,19 +174,22 @@ class Server extends Thread{
 		$this->shutdown();
 	}
 	
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function shutdown(){
 		$this->log->debug('shutdown');
 		
 		// Notify all clients.
 		foreach($this->clients as $clientId => $client){
-			$client->sendBye('Server shutdown');
+			$client->sendQuit();
 			$this->clientRemove($client);
 		}
 		
 		$this->log->debug('shutdown done');
 	}
 	
-	private function clientNew($socket){
+	public function clientNew($socket){
 		$this->clientsId++;
 		#print __CLASS__.'->'.__FUNCTION__.' ID: '.$this->clientsId."\n";
 		
@@ -188,17 +204,20 @@ class Server extends Thread{
 		return $client;
 	}
 	
-	private function clientGetByHandle($handle){
+	public function clientGetByHandle($handle){
+		$rv = null;
+		
 		foreach($this->clients as $clientId => $client){
 			if($client->getSocket()->getHandle() == $handle){
-				return $client;
+				$rv = $client;
+				break;
 			}
 		}
 		
-		return null;
+		return $rv;
 	}
 	
-	private function clientRemove(Client $client){
+	public function clientRemove(Client $client){
 		$this->log->debug('client remove: '.$client->getId());
 		
 		$client->shutdown();

@@ -24,6 +24,8 @@
 		<testsuite name="My Test Suite">
 			<file>tests/ClientTest.php</file>
 			<file>tests/ServerTest.php</file>
+			<file>tests/StringParserTest.php</file>
+			<file>tests/ThreadTest.php</file>
 		</testsuite>
 	</testsuites>
 	<filter>
