@@ -3,6 +3,8 @@ RM = rm -rfd
 CHMOD = chmod
 MKDIR = mkdir -p
 PHPCS = vendor/bin/phpcs
+PHPCS_STANDARD = vendor/thefox/phpcsrs/Standards/TheFox
+PHPCS_REPORT = --report=full --report-width=160
 PHPUNIT = vendor/bin/phpunit
 COMPOSER = ./composer.phar
 COMPOSER_DEV ?= --dev
@@ -31,7 +33,7 @@ $(PHPCS): $(COMPOSER)
 test: test_phpcs test_phpunit
 
 test_phpcs: $(PHPCS) vendor/thefox/phpcsrs/Standards/TheFox
-	$(PHPCS) -v -s --report=full --report-width=160 --standard=vendor/thefox/phpcsrs/Standards/TheFox src tests
+	$(PHPCS) -v -s $(PHPCS_REPORT) --standard=$(PHPCS_STANDARD) src tests
 
 test_phpunit: $(PHPUNIT) phpunit.xml
 	TEST=true $(PHPUNIT) $(PHPUNIT_COVERAGE_HTML) $(PHPUNIT_COVERAGE_CLOVER)
