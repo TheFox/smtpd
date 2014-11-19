@@ -1,5 +1,7 @@
 <?php
 
+require_once 'TestObj.php';
+
 use Zend\Mail\Message;
 
 use TheFox\Logger\Logger;
@@ -7,15 +9,6 @@ use TheFox\Smtp\Server;
 use TheFox\Smtp\Client;
 use TheFox\Smtp\Event;
 use TheFox\Network\Socket;
-
-class TestObj{
-	
-	public function test1($event, $from, $rcpt, $mail){
-		#fwrite(STDOUT, 'my function: '.$event->getTrigger()."\n");
-		return 43;
-	}
-	
-}
 
 class ServerTest extends PHPUnit_Framework_TestCase{
 	
