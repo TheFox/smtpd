@@ -13,7 +13,7 @@ COMPOSER_DEV ?= --dev
 all: install test
 
 install: $(COMPOSER)
-	$(COMPOSER) install $(COMPOSER_PREFER_SOURCE) --no-interaction --dev
+	$(COMPOSER) install $(COMPOSER_PREFER_SOURCE) --no-interaction $(COMPOSER_DEV)
 
 install_release: $(COMPOSER)
 	$(MAKE) install COMPOSER_DEV=--no-dev

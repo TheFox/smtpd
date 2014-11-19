@@ -5,11 +5,11 @@ MKDIR="mkdir -p"
 MV="mv -i"
 CP="cp -rp"
 COMPOSER_PREFER_SOURCE=--prefer-source
-#COMPOSER_PREFER_SOURCE=
+COMPOSER_PREFER_SOURCE=
 
 SCRIPT_BASEDIR=$(dirname $0)
-RELEASE_NAME=$(./application.php info --name_lc)
-RELEASE_VERSION=$(./application.php info --version_number)
+RELEASE_NAME=$($SCRIPT_BASEDIR/application.php info --name_lc)
+RELEASE_VERSION=$($SCRIPT_BASEDIR/application.php info --version_number)
 DST="$RELEASE_NAME-$RELEASE_VERSION"
 
 
@@ -23,7 +23,6 @@ for file in application.php bootstrap.php composer.json Makefile README.md src; 
 	$CP $file releases/$DST
 done
 
-
 cd releases/$DST
 make install_release
 make clean_release
@@ -31,7 +30,7 @@ cd ..
 #exit
 
 find $DST -name .DS_Store -exec rm -vf {} \;
-tar -cpzf $DST.tar.gz $DST
+tar -vcpzf $DST.tar.gz $DST
 chmod -R 777 $DST
 $RM $DST
 
