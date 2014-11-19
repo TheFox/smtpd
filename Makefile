@@ -38,11 +38,16 @@ test_phpcs: $(PHPCS) vendor/thefox/phpcsrs/Standards/TheFox
 test_phpunit: $(PHPUNIT) phpunit.xml
 	TEST=true $(PHPUNIT) $(PHPUNIT_COVERAGE_HTML) $(PHPUNIT_COVERAGE_CLOVER)
 
-test_phpunit_cc:
+test_phpunit_cc: build
 	$(MAKE) test_phpunit PHPUNIT_COVERAGE_HTML="--coverage-html build/report"
 
 release: release.sh
 	./release.sh
+
+build:
+	$(MKDIR) build
+	$(MKDIR) build/logs
+	$(CHMOD) 0700 build
 
 clean:
 	$(RM) composer.lock $(COMPOSER)
