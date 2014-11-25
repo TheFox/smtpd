@@ -7,14 +7,14 @@ CP="cp -rp"
 COMPOSER_PREFER_SOURCE=--prefer-source
 COMPOSER_PREFER_SOURCE=
 
+export COMPOSER_PREFER_SOURCE
+set -e
+
 SCRIPT_BASEDIR=$(dirname $0)
 RELEASE_NAME=$($SCRIPT_BASEDIR/application.php info --name_lc)
 RELEASE_VERSION=$($SCRIPT_BASEDIR/application.php info --version_number)
 DST="$RELEASE_NAME-$RELEASE_VERSION"
 
-
-set -e
-export COMPOSER_PREFER_SOURCE
 
 cd $SCRIPT_BASEDIR
 $MKDIR releases/$DST
