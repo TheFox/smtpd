@@ -39,7 +39,7 @@
 	"scripts": {
 		"post-install-cmd": [
 			"echo post-install-cmd",
-			"chmod 755 application.php",
+			"chmod a+rx-w,u+rwx application.php",
 			"php bootstrap.php"
 		],
 		"post-update-cmd": [
