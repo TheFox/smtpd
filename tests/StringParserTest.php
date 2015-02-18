@@ -118,9 +118,9 @@ class StringParserTest extends PHPUnit_Framework_TestCase{
 	}
 	
 	/**
-     * @dataProvider providerParse
-     * @group large
-     */
+	 * @dataProvider providerParse
+	 * @group large
+	 */
 	public function testParse1($msgRaw, $expect, $argsMax = null){
 		$str = new StringParser($msgRaw, $argsMax);
 		$this->assertEquals($expect, $str->parse());
