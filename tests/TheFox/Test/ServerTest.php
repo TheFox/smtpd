@@ -1,7 +1,10 @@
 <?php
 
+namespace TheFox\Test;
+
 require_once 'TestObj.php';
 
+use PHPUnit_Framework_TestCase;
 use Zend\Mail\Message;
 
 use TheFox\Logger\Logger;

@@ -1,5 +1,9 @@
 <?php
 
+namespace TheFox\Test;
+
+use PHPUnit_Framework_TestCase;
+
 use TheFox\Logger\Logger;
 use TheFox\Smtp\Server;
 use TheFox\Smtp\Client;
