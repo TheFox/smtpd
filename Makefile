@@ -8,7 +8,7 @@ PHPCS_STANDARD = vendor/thefox/phpcsrs/Standards/TheFox
 PHPCS_REPORT = --report=full --report-width=160
 PHPUNIT = vendor/bin/phpunit
 COMPOSER = ./composer.phar
-COMPOSER_DEV ?= --dev
+COMPOSER_DEV ?= 
 
 
 .PHONY: all install install_release update test test_phpcs test_phpunit test_phpunit_cc release clean clean_release
