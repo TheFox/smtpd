@@ -20,7 +20,7 @@
 	verbose="true">
 	
 	<testsuites>
-		<testsuite name="My Test Suite">
+		<testsuite name="default">
 			<file>tests/TheFox/Test/ClientTest.php</file>
 			<file>tests/TheFox/Test/ServerTest.php</file>
 			<file>tests/TheFox/Test/StringParserTest.php</file>
