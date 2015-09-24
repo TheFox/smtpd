@@ -54,7 +54,7 @@ class Logger{
 	public function addRecord($level, $message){
 		$dt = new DateTime();
 		
-		$line = '['.$dt->format('Y/m/d H:i:sO').'] '.$this->getName().'.'.static::$levels[$level].': '.$message.PHP_EOL;
+		$line = '['.$dt->format('Y-m-d H:i:sO').'] '.$this->getName().'.'.static::$levels[$level].': '.$message.PHP_EOL;
 		
 		foreach($this->handlers as $handler){
 			if($level >= $handler->getLevel()){
