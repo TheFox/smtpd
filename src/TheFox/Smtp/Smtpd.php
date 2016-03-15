@@ -1,5 +1,7 @@
 <?php
 
+// Please Mr. Postman deliver the letter.
+
 namespace TheFox\Smtp;
 
 class Smtpd{
