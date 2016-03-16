@@ -1,6 +1,6 @@
 # SMTPd
 
-SMTP server (library) written in pure PHP. This library only provides an interface to the SMTP protocol with PHP. You need to deliver the mails by yourself.
+SMTP server (library) written in pure PHP. This library only provides an interface to the SMTP server-side protocol with PHP. You need to deliver the mails by yourself.
 
 ## Why this project?
 Believe it or not, **email is still the killer feature of the Internet**. There are tons of projects like [PHPMailer](https://github.com/PHPMailer/PHPMailer): to send emails programmatically (with PHP). But there are not so many to receive emails from SMTP.
