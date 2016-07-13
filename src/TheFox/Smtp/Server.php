@@ -21,12 +21,22 @@ class Server extends Thread{
 	private $clients = array();
 	private $eventsId = 0;
 	private $events = array();
+	private $hostname;
 	
-	public function __construct($ip = '127.0.0.1', $port = 20025){
+	public function __construct($ip = '127.0.0.1', $port = 20025, $hostname = 'localhost.localdomain'){
 		#print __CLASS__.'->'.__FUNCTION__.''."\n";
 		
 		$this->setIp($ip);
 		$this->setPort($port);
+		$this->setHostname($hostname);
+	}
+	
+	public function getHostname(){
+		return $this->hostname;
+	}
+	
+	public function setHostname($hostname){
+		$this->hostname = $hostname;
 	}
 	
 	public function setLog($log){
@@ -193,7 +203,7 @@ class Server extends Thread{
 		$this->clientsId++;
 		#print __CLASS__.'->'.__FUNCTION__.' ID: '.$this->clientsId."\n";
 		
-		$client = new Client();
+		$client = new Client($this->getHostname());
 		$client->setSocket($socket);
 		$client->setId($this->clientsId);
 		$client->setServer($this);
@@ -239,7 +249,7 @@ class Server extends Thread{
 		foreach($this->events as $eventId => $event){
 			#fwrite(STDOUT, __CLASS__.'->'.__FUNCTION__.' event: '.$eventId."\n");
 			if($event->getTrigger() == $trigger){
-				$event->execute($args);
+				return $event->execute($args);
 			}
 		}
 	}
@@ -250,6 +260,10 @@ class Server extends Thread{
 		#$this->log->debug("\n".$mail);
 		
 		$this->eventExecute(Event::TRIGGER_MAIL_NEW, array($from, $rcpt, $mail));
+	}
+	
+	public function authenticateUser($type, $credentials = array()){
+		return $this->eventExecute(Event::TRIGGER_AUTH_ATTEMPT, array($type, $credentials));
 	}
 	
 }

@@ -32,7 +32,15 @@ $sendEvent = new Event(Event::TRIGGER_MAIL_NEW, null, function($event, $from, $r
 		throw new Exception($mailer->ErrorInfo);
 	}
 });
+
+$authEvent = new Event(Event::TRIGGER_AUTH_ATTEMPT, null, function ($event, $type, $credentials) {
+    // Do stuff: Check credentials against database, ...
+
+    return true;
+});
+
 $server->eventAdd($sendEvent);
+$server->eventAdd($authEvent);
 
 // `loop()` is only a loop with `run()` executed.
 // So you need to execute `run()` in your own project to keep the SMTP server updated.
