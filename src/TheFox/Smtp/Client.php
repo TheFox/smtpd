@@ -29,7 +29,7 @@ class Client{
 	private $mail = '';
 	private $hostname = '';
 	private $credentials = array();
-	private $extended_commands = array('AUTH PLAIN LOGIN', 'HELP');
+	private $extended_commands = array('AUTH PLAIN LOGIN', 'STARTTLS', 'HELP');
 	
 	public function __construct($hostname){
 		#print __CLASS__.'->'.__FUNCTION__.''."\n";
@@ -202,8 +202,9 @@ class Client{
 			#$this->log('debug', 'client '.$this->id.' helo');
 			$this->setStatus('hasHello', true);
 			$msg = '250-'.$this->getHostname().static::MSG_SEPARATOR;
-
-			for($i = 0; $i < count($this->extended_commands); $i++){
+			$count = count($this->extended_commands) - 1;
+			
+			for($i = 0; $i < $count; $i++){
 				$msg .= '250-'.$this->extended_commands[$i].static::MSG_SEPARATOR;
 			}
 
@@ -305,6 +306,11 @@ class Client{
 			else{
 				return $this->sendSyntaxErrorCommandUnrecognized();
 			}
+		}
+		elseif($commandcmp == 'starttls'){
+			$this->sendStartTls();
+			
+			return $this->getSocket()->enableEncryption();
 		}
 		elseif($commandcmp == 'help'){
 			return $this->sendOk('HELO, EHLO, MAIL FROM, RCPT TO, DATA, NOOP, QUIT');
@@ -423,6 +429,10 @@ class Client{
 	
 	private function sendAskForPasswordResponse(){
 		return $this->dataSend('334 UGFzc3dvcmQ6');
+	}
+	
+	private function sendStartTls(){
+		return $this->dataSend('220 TLS go ahead');
 	}
 	
 	private function sendSyntaxErrorCommandUnrecognized(){
