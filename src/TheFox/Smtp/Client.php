@@ -202,11 +202,12 @@ class Client{
 			#$this->log('debug', 'client '.$this->id.' helo');
 			$this->setStatus('hasHello', true);
 			$msg = '250-'.$this->getHostname().static::MSG_SEPARATOR;
-
-			for($i = 0; $i < count($this->extended_commands); $i++){
+			$count = count($this->extended_commands) - 1;
+			
+			for($i = 0; $i < $count; $i++){
 				$msg .= '250-'.$this->extended_commands[$i].static::MSG_SEPARATOR;
 			}
-
+			
 			$msg .= '250 '.end($this->extended_commands);
 
 			return $this->dataSend($msg);
@@ -285,7 +286,7 @@ class Client{
 			if($authentication == 'plain'){
 				$this->setStatus('hasAuthPlain', true);
 
-				if(isset($args[1])) {
+				if(isset($args[1])){
 					$this->setStatus('hasAuthPlainUser', true);
 					$this->setCredentials([$args[1]]);
 
@@ -320,7 +321,7 @@ class Client{
 				elseif($this->getStatus('hasAuthLogin')){
 					$credentials = $this->getCredentials();
 
-					if ($this->getStatus('hasAuthLoginUser')) {
+					if($this->getStatus('hasAuthLoginUser')){
 						$credentials['password'] = $command;
 						$this->setCredentials($credentials);
 
@@ -383,7 +384,7 @@ class Client{
 		$this->setStatus('hasAuth'.ucfirst($type), false);
 		$this->setStatus('hasAuth'.ucfirst($type).'User', false);
 		
-		if (!$attempt){
+		if(!$attempt){
 			return $this->sendAuthInvalid();
 		}
 		
