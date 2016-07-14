@@ -86,9 +86,9 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals('250 localhost.localdomain'.Client::MSG_SEPARATOR, $msg);
 		
 		$msg = $client->msgHandle('EHLO localhost.localdomain');
-		$expect = '250-localhost.localdomain'.Client::MSG_SEPARATOR
-			.'250-AUTH PLAIN LOGIN'.Client::MSG_SEPARATOR
-			.'250 HELP'.Client::MSG_SEPARATOR;
+		$expect = '250-localhost.localdomain'.Client::MSG_SEPARATOR;
+		$expect .= '250-AUTH PLAIN LOGIN'.Client::MSG_SEPARATOR;
+		$expect .= '250 HELP'.Client::MSG_SEPARATOR;
 		$this->assertEquals($expect, $msg);
 		
 		$msg = $client->msgHandle('XYZ abc');
@@ -189,9 +189,9 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$client->setId(1);
 		
 		$msg = $client->msgHandle('EHLO localhost.localdomain');
-		$expect = '250-localhost.localdomain'.Client::MSG_SEPARATOR
-			.'250-AUTH PLAIN LOGIN'.Client::MSG_SEPARATOR
-			.'250 HELP'.Client::MSG_SEPARATOR;
+		$expect = '250-localhost.localdomain'.Client::MSG_SEPARATOR;
+		$expect .= '250-AUTH PLAIN LOGIN'.Client::MSG_SEPARATOR;
+		$expect .= '250 HELP'.Client::MSG_SEPARATOR;
 		$this->assertEquals($expect, $msg);
 		
 		$msg = $client->msgHandle('AUTH');
@@ -234,9 +234,9 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$client->setId(1);
 		
 		$msg = $client->msgHandle('EHLO localhost.localdomain');
-		$expect = '250-localhost.localdomain'.Client::MSG_SEPARATOR
-			.'250-AUTH PLAIN LOGIN'.Client::MSG_SEPARATOR
-			.'250 HELP'.Client::MSG_SEPARATOR;
+		$expect = '250-localhost.localdomain'.Client::MSG_SEPARATOR;
+		$expect .= '250-AUTH PLAIN LOGIN'.Client::MSG_SEPARATOR;
+		$expect .= '250 HELP'.Client::MSG_SEPARATOR;
 		$this->assertEquals($expect, $msg);
 		
 		$msg = $client->msgHandle('AUTH');
