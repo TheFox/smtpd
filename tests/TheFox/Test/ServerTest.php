@@ -134,4 +134,45 @@ class ServerTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals(43, $event2->getReturnValue());
 	}
 	
+	public function testEventAuth(){
+		$server = new Server('', 0);
+		$server->setLog(new Logger('test_application'));
+		$server->init();
+		
+		$username = 'testuser';
+		$password = 'super_secret_password';
+		
+		$testData = 21;
+		$phpunit = $this;
+		$event1 = new Event(
+			Event::TRIGGER_AUTH_ATTEMPT,
+			null,
+			function($event, $type, $credentials) use($phpunit, &$testData, $username, $password) {
+				#fwrite(STDOUT, 'my function: '.$event->getTrigger().', '.$testData."\n");
+				$testData = 24;
+				
+				$phpunit->assertEquals('LOGIN', $type);
+				
+				$phpunit->assertEquals(base64_encode($username), $credentials['user']);
+				$phpunit->assertEquals(base64_encode($password), $credentials['password']);
+				
+				return 42;
+			}
+		);
+		$server->eventAdd($event1);
+		
+		$testObj = new TestObj();
+		$event2 = new Event(Event::TRIGGER_AUTH_ATTEMPT, $testObj, 'test1');
+		$server->eventAdd($event2);
+		
+		$type = 'LOGIN';
+		$credentials = array('user' => base64_encode($username), 'password' => base64_encode($password));
+		
+		$server->authenticateUser($type, $credentials);
+		
+		$this->assertEquals(24, $testData);
+		$this->assertEquals(42, $event1->getReturnValue());
+		$this->assertEquals(43, $event2->getReturnValue());
+	}
+	
 }

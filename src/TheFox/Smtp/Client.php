@@ -31,7 +31,7 @@ class Client{
 	private $credentials = array();
 	private $extended_commands = array('AUTH PLAIN LOGIN', 'STARTTLS', 'HELP');
 	
-	public function __construct($hostname){
+	public function __construct($hostname = 'localhost.localdomain'){
 		#print __CLASS__.'->'.__FUNCTION__.''."\n";
 		
 		$this->hostname = $hostname;
@@ -207,7 +207,7 @@ class Client{
 			for($i = 0; $i < $count; $i++){
 				$msg .= '250-'.$this->extended_commands[$i].static::MSG_SEPARATOR;
 			}
-
+			
 			$msg .= '250 '.end($this->extended_commands);
 
 			return $this->dataSend($msg);
@@ -281,14 +281,19 @@ class Client{
 		}
 		elseif($commandcmp == 'auth'){
 			$this->setStatus('hasAuth', true);
+			
+			if(empty($args)){
+				return $this->sendSyntaxErrorInParameters();
+			}
+			
 			$authentication = strtolower($args[0]);
 
 			if($authentication == 'plain'){
 				$this->setStatus('hasAuthPlain', true);
 
-				if(isset($args[1])) {
+				if(isset($args[1])){
 					$this->setStatus('hasAuthPlainUser', true);
-					$this->setCredentials([$args[1]]);
+					$this->setCredentials(array($args[1]));
 
 					return $this->authenticate('plain');
 				}
@@ -326,7 +331,7 @@ class Client{
 				elseif($this->getStatus('hasAuthLogin')){
 					$credentials = $this->getCredentials();
 
-					if ($this->getStatus('hasAuthLoginUser')) {
+					if($this->getStatus('hasAuthLoginUser')){
 						$credentials['password'] = $command;
 						$this->setCredentials($credentials);
 
@@ -382,6 +387,9 @@ class Client{
 		return $output;
 	}
 	
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function authenticate($type){
 		$attempt = $this->getServer()->authenticateUser($type, $this->getCredentials());
 		
@@ -389,7 +397,7 @@ class Client{
 		$this->setStatus('hasAuth'.ucfirst($type), false);
 		$this->setStatus('hasAuth'.ucfirst($type).'User', false);
 		
-		if (!$attempt){
+		if(!$attempt){
 			return $this->sendAuthInvalid();
 		}
 		
