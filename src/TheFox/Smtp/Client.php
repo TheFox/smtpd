@@ -31,7 +31,7 @@ class Client{
 	private $credentials = array();
 	private $extended_commands = array('AUTH PLAIN LOGIN', 'HELP');
 	
-	public function __construct($hostname){
+	public function __construct($hostname = 'localhost.localdomain'){
 		#print __CLASS__.'->'.__FUNCTION__.''."\n";
 		
 		$this->hostname = $hostname;
@@ -281,6 +281,11 @@ class Client{
 		}
 		elseif($commandcmp == 'auth'){
 			$this->setStatus('hasAuth', true);
+			
+			if (empty($args)){
+				return $this->sendSyntaxErrorInParameters();
+			}
+			
 			$authentication = strtolower($args[0]);
 
 			if($authentication == 'plain'){
@@ -288,7 +293,7 @@ class Client{
 
 				if(isset($args[1])){
 					$this->setStatus('hasAuthPlainUser', true);
-					$this->setCredentials([$args[1]]);
+					$this->setCredentials(array($args[1]));
 
 					return $this->authenticate('plain');
 				}
@@ -377,6 +382,9 @@ class Client{
 		return $output;
 	}
 	
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function authenticate($type){
 		$attempt = $this->getServer()->authenticateUser($type, $this->getCredentials());
 		
