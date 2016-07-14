@@ -169,21 +169,21 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$client = $this->getMockBuilder(Client::class)->setMethods(array('authenticate'))->getMock();
 		
 		$client->expects($this->at(0))
-			->method('authenticate')
-			->with('plain')
-			->will($this->returnValue('535 Authentication credentials invalid'.Client::MSG_SEPARATOR));
+				->method('authenticate')
+				->with('plain')
+				->will($this->returnValue('535 Authentication credentials invalid'.Client::MSG_SEPARATOR));
 		$client->expects($this->at(1))
-			->method('authenticate')
-			->with('plain')
-			->will($this->returnValue('235 2.7.0 Authentication successful'.Client::MSG_SEPARATOR));
+				->method('authenticate')
+				->with('plain')
+				->will($this->returnValue('235 2.7.0 Authentication successful'.Client::MSG_SEPARATOR));
 		$client->expects($this->at(2))
-			->method('authenticate')
-			->with('plain')
-			->will($this->returnValue('535 Authentication credentials invalid'.Client::MSG_SEPARATOR));
+				->method('authenticate')
+				->with('plain')
+				->will($this->returnValue('535 Authentication credentials invalid'.Client::MSG_SEPARATOR));
 		$client->expects($this->at(3))
-			->method('authenticate')
-			->with('plain')
-			->will($this->returnValue('235 2.7.0 Authentication successful'.Client::MSG_SEPARATOR));
+				->method('authenticate')
+				->with('plain')
+				->will($this->returnValue('235 2.7.0 Authentication successful'.Client::MSG_SEPARATOR));
 		
 		$client->setServer($server);
 		$client->setId(1);
@@ -222,13 +222,13 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$client = $this->getMockBuilder(Client::class)->setMethods(array('authenticate'))->getMock();
 		
 		$client->expects($this->at(0))
-			->method('authenticate')
-			->with('login')
-			->will($this->returnValue('535 Authentication credentials invalid'.Client::MSG_SEPARATOR));
+				->method('authenticate')
+				->with('login')
+				->will($this->returnValue('535 Authentication credentials invalid'.Client::MSG_SEPARATOR));
 		$client->expects($this->at(1))
-			->method('authenticate')
-			->with('login')
-			->will($this->returnValue('235 2.7.0 Authentication successful'.Client::MSG_SEPARATOR));
+				->method('authenticate')
+				->with('login')
+				->will($this->returnValue('235 2.7.0 Authentication successful'.Client::MSG_SEPARATOR));
 
 		$client->setServer($server);
 		$client->setId(1);
