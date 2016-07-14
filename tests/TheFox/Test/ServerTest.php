@@ -144,17 +144,21 @@ class ServerTest extends PHPUnit_Framework_TestCase{
 		
 		$testData = 21;
 		$phpunit = $this;
-		$event1 = new Event(Event::TRIGGER_AUTH_ATTEMPT, null, function($event, $type, $credentials) use($phpunit, &$testData, $username, $password) {
-			#fwrite(STDOUT, 'my function: '.$event->getTrigger().', '.$testData."\n");
-			$testData = 24;
-			
-			$phpunit->assertEquals('LOGIN', $type);
-			
-			$phpunit->assertEquals(base64_encode($username), $credentials['user']);
-			$phpunit->assertEquals(base64_encode($password), $credentials['password']);
-			
-			return 42;
-		});
+		$event1 = new Event(
+			Event::TRIGGER_AUTH_ATTEMPT,
+			null,
+			function($event, $type, $credentials) use($phpunit, &$testData, $username, $password) {
+				#fwrite(STDOUT, 'my function: '.$event->getTrigger().', '.$testData."\n");
+				$testData = 24;
+				
+				$phpunit->assertEquals('LOGIN', $type);
+				
+				$phpunit->assertEquals(base64_encode($username), $credentials['user']);
+				$phpunit->assertEquals(base64_encode($password), $credentials['password']);
+				
+				return 42;
+			}
+		);
 		$server->eventAdd($event1);
 		
 		$testObj = new TestObj();

@@ -282,7 +282,7 @@ class Client{
 		elseif($commandcmp == 'auth'){
 			$this->setStatus('hasAuth', true);
 			
-			if (empty($args)){
+			if(empty($args)){
 				return $this->sendSyntaxErrorInParameters();
 			}
 			
