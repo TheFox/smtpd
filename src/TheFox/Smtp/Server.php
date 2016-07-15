@@ -249,7 +249,7 @@ class Server extends Thread{
 		foreach($this->events as $eventId => $event){
 			#fwrite(STDOUT, __CLASS__.'->'.__FUNCTION__.' event: '.$eventId."\n");
 			if($event->getTrigger() == $trigger){
-				return $event->execute($args);
+				$event->execute($args);
 			}
 		}
 	}
@@ -262,8 +262,28 @@ class Server extends Thread{
 		$this->eventExecute(Event::TRIGGER_MAIL_NEW, array($from, $rcpt, $mail));
 	}
 	
-	public function authenticateUser($type, $credentials = array()){
-		return $this->eventExecute(Event::TRIGGER_AUTH_ATTEMPT, array($type, $credentials));
+	/**
+	 * Execute authentication events
+	 * 
+	 * All authentication events must return true for authentication to be successful
+	 * 
+	 */
+	public function authenticateUser($method, $credentials = array()){
+		$authenticated = false;
+		$args = array($method, $credentials);
+		
+		foreach($this->events as $eventId => $event){
+			if($event->getTrigger() == Event::TRIGGER_AUTH_ATTEMPT){
+				if($event->execute($args)){
+					$authenticated = true;
+				}
+				else{
+					$authenticated = false;
+				}
+			}
+		}
+		
+		return $authenticated;
 	}
 	
 }

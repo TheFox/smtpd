@@ -166,24 +166,24 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$server->setLog(new Logger('test_application'));
 		$server->init();
 		
-		$client = $this->getMockBuilder(Client::class)->setMethods(array('authenticate'))->getMock();
+		$client = $this->getMock('TheFox\Smtp\Client', array('authenticate'));
 		
 		$client->expects($this->at(0))
 				->method('authenticate')
 				->with('plain')
-				->will($this->returnValue('535 Authentication credentials invalid'.Client::MSG_SEPARATOR));
+				->will($this->returnValue(false));
 		$client->expects($this->at(1))
 				->method('authenticate')
 				->with('plain')
-				->will($this->returnValue('235 2.7.0 Authentication successful'.Client::MSG_SEPARATOR));
+				->will($this->returnValue(true));
 		$client->expects($this->at(2))
 				->method('authenticate')
 				->with('plain')
-				->will($this->returnValue('535 Authentication credentials invalid'.Client::MSG_SEPARATOR));
+				->will($this->returnValue(false));
 		$client->expects($this->at(3))
 				->method('authenticate')
 				->with('plain')
-				->will($this->returnValue('235 2.7.0 Authentication successful'.Client::MSG_SEPARATOR));
+				->will($this->returnValue(true));
 		
 		$client->setServer($server);
 		$client->setId(1);
@@ -195,6 +195,12 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals($expect, $msg);
 		
 		$msg = $client->msgHandle('AUTH');
+		$this->assertEquals('501 Syntax error in parameters or arguments'.Client::MSG_SEPARATOR, $msg);
+		
+		$msg = $client->msgHandle('AUTH CRAM-MD5');
+		$this->assertEquals('502 Command not implemented'.Client::MSG_SEPARATOR, $msg);
+		
+		$msg = $client->msgHandle('AUTH UNKOWN');
 		$this->assertEquals('501 Syntax error in parameters or arguments'.Client::MSG_SEPARATOR, $msg);
 		
 		$msg = $client->msgHandle('AUTH PLAIN');
@@ -219,16 +225,16 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$server->setLog(new Logger('test_application'));
 		$server->init();
 		
-		$client = $this->getMockBuilder(Client::class)->setMethods(array('authenticate'))->getMock();
+		$client = $this->getMock('TheFox\Smtp\Client', array('authenticate'));
 		
 		$client->expects($this->at(0))
 				->method('authenticate')
 				->with('login')
-				->will($this->returnValue('535 Authentication credentials invalid'.Client::MSG_SEPARATOR));
+				->will($this->returnValue(false));
 		$client->expects($this->at(1))
 				->method('authenticate')
 				->with('login')
-				->will($this->returnValue('235 2.7.0 Authentication successful'.Client::MSG_SEPARATOR));
+				->will($this->returnValue(true));
 
 		$client->setServer($server);
 		$client->setId(1);
