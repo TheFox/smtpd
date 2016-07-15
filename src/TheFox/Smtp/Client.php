@@ -105,9 +105,9 @@ class Client{
 	
 	public function setIpPort($ip = '', $port = 0){
 		// @codeCoverageIgnoreStart
-		if(!TEST){
-			$this->getSocket()->getPeerName($ip, $port);
-		}
+		// if(!TEST){
+		// 	$this->getSocket()->getPeerName($ip, $port);
+		// }
 		// @codeCoverageIgnoreEnd
 		
 		$this->setIp($ip);
@@ -295,7 +295,11 @@ class Client{
 					$this->setStatus('hasAuthPlainUser', true);
 					$this->setCredentials(array($args[1]));
 
-					return $this->authenticate('plain');
+					if($this->authenticate('plain')){
+						return $this->sendAuthSuccessResponse();
+					}
+					
+					return $this->sendAuthInvalid();
 				}
 
 				return $this->sendAuthPlainResponse();
@@ -309,7 +313,7 @@ class Client{
 				return $this->sendCommandNotImplemented();
 			}
 			else{
-				return $this->sendSyntaxErrorCommandUnrecognized();
+				return $this->sendSyntaxErrorInParameters();
 			}
 		}
 		elseif($commandcmp == 'starttls'){
@@ -326,7 +330,11 @@ class Client{
 					$this->setStatus('hasAuthPlainUser', true);
 					$this->setCredentials([$command]);
 
-					return $this->authenticate('plain');
+					if($this->authenticate('plain')){
+						return $this->sendAuthSuccessResponse();
+					}
+					
+					return $this->sendAuthInvalid();
 				}
 				elseif($this->getStatus('hasAuthLogin')){
 					$credentials = $this->getCredentials();
@@ -335,7 +343,11 @@ class Client{
 						$credentials['password'] = $command;
 						$this->setCredentials($credentials);
 
-						return $this->authenticate('login');
+						if($this->authenticate('login')){
+							return $this->sendAuthSuccessResponse();
+						}
+						
+						return $this->sendAuthInvalid();
 					}
 
 					$this->setStatus('hasAuthLoginUser', true);
@@ -390,18 +402,18 @@ class Client{
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function authenticate($type){
-		$attempt = $this->getServer()->authenticateUser($type, $this->getCredentials());
+	public function authenticate($method){
+		$attempt = $this->getServer()->authenticateUser($method, $this->getCredentials());
 		
 		$this->setStatus('hasAuth', false);
-		$this->setStatus('hasAuth'.ucfirst($type), false);
-		$this->setStatus('hasAuth'.ucfirst($type).'User', false);
+		$this->setStatus('hasAuth'.ucfirst($method), false);
+		$this->setStatus('hasAuth'.ucfirst($method).'User', false);
 		
 		if(!$attempt){
-			return $this->sendAuthInvalid();
+			return false;
 		}
 		
-		return $this->sendAuthSuccessResponse();
+		return true;
 	}
 	
 	/**
