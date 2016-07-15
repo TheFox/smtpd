@@ -20,7 +20,7 @@ class StreamSocket extends AbstractSocket{
 	
 	public function listen($contextOptions = array()){
 		$local_socket = 'tcp://'.$this->ip.':'.$this->port;
-		$flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
+		$flags = STREAM_SERVER_BIND | STREAM_SERVER_LISTEN;
 		$context = stream_context_create($contextOptions);
 		$handle = @stream_socket_server($local_socket, $errno, $errstr, $flags, $context);
 		
@@ -59,7 +59,7 @@ class StreamSocket extends AbstractSocket{
 	public function enableEncryption(){
 		$crypto_method = STREAM_CRYPTO_METHOD_TLS_SERVER;
 		
-		if (defined('STREAM_CRYPTO_METHOD_TLSv1_2_SERVER')) {
+		if(defined('STREAM_CRYPTO_METHOD_TLSv1_2_SERVER')){
 			$crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_2_SERVER;
 			$crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_1_SERVER;
 		}
