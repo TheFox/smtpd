@@ -323,7 +323,7 @@ class Client{
 			if($this->getStatus('hasAuth')){
 				if($this->getStatus('hasAuthPlain')){
 					$this->setStatus('hasAuthPlainUser', true);
-					$this->setCredentials([$command]);
+					$this->setCredentials(array($command));
 
 					if($this->authenticate('plain')){
 						return $this->sendAuthSuccessResponse();
