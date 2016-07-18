@@ -91,7 +91,6 @@ You're welcome to contribute to this project. Fork this project at <https://gith
 
 - [Packagist Package](https://packagist.org/packages/thefox/smtpd)
 - [Travis CI Repository](https://travis-ci.org/TheFox/smtpd)
-- [Coveralls Repository](https://coveralls.io/r/TheFox/smtpd)
 
 ## License
 
