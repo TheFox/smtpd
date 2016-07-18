@@ -9,8 +9,6 @@ install:
 before_script:
     - phpenv rehash
 script: make test
-after_success:
-    - vendor/bin/coveralls -v
 env:
     global:
         - COMPOSER_PREFER_SOURCE=--prefer-source
