@@ -73,7 +73,11 @@ See [`example.php`](example.php) file for more information.
 ## Related Links
 
 - [RFC 821](https://tools.ietf.org/html/rfc821)
+- [RFC 1425](https://tools.ietf.org/html/rfc1425)
 - [RFC 1651](https://tools.ietf.org/html/rfc1651)
+- [RFC 1869](https://tools.ietf.org/html/rfc1869)
+- [RFC 2821](https://tools.ietf.org/html/rfc2821)
+- [RFC 4954](https://tools.ietf.org/html/rfc4954)
 
 ## Related Projects
 
