@@ -1,0 +1,14 @@
+# editorconfig.org
+
+root = true
+
+[*]
+indent_style = tab
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = false
+insert_final_newline = true
+
+[*.yml]
+indent_style = space
+indent_size = 4
