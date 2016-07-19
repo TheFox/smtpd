@@ -134,7 +134,7 @@ class ServerTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals(43, $event2->getReturnValue());
 	}
 	
-	public function testEventAuth(){
+	public function testEventAuthWithFalse(){
 		$server = new Server('', 0);
 		$server->setLog(new Logger('test_application'));
 		$server->init();
@@ -142,19 +142,11 @@ class ServerTest extends PHPUnit_Framework_TestCase{
 		$username = 'testuser';
 		$password = 'super_secret_password';
 		
-		$testData = false;
 		$phpunit = $this;
 		$event1 = new Event(
 			Event::TRIGGER_AUTH_ATTEMPT,
 			null,
-			function($event, $method, $credentials) use($phpunit, &$testData, $username, $password) {
-				#fwrite(STDOUT, 'my function: '.$event->getTrigger().', '.$testData."\n");
-				$testData = true;
-				
-				$phpunit->assertEquals('LOGIN', $method);
-				
-				$phpunit->assertEquals(base64_encode($username), $credentials['user']);
-				$phpunit->assertEquals(base64_encode($password), $credentials['password']);
+			function($event, $method, $credentials) {
 				
 				return false;
 			}
@@ -168,11 +160,40 @@ class ServerTest extends PHPUnit_Framework_TestCase{
 		$method = 'LOGIN';
 		$credentials = array('user' => base64_encode($username), 'password' => base64_encode($password));
 		
-		$server->authenticateUser($method, $credentials);
+		$authenticated = $server->authenticateUser($method, $credentials);
 		
-		$this->assertTrue($testData);
-		$this->assertFalse($event1->getReturnValue());
-		$this->assertTrue($event2->getReturnValue());
+		$this->assertFalse($authenticated);
+	}
+	
+	public function testEventAuthWithAllTrue(){
+		$server = new Server('', 0);
+		$server->setLog(new Logger('test_application'));
+		$server->init();
+		
+		$username = 'testuser';
+		$password = 'super_secret_password';
+		
+		$phpunit = $this;
+		$event1 = new Event(
+			Event::TRIGGER_AUTH_ATTEMPT,
+			null,
+			function($event, $method, $credentials){
+
+				return true;
+			}
+		);
+		$server->eventAdd($event1);
+		
+		$testObj = new TestObj();
+		$event2 = new Event(Event::TRIGGER_AUTH_ATTEMPT, $testObj, 'test2');
+		$server->eventAdd($event2);
+		
+		$method = 'LOGIN';
+		$credentials = array('user' => base64_encode($username), 'password' => base64_encode($password));
+		
+		$authenticated = $server->authenticateUser($method, $credentials);
+		
+		$this->assertTrue($authenticated);
 	}
 	
 }
