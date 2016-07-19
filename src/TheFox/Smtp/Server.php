@@ -274,12 +274,11 @@ class Server extends Thread{
 		
 		foreach($this->events as $eventId => $event){
 			if($event->getTrigger() == Event::TRIGGER_AUTH_ATTEMPT){
-				if($event->execute($args)){
-					$authenticated = true;
+				if(!$event->execute($args)){
+					return false;
 				}
-				else{
-					$authenticated = false;
-				}
+				
+				$authenticated = true;
 			}
 		}
 		

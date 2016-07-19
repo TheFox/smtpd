@@ -3,7 +3,7 @@
 		{
 			"path": ".",
 			"name": "SMTPd",
-			"folder_exclude_patterns": [ ],
+			"folder_exclude_patterns": [ "build", "log", "pid", "releases", "vendor" ],
 			"file_exclude_patterns": [ ]
 		}
 	]

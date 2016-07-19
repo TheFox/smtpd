@@ -29,8 +29,8 @@ class Client{
 	private $mail = '';
 	private $hostname = '';
 	private $credentials = array();
-	private $extended_commands = array('AUTH PLAIN LOGIN', 'STARTTLS', 'HELP');
-	
+ 	private $extended_commands = array('AUTH PLAIN LOGIN', 'STARTTLS', 'HELP');
+
 	public function __construct($hostname = 'localhost.localdomain'){
 		#print __CLASS__.'->'.__FUNCTION__.''."\n";
 		
@@ -105,9 +105,9 @@ class Client{
 	
 	public function setIpPort($ip = '', $port = 0){
 		// @codeCoverageIgnoreStart
-		// if(!TEST){
-		// 	$this->getSocket()->getPeerName($ip, $port);
-		// }
+		if(!TEST){
+			$this->getSocket()->getPeerName($ip, $port);
+		}
 		// @codeCoverageIgnoreEnd
 		
 		$this->setIp($ip);
@@ -202,13 +202,13 @@ class Client{
 			#$this->log('debug', 'client '.$this->id.' helo');
 			$this->setStatus('hasHello', true);
 			$msg = '250-'.$this->getHostname().static::MSG_SEPARATOR;
-			$count = count($this->extended_commands) - 1;
+			$count = count($this->extendedCommands) - 1;
 			
 			for($i = 0; $i < $count; $i++){
-				$msg .= '250-'.$this->extended_commands[$i].static::MSG_SEPARATOR;
+				$msg .= '250-'.$this->extendedCommands[$i].static::MSG_SEPARATOR;
 			}
 			
-			$msg .= '250 '.end($this->extended_commands);
+			$msg .= '250 '.end($this->extendedCommands);
 
 			return $this->dataSend($msg);
 		}
@@ -328,7 +328,7 @@ class Client{
 			if($this->getStatus('hasAuth')){
 				if($this->getStatus('hasAuthPlain')){
 					$this->setStatus('hasAuthPlainUser', true);
-					$this->setCredentials([$command]);
+					$this->setCredentials(array($command));
 
 					if($this->authenticate('plain')){
 						return $this->sendAuthSuccessResponse();
