@@ -7,6 +7,7 @@ use PHPUnit_Framework_TestCase;
 use TheFox\Logger\Logger;
 use TheFox\Smtp\Server;
 use TheFox\Smtp\Client;
+use RuntimeException;
 
 class ClientTest extends PHPUnit_Framework_TestCase{
 	
@@ -265,6 +266,42 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		// base64 encoded LOGIN password
 		$msg = $client->msgHandle(base64_encode('super_secret_password'));
 		$this->assertEquals('235 2.7.0 Authentication successful'.Client::MSG_SEPARATOR, $msg);
+	}
+	
+	public function testMsgHandleStartTls(){
+		$server = new Server('', 0);
+		$server->setLog(new Logger('test_application'));
+		$server->init();
+		
+		$socket = $this->getMock('TheFox\Network\StreamSocket', array('enableEncryption'));
+		
+		$socket->expects($this->at(0))
+				->method('enableEncryption')
+				->will($this->throwException(new RuntimeException));
+		$socket->expects($this->at(1))
+				->method('enableEncryption')
+				->will($this->returnValue(true));
+		
+		$client = new Client();
+		$client->setServer($server);
+		$client->setId(1);
+		$client->setSocket($socket);
+		
+		$msg = $client->msgHandle('EHLO localhost.localdomain');
+		$expect = '250-localhost.localdomain'.Client::MSG_SEPARATOR;
+		$expect .= '250-AUTH PLAIN LOGIN'.Client::MSG_SEPARATOR;
+		$expect .= '250-STARTTLS'.Client::MSG_SEPARATOR;
+		$expect .= '250 HELP'.Client::MSG_SEPARATOR;
+		$this->assertEquals($expect, $msg);
+		
+		$msg = $client->msgHandle('STARTTLS PARAMETER');
+		$this->assertEquals('501 Syntax error in parameters or arguments'.Client::MSG_SEPARATOR, $msg);
+		
+		$msg = $client->msgHandle('STARTTLS');
+		$this->assertEquals('454 TLS not available due to temporary reason'.Client::MSG_SEPARATOR, $msg);
+		
+		$msg = $client->msgHandle('STARTTLS');
+		$this->assertTrue($msg);
 	}
 	
 }

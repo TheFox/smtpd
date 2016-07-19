@@ -3,7 +3,7 @@
 namespace TheFox\Smtp;
 
 #use Exception;
-#use RuntimeException;
+use RuntimeException;
 #use InvalidArgumentException;
 #use DateTime;
 
@@ -29,7 +29,7 @@ class Client{
 	private $mail = '';
 	private $hostname = '';
 	private $credentials = array();
- 	private $extended_commands = array('AUTH PLAIN LOGIN', 'STARTTLS', 'HELP');
+	private $extendedCommands = array('AUTH PLAIN LOGIN', 'STARTTLS', 'HELP');
 
 	public function __construct($hostname = 'localhost.localdomain'){
 		#print __CLASS__.'->'.__FUNCTION__.''."\n";
@@ -317,9 +317,18 @@ class Client{
 			}
 		}
 		elseif($commandcmp == 'starttls'){
-			$this->sendStartTls();
+			if(!empty($args)){
+				return $this->sendSyntaxErrorInParameters();
+			}
 			
-			return $this->getSocket()->enableEncryption();
+			$this->sendReadyStartTls();
+			
+			try{
+				return $this->getSocket()->enableEncryption();
+			}
+			catch(RuntimeException $e){
+				return $this->sendTemporaryErrorStartTls();
+			}
 		}
 		elseif($commandcmp == 'help'){
 			return $this->sendOk('HELO, EHLO, MAIL FROM, RCPT TO, DATA, NOOP, QUIT');
@@ -423,6 +432,10 @@ class Client{
 		return $this->dataSend('220 '.$this->getHostname().' SMTP Service Ready');
 	}
 	
+	private function sendReadyStartTls(){
+		return $this->dataSend('220 Ready to start TLS');
+	}
+	
 	public function sendQuit(){
 		return $this->dataSend('221 '.$this->getHostname().' Service closing transmission channel');
 	}
@@ -451,8 +464,8 @@ class Client{
 		return $this->dataSend('334 UGFzc3dvcmQ6');
 	}
 	
-	private function sendStartTls(){
-		return $this->dataSend('220 TLS go ahead');
+	private function sendTemporaryErrorStartTls(){
+		return $this->dataSend('454 TLS not available due to temporary reason');
 	}
 	
 	private function sendSyntaxErrorCommandUnrecognized(){
