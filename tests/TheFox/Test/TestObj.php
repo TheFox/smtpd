@@ -11,4 +11,9 @@ class TestObj{
 		return 43;
 	}
 	
+	public function test2($event, $method, $credentials){
+		#fwrite(STDOUT, 'my function: '.$event->getTrigger()."\n");
+		return true;
+	}
+	
 }

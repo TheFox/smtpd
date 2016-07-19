@@ -27,10 +27,14 @@ class Client{
 	private $from = '';
 	private $rcpt = array();
 	private $mail = '';
+	private $hostname = '';
+	private $credentials = array();
+	private $extendedCommands = array('AUTH PLAIN LOGIN', 'HELP');
 	
-	public function __construct(){
+	public function __construct($hostname = 'localhost.localdomain'){
 		#print __CLASS__.'->'.__FUNCTION__.''."\n";
 		
+		$this->hostname = $hostname;
 		$this->status['hasHello'] = false;
 		$this->status['hasMail'] = false;
 		$this->status['hasShutdown'] = false;
@@ -124,6 +128,18 @@ class Client{
 		return null;
 	}
 	
+	public function setCredentials($credentials = array()){
+		$this->credentials = $credentials;
+	}
+	
+	public function getCredentials(){
+		return $this->credentials;
+	}
+	
+	public function getHostname(){
+		return $this->hostname;
+	}
+	
 	private function log($level, $msg){
 		#print __CLASS__.'->'.__FUNCTION__.': '.$level.', '.$msg."\n";
 		#fwrite(STDOUT, "log: $level, $msg\n");
@@ -179,13 +195,22 @@ class Client{
 		if($commandcmp == 'helo'){
 			#$this->log('debug', 'client '.$this->id.' helo');
 			$this->setStatus('hasHello', true);
-			
-			return $this->sendOk('localhost.localdomain');
+
+			return $this->sendOk($this->getHostname());
 		}
 		elseif($commandcmp == 'ehlo'){
 			#$this->log('debug', 'client '.$this->id.' helo');
+			$this->setStatus('hasHello', true);
+			$msg = '250-'.$this->getHostname().static::MSG_SEPARATOR;
+			$count = count($this->extendedCommands) - 1;
 			
-			return $this->sendCommandNotImplemented();
+			for($i = 0; $i < $count; $i++){
+				$msg .= '250-'.$this->extendedCommands[$i].static::MSG_SEPARATOR;
+			}
+			
+			$msg .= '250 '.end($this->extendedCommands);
+
+			return $this->dataSend($msg);
 		}
 		elseif($commandcmp == 'mail'){
 			#$this->log('debug', 'client '.$this->id.' mail');
@@ -254,8 +279,80 @@ class Client{
 			$rv .= $this->sendQuit();
 			$this->shutdown();
 		}
+		elseif($commandcmp == 'auth'){
+			$this->setStatus('hasAuth', true);
+			
+			if(empty($args)){
+				return $this->sendSyntaxErrorInParameters();
+			}
+			
+			$authentication = strtolower($args[0]);
+
+			if($authentication == 'plain'){
+				$this->setStatus('hasAuthPlain', true);
+
+				if(isset($args[1])){
+					$this->setStatus('hasAuthPlainUser', true);
+					$this->setCredentials(array($args[1]));
+
+					if($this->authenticate('plain')){
+						return $this->sendAuthSuccessResponse();
+					}
+					
+					return $this->sendAuthInvalid();
+				}
+
+				return $this->sendAuthPlainResponse();
+			}
+			elseif($authentication == 'login'){
+				$this->setStatus('hasAuthLogin', true);
+
+				return $this->sendAskForUserResponse();
+			}
+			elseif($authentication == 'cram-md5'){
+				return $this->sendCommandNotImplemented();
+			}
+			else{
+				return $this->sendSyntaxErrorInParameters();
+			}
+		}
+		elseif($commandcmp == 'help'){
+			return $this->sendOk('HELO, EHLO, MAIL FROM, RCPT TO, DATA, NOOP, QUIT');
+		}
 		else{
-			if($this->getStatus('hasData')){
+			if($this->getStatus('hasAuth')){
+				if($this->getStatus('hasAuthPlain')){
+					$this->setStatus('hasAuthPlainUser', true);
+					$this->setCredentials(array($command));
+
+					if($this->authenticate('plain')){
+						return $this->sendAuthSuccessResponse();
+					}
+					
+					return $this->sendAuthInvalid();
+				}
+				elseif($this->getStatus('hasAuthLogin')){
+					$credentials = $this->getCredentials();
+
+					if($this->getStatus('hasAuthLoginUser')){
+						$credentials['password'] = $command;
+						$this->setCredentials($credentials);
+
+						if($this->authenticate('login')){
+							return $this->sendAuthSuccessResponse();
+						}
+						
+						return $this->sendAuthInvalid();
+					}
+
+					$this->setStatus('hasAuthLoginUser', true);
+					$credentials['user'] = $command;
+					$this->setCredentials($credentials);
+
+					return $this->sendAskForPasswordResponse();
+				}
+			}
+			elseif($this->getStatus('hasData')){
 				if($msgRaw == '.'){
 					
 					$this->mail = substr($this->mail, 0, -strlen(static::MSG_SEPARATOR));
@@ -300,12 +397,29 @@ class Client{
 	/**
 	 * @codeCoverageIgnore
 	 */
+	public function authenticate($method){
+		$attempt = $this->getServer()->authenticateUser($method, $this->getCredentials());
+		
+		$this->setStatus('hasAuth', false);
+		$this->setStatus('hasAuth'.ucfirst($method), false);
+		$this->setStatus('hasAuth'.ucfirst($method).'User', false);
+		
+		if(!$attempt){
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * @codeCoverageIgnore
+	 */
 	public function sendReady(){
-		return $this->dataSend('220 localhost.localdomain SMTP Service Ready');
+		return $this->dataSend('220 '.$this->getHostname().' SMTP Service Ready');
 	}
 	
 	public function sendQuit(){
-		return $this->dataSend('221 localhost.localdomain Service closing transmission channel');
+		return $this->dataSend('221 '.$this->getHostname().' Service closing transmission channel');
 	}
 	
 	private function sendOk($text = 'OK'){
@@ -314,6 +428,22 @@ class Client{
 	
 	private function sendDataResponse(){
 		return $this->dataSend('354 Start mail input; end with <CRLF>.<CRLF>');
+	}
+	
+	private function sendAuthPlainResponse(){
+		return $this->dataSend('334 ');
+	}
+	
+	private function sendAuthSuccessResponse(){
+		return $this->dataSend('235 2.7.0 Authentication successful');
+	}
+	
+	private function sendAskForUserResponse(){
+		return $this->dataSend('334 VXNlcm5hbWU6');
+	}
+	
+	private function sendAskForPasswordResponse(){
+		return $this->dataSend('334 UGFzc3dvcmQ6');
 	}
 	
 	private function sendSyntaxErrorCommandUnrecognized(){
@@ -326,6 +456,10 @@ class Client{
 	
 	private function sendCommandNotImplemented(){
 		return $this->dataSend('502 Command not implemented');
+	}
+	
+	private function sendAuthInvalid(){
+		return $this->dataSend('535 Authentication credentials invalid');
 	}
 	
 	public function shutdown(){
