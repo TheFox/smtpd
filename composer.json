@@ -14,16 +14,13 @@
 	],
 	"require": {
 		"php": ">=5.3",
-		"zendframework/zend-mail": "~2.3",
-		"symfony/console": "~2.5",
-		"symfony/filesystem": "~2.5",
-		"liip/process-manager": "~1.0",
-		"phpmailer/phpmailer": "~5.2"
+		"zendframework/zend-mail": "~2.3"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.1",
 		"thefox/phpcsrs": "~1.0",
-		"thefox/utilities": "~1.1"
+		"thefox/utilities": "~1.1",
+		"phpmailer/phpmailer": "~5.2"
 	},
 	"autoload": {
 		"psr-0": { "TheFox": "src" }
@@ -37,14 +34,12 @@
 		}
 	},
 	"scripts": {
-		"post-install-cmd": [
-			"echo post-install-cmd",
-			"chmod a+rx-w,u+rwx application.php",
-			"php bootstrap.php"
-		],
-		"post-update-cmd": [
-			"echo post-update-cmd",
-			"php bootstrap.php"
-		]
-	}
+        "test": [
+        	"@test-phpcs",
+        	"@test-phpunit"
+        ],
+        "test-phpunit": "TEST=true phpunit --coverage-text",
+        "test-phpunit-cc": "TEST=true phpunit --coverage-html build/report",
+        "test-phpcs": "phpcs -v -s --report=full --report-width=160 --standard=vendor/thefox/phpcsrs/Standards/TheFox src tests"
+    }
 }

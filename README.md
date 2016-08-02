@@ -18,30 +18,6 @@ The preferred method of installation is via [Packagist](https://packagist.org/pa
 
 	composer.phar require "thefox/smtpd=~0.2"
 
-## Stand-alone server
-
-1. Clone project from GitHub.
-
-		git clone https://github.com/TheFox/smtpd.git
-
-2. Install dependencies.
-
-		make
-
-3. To start a stand-alone server you can type the following command in your shell:
-
-		./application.php server -d
-	
-	To show the usage options use `-h`:
-	
-		./application.php server -h
-
-	You can change the IP and port. Default port is 20025.
-	
-		./application.php server -a 0.0.0.0 -p 25
-
-**Note:** The stand-alone server is only for testing. If you want to use it for production you need to define a save/deliver function. See example below.
-
 ## Usage
 
 See [`example.php`](example.php) file for more information.
@@ -85,6 +61,14 @@ See [`example.php`](example.php) file for more information.
 - [RFC 2821](https://tools.ietf.org/html/rfc2821)
 - [RFC 3207](https://tools.ietf.org/html/rfc3207)
 - [RFC 4954](https://tools.ietf.org/html/rfc4954)
+
+## Testing
+
+`smtpd` has a PHPUnit test suite and a coding style compliance test suite using PHP_CodeSniffer. To run the tests, run the following command from the project folder.
+
+``` bash
+$ composer test
+```
 
 ## Related Projects
 
