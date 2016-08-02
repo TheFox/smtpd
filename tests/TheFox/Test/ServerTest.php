@@ -15,6 +15,18 @@ use TheFox\Network\Socket;
 
 class ServerTest extends PHPUnit_Framework_TestCase{
 	
+	protected function setUp(){
+		$this->logPath = realpath(__DIR__.'/../../../').'/log';
+		
+		if(!is_dir($this->logPath)){
+			mkdir($this->logPath, 0777, true);
+		}
+	}
+	
+	protected function tearDown(){
+		rmdir($this->logPath);
+	}
+	
 	public function testBasic(){
 		$server = new Server('', 0);
 		$this->assertTrue($server->getLog() === null);
