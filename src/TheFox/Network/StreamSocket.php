@@ -18,8 +18,12 @@ class StreamSocket extends AbstractSocket{
 		return true;
 	}
 	
-	public function listen(){
-		$handle = @stream_socket_server('tcp://'.$this->ip.':'.$this->port, $errno, $errstr);
+	public function listen($contextOptions = array()){
+		$local_socket = 'tcp://'.$this->ip.':'.$this->port;
+		$flags = STREAM_SERVER_BIND | STREAM_SERVER_LISTEN;
+		$context = stream_context_create($contextOptions);
+		$handle = @stream_socket_server($local_socket, $errno, $errstr, $flags, $context);
+		
 		if($handle !== false){
 			$this->setHandle($handle);
 			return true;
@@ -50,6 +54,25 @@ class StreamSocket extends AbstractSocket{
 			$socket->setHandle($handle);
 		}
 		return $socket;
+	}
+	
+	public function enableEncryption(){
+		$crypto_method = STREAM_CRYPTO_METHOD_TLS_SERVER;
+		
+		if(defined('STREAM_CRYPTO_METHOD_TLSv1_2_SERVER')){
+			$crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_2_SERVER;
+			$crypto_method |= STREAM_CRYPTO_METHOD_TLSv1_1_SERVER;
+		}
+		
+		stream_set_blocking ($this->getHandle(), true);
+		$result = @stream_socket_enable_crypto($this->getHandle(), true, $crypto_method);
+		stream_set_blocking ($this->getHandle(), false);
+		
+		if($result === false){
+			throw new RuntimeException('TLS negotiation has failed');
+		}
+		
+		return true;
 	}
 	
 	public function select(&$readHandles, &$writeHandles, &$exceptHandles){
@@ -84,11 +107,11 @@ class StreamSocket extends AbstractSocket{
 	}
 	
 	public function read(){
-		return stream_socket_recvfrom($this->getHandle(), 2048);
+		return fread($this->getHandle(), 2048);
 	}
 	
 	public function write($data){
-		$rv = @stream_socket_sendto($this->getHandle(), $data);
+		$rv = @fwrite($this->getHandle(), $data);
 		
 		#print __CLASS__.'->'.__FUNCTION__.': '.$rv.', "'.substr($data, 0, -1).'"'."\n";
 		return $rv;

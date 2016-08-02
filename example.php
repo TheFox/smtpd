@@ -3,9 +3,43 @@ require_once __DIR__.'/vendor/autoload.php';
 use TheFox\Smtp\Server;
 use TheFox\Smtp\Event;
 
+// Certificate data:
+$dn = array(
+    "countryName" => "UK",
+    "stateOrProvinceName" => "Isle Of Wight",
+    "localityName" => "Cowes",
+    "organizationName" => "Open Sauce Systems",
+    "organizationalUnitName" => "Dev",
+    "commonName" => "127.0.0.1",
+    "emailAddress" => "info@opensauce.systems"
+);
+
+// Generate certificate
+$privkey = openssl_pkey_new();
+$cert    = openssl_csr_new($dn, $privkey);
+$cert    = openssl_csr_sign($cert, null, $privkey, 365);
+
+// Generate PEM file
+$pem = array();
+openssl_x509_export($cert, $pem[0]);
+openssl_pkey_export($privkey, $pem[1]);
+$pem = implode($pem);
+
+// Save PEM file
+$pemfile = __DIR__.'/server.pem';
+file_put_contents($pemfile, $pem);
+
+$contextOptions = array(
+    'ssl' => array(
+        'verify_peer'       => false,
+        'local_cert'        => $pemfile,
+        'allow_self_signed' => true,
+    )
+);
+
 $server = new Server('127.0.0.1', 20025);
 $server->init();
-$server->listen();
+$server->listen($contextOptions);
 
 $sendEvent = new Event(Event::TRIGGER_MAIL_NEW, null, function($event, $from, $rcpts, $mail){
 	// Do stuff: DNS lookup the MX record for the recipient's domain, ...

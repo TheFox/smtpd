@@ -75,7 +75,7 @@ class Server extends Thread{
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function listen(){
+	public function listen($contextOptions){
 		if($this->ip && $this->port){
 			#$this->log->notice('listen on '.$this->ip.':'.$this->port);
 			
@@ -91,7 +91,7 @@ class Server extends Thread{
 			
 			if($bind){
 				try{
-					if($this->socket->listen()){
+					if($this->socket->listen($contextOptions)){
 						$this->log->notice('listen ok');
 						$this->isListening = true;
 						
