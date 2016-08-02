@@ -70,6 +70,8 @@ See [`example.php`](example.php) file for more information.
 - 4.1.1 First command
 - 4.5 Error responses from extended servers
 
+## RFC 3207 Implementation
+
 ## RFC 4954 Implementation
 
 - 4. The AUTH Command
@@ -81,6 +83,7 @@ See [`example.php`](example.php) file for more information.
 - [RFC 1651](https://tools.ietf.org/html/rfc1651)
 - [RFC 1869](https://tools.ietf.org/html/rfc1869)
 - [RFC 2821](https://tools.ietf.org/html/rfc2821)
+- [RFC 3207](https://tools.ietf.org/html/rfc3207)
 - [RFC 4954](https://tools.ietf.org/html/rfc4954)
 
 ## Related Projects
