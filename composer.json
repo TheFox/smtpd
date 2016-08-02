@@ -38,8 +38,8 @@
         	"@test-phpcs",
         	"@test-phpunit"
         ],
-        "test-phpunit": "TEST=true phpunit --coverage-text",
-        "test-phpunit-cc": "TEST=true phpunit --coverage-html build/report",
+        "test-phpunit": "phpunit --configuration phpunit.xml --coverage-text",
+        "test-phpunit-cc": "phpunit --configuration phpunit.xml --coverage-html build/report",
         "test-phpcs": "phpcs -v -s --report=full --report-width=160 --standard=vendor/thefox/phpcsrs/Standards/TheFox src tests"
     }
 }
