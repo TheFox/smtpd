@@ -44,9 +44,3 @@ if(!file_exists(__DIR__.'/vendor')){
 }
 
 require_once __DIR__.'/vendor/autoload.php';
-
-use Symfony\Component\Filesystem\Filesystem;
-
-$filesystem = new Filesystem();
-$filesystem->mkdir('log', 0700);
-$filesystem->mkdir('pid', 0700);
