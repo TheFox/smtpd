@@ -4,9 +4,6 @@ namespace TheFox\Logger;
 
 use DateTime;
 
-/**
- * @codeCoverageIgnore
- */
 class Logger{
 	
 	const DEBUG 		= 100;

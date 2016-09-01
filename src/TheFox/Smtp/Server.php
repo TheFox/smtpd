@@ -72,9 +72,6 @@ class Server extends Thread{
 		// @codeCoverageIgnoreEnd
 	}
 	
-	/**
-	 * @codeCoverageIgnore
-	 */
 	public function listen($contextOptions){
 		if($this->ip && $this->port){
 			#$this->log->notice('listen on '.$this->ip.':'.$this->port);
@@ -106,9 +103,6 @@ class Server extends Thread{
 		}
 	}
 	
-	/**
-	 * @codeCoverageIgnore
-	 */
 	public function run(){
 		#print __CLASS__.'->'.__FUNCTION__.''."\n";
 		#print __CLASS__.'->'.__FUNCTION__.': client '.count($this->clients)."\n";
@@ -172,9 +166,6 @@ class Server extends Thread{
 		}
 	}
 	
-	/**
-	 * @codeCoverageIgnore
-	 */
 	public function loop(){
 		while(!$this->getExit()){
 			$this->run();
@@ -184,9 +175,6 @@ class Server extends Thread{
 		$this->shutdown();
 	}
 	
-	/**
-	 * @codeCoverageIgnore
-	 */
 	public function shutdown(){
 		$this->log->debug('shutdown');
 		
@@ -266,7 +254,6 @@ class Server extends Thread{
 	 * Execute authentication events
 	 * 
 	 * All authentication events must return true for authentication to be successful
-	 * 
 	 */
 	public function authenticateUser($method, $credentials = array()){
 		$authenticated = false;

@@ -2,9 +2,6 @@
 
 namespace TheFox\Network;
 
-/**
- * @codeCoverageIgnore
- */
 abstract class AbstractSocket{
 	
 	private $handle;

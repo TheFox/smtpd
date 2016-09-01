@@ -67,16 +67,10 @@ class Client{
 		return $this->server;
 	}
 	
-	/**
-	 * @codeCoverageIgnore
-	 */
 	public function setSocket(AbstractSocket $socket){
 		$this->socket = $socket;
 	}
 	
-	/**
-	 * @codeCoverageIgnore
-	 */
 	public function getSocket(){
 		return $this->socket;
 	}
@@ -151,9 +145,6 @@ class Client{
 		}
 	}
 	
-	/**
-	 * @codeCoverageIgnore
-	 */
 	public function dataRecv(){
 		$data = $this->getSocket()->read();
 		
@@ -393,9 +384,6 @@ class Client{
 		return $rv;
 	}
 	
-	/**
-	 * @codeCoverageIgnore
-	 */
 	private function dataSend($msg){
 		$output = $msg.static::MSG_SEPARATOR;
 		if($this->getSocket()){
@@ -408,9 +396,6 @@ class Client{
 		return $output;
 	}
 	
-	/**
-	 * @codeCoverageIgnore
-	 */
 	public function authenticate($method){
 		$attempt = $this->getServer()->authenticateUser($method, $this->getCredentials());
 		
@@ -425,9 +410,6 @@ class Client{
 		return true;
 	}
 	
-	/**
-	 * @codeCoverageIgnore
-	 */
 	public function sendReady(){
 		return $this->dataSend('220 '.$this->getHostname().' SMTP Service Ready');
 	}

@@ -1,0 +1,11 @@
+
+--type=php
+--type=yaml
+--type=shell
+
+--type-set=phar:ext:phar
+--type=nophar
+
+--ignore-dir=cache
+--ignore-dir=log
+--ignore-dir=vendor
