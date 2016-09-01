@@ -11,4 +11,4 @@ before_script:
 script: make test
 env:
     global:
-        - COMPOSER_OPTIONS=--prefer-source
+        - COMPOSER_OPTIONS='--prefer-source --no-interaction'
