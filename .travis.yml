@@ -11,5 +11,4 @@ before_script:
 script: make test
 env:
     global:
-        - COMPOSER_PREFER_SOURCE=--prefer-source
-        - PHPUNIT_COVERAGE_CLOVER="--coverage-clover build/logs/clover.xml"
+        - COMPOSER_OPTIONS=--prefer-source

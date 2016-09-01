@@ -19,6 +19,10 @@
 	timeoutForLargeTests="60"
 	verbose="true">
 	
+	<php>
+		<env name="TEST" value="true" />
+	</php>
+	
 	<testsuites>
 		<testsuite name="default">
 			<file>tests/TheFox/Test/ClientTest.php</file>
