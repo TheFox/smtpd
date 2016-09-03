@@ -13,7 +13,7 @@
 		}
 	],
 	"require": {
-		"php": ">=5.3",
+		"php": "~5.3 || ~7.0",
 		"ext-sockets": ">=0",
 		"zendframework/zend-mail": "~2.3"
 	},
