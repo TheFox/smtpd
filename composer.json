@@ -4,7 +4,7 @@
 	"license": "GPL-3.0",
 	"type": "library",
 	"keywords": [ "smtp", "email", "mail", "server", "daemon" ],
-	"homepage": "http://fox21.at",
+	"homepage": "https://fox21.at",
 	"authors": [
 		{
 			"name": "Christian Mayer",
@@ -14,6 +14,7 @@
 	],
 	"require": {
 		"php": ">=5.3",
+		"ext-sockets": ">=0",
 		"zendframework/zend-mail": "~2.3"
 	},
 	"require-dev": {
@@ -32,15 +33,5 @@
 		"branch-alias": {
 			"dev-master": "1.x.x-dev"
 		}
-	},
-	"scripts": {
-		"post-install-cmd": [
-			"echo post-install-cmd",
-			"php bootstrap.php"
-		],
-		"post-update-cmd": [
-			"echo post-update-cmd",
-			"php bootstrap.php"
-		]
 	}
 }

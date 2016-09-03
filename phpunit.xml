@@ -1,9 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <phpunit
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/3.7/phpunit.xsd"
 	backupGlobals="true"
 	backupStaticAttributes="false"
-	bootstrap="bootstrap.php"
 	checkForUnintentionallyCoveredCode="true"
 	colors="true"
 	convertErrorsToExceptions="true"
@@ -20,11 +20,12 @@
 	verbose="true">
 	
 	<php>
-		<env name="TEST" value="true" />
+		<const name="TEST" value="true" />
 	</php>
 	
 	<testsuites>
 		<testsuite name="default">
+			<file>tests/TheFox/Test/BasicTest.php</file>
 			<file>tests/TheFox/Test/ClientTest.php</file>
 			<file>tests/TheFox/Test/ServerTest.php</file>
 			<file>tests/TheFox/Test/StringParserTest.php</file>

@@ -1,11 +1,11 @@
 
-RM = rm -rfd
+RM = rm -rf
 CHMOD = chmod
 MKDIR = mkdir -p
 VENDOR = vendor
 PHPCS = vendor/bin/phpcs
 PHPCS_STANDARD = vendor/thefox/phpcsrs/Standards/TheFox
-PHPCS_OPTIONS = --report=full --report-width=160
+PHPCS_OPTIONS = -v -s --colors --report=full --report-width=160 --standard=$(PHPCS_STANDARD)
 PHPUNIT = vendor/bin/phpunit
 COMPOSER = ./composer.phar
 COMPOSER_OPTIONS ?= --no-interaction
@@ -26,8 +26,8 @@ update: $(COMPOSER)
 test: test_phpcs test_phpunit
 
 .PHONY: test_phpcs
-test_phpcs: $(PHPCS) vendor/thefox/phpcsrs/Standards/TheFox
-	$(PHPCS) -v -s $(PHPCS_OPTIONS) --standard=$(PHPCS_STANDARD) src tests
+test_phpcs: $(PHPCS) $(PHPCS_STANDARD)
+	$(PHPCS) $(PHPCS_OPTIONS) src tests *.php
 
 .PHONY: test_phpunit
 test_phpunit: $(PHPUNIT) phpunit.xml
@@ -39,12 +39,10 @@ test_phpunit_cc: build
 
 .PHONY: clean
 clean:
-	$(RM) composer.lock $(COMPOSER)
-	$(RM) vendor/*
-	$(RM) vendor
+	$(RM) composer.lock $(COMPOSER) $(VENDOR)
 
 $(VENDOR): $(COMPOSER)
-	$(COMPOSER) install $(COMPOSER_OPTIONS) $(COMPOSER_DEV)
+	$(COMPOSER) install $(COMPOSER_OPTIONS)
 
 $(COMPOSER):
 	curl -sS https://getcomposer.org/installer | php
@@ -56,5 +54,4 @@ $(PHPUNIT): $(VENDOR)
 
 build:
 	$(MKDIR) $@
-	$(MKDIR) $@/logs
 	$(CHMOD) u=rwx,go-rwx $@

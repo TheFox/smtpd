@@ -1,17 +1,19 @@
 <?php
+
 require_once __DIR__.'/vendor/autoload.php';
+
 use TheFox\Smtp\Server;
 use TheFox\Smtp\Event;
 
 // Certificate data:
 $dn = array(
-    "countryName" => "UK",
-    "stateOrProvinceName" => "Isle Of Wight",
-    "localityName" => "Cowes",
-    "organizationName" => "Open Sauce Systems",
-    "organizationalUnitName" => "Dev",
-    "commonName" => "127.0.0.1",
-    "emailAddress" => "info@opensauce.systems"
+	'countryName' => 'UK',
+	'stateOrProvinceName' => 'Isle Of Wight',
+	'localityName' => 'Cowes',
+	'organizationName' => 'Open Sauce Systems',
+	'organizationalUnitName' => 'Dev',
+	'commonName' => '127.0.0.1',
+	'emailAddress' => 'info@opensauce.systems',
 );
 
 // Generate certificate
@@ -30,11 +32,11 @@ $pemfile = __DIR__.'/server.pem';
 file_put_contents($pemfile, $pem);
 
 $contextOptions = array(
-    'ssl' => array(
-        'verify_peer'       => false,
-        'local_cert'        => $pemfile,
-        'allow_self_signed' => true,
-    )
+	'ssl' => array(
+		'verify_peer'       => false,
+		'local_cert'        => $pemfile,
+		'allow_self_signed' => true,
+	)
 );
 
 $server = new Server('127.0.0.1', 20025);
@@ -68,9 +70,9 @@ $sendEvent = new Event(Event::TRIGGER_MAIL_NEW, null, function($event, $from, $r
 });
 
 $authEvent = new Event(Event::TRIGGER_AUTH_ATTEMPT, null, function ($event, $type, $credentials) {
-    // Do stuff: Check credentials against database, ...
+	// Do stuff: Check credentials against database, ...
 
-    return true;
+	return true;
 });
 
 $server->eventAdd($sendEvent);
