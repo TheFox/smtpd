@@ -16,7 +16,7 @@ This is useful when you have a messaging application written in PHP but no graph
 
 The preferred method of installation is via [Packagist](https://packagist.org/packages/thefox/smtpd) and [Composer](https://getcomposer.org/). Run the following command to install the package and add it as a requirement to composer.json:
 
-	composer.phar require "thefox/smtpd=~0.2"
+	composer.phar require "thefox/smtpd=~0.3"
 
 ## Usage
 
