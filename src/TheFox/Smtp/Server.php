@@ -64,7 +64,7 @@ class Server extends Thread{
 			}
 		}
 		// @codeCoverageIgnoreStart
-		if(!TEST){
+		if(!defined('TEST')){
 			$this->log->info('start');
 			$this->log->info('ip = "'.$this->ip.'"');
 			$this->log->info('port = "'.$this->port.'"');

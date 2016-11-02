@@ -99,7 +99,7 @@ class Client{
 	
 	public function setIpPort($ip = '', $port = 0){
 		// @codeCoverageIgnoreStart
-		if(!TEST){
+		if(!defined('TEST')){
 			$this->getSocket()->getPeerName($ip, $port);
 		}
 		// @codeCoverageIgnoreEnd

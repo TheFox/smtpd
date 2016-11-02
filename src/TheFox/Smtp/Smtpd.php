@@ -7,7 +7,6 @@ namespace TheFox\Smtp;
 class Smtpd{
 	
 	const NAME = 'SMTPd';
-	const VERSION = '0.3.0';
-	const RELEASE = 7;
+	const VERSION = '0.3.1-dev';
 	
 }
