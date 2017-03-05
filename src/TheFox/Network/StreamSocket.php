@@ -49,8 +49,8 @@ class StreamSocket extends AbstractSocket{
 			$class = __CLASS__;
 			$socket = new $class();
 			$socket->setHandle($handle);
+			return $socket;
 		}
-		return $socket;
 	}
 	
 	public function enableEncryption(){

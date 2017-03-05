@@ -3,6 +3,7 @@
 namespace TheFox\Smtp;
 
 use Exception;
+use RuntimeException;
 use TheFox\Logger\Logger;
 use TheFox\Logger\StreamHandler;
 use TheFox\Network\Socket;

@@ -167,6 +167,7 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$server->setLog(new Logger('test_application'));
 		$server->init();
 		
+		/** @var $client \TheFox\Smtp\Client */
 		$client = $this->getMock('TheFox\Smtp\Client', array('authenticate'));
 		
 		$client->expects($this->at(0))
@@ -227,6 +228,7 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$server->setLog(new Logger('test_application'));
 		$server->init();
 		
+		/** @var $client \TheFox\Smtp\Client */
 		$client = $this->getMock('TheFox\Smtp\Client', array('authenticate'));
 		
 		$client->expects($this->at(0))
