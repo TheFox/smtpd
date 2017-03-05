@@ -3,7 +3,6 @@
 namespace TheFox\Test;
 
 use PHPUnit_Framework_TestCase;
-
 use TheFox\Smtp\StringParser;
 
 class StringParserTest extends PHPUnit_Framework_TestCase{

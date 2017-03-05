@@ -2,13 +2,8 @@
 
 namespace TheFox\Smtp;
 
-#use Exception;
 use RuntimeException;
-#use InvalidArgumentException;
-#use DateTime;
-
 use Zend\Mail\Message;
-
 use TheFox\Network\AbstractSocket;
 use TheFox\Smtp\StringParser;
 

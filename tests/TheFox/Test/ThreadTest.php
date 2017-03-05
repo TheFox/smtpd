@@ -3,7 +3,6 @@
 namespace TheFox\Test;
 
 use PHPUnit_Framework_TestCase;
-
 use TheFox\Smtp\Thread;
 
 class ThreadTest extends PHPUnit_Framework_TestCase{
