@@ -62,6 +62,9 @@ class Client{
 		return $this->server;
 	}
 	
+	/**
+	 * @param AbstractSocket|\TheFox\Network\StreamSocket|\PHPUnit_Framework_MockObject_MockObject $socket
+	 */
 	public function setSocket(AbstractSocket $socket){
 		$this->socket = $socket;
 	}

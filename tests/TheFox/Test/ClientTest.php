@@ -2,11 +2,11 @@
 
 namespace TheFox\Test;
 
+use RuntimeException;
 use PHPUnit_Framework_TestCase;
 use TheFox\Logger\Logger;
 use TheFox\Smtp\Server;
 use TheFox\Smtp\Client;
-use RuntimeException;
 
 class ClientTest extends PHPUnit_Framework_TestCase{
 	
@@ -167,7 +167,7 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$server->setLog(new Logger('test_application'));
 		$server->init();
 		
-		/** @var $client \TheFox\Smtp\Client */
+		/** @var \TheFox\Smtp\Client|\PHPUnit_Framework_MockObject_MockObject $client */
 		$client = $this->getMock('TheFox\Smtp\Client', array('authenticate'));
 		
 		$client->expects($this->at(0))
@@ -228,7 +228,7 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$server->setLog(new Logger('test_application'));
 		$server->init();
 		
-		/** @var $client \TheFox\Smtp\Client */
+		/** @var \TheFox\Smtp\Client|\PHPUnit_Framework_MockObject_MockObject $client */
 		$client = $this->getMock('TheFox\Smtp\Client', array('authenticate'));
 		
 		$client->expects($this->at(0))
@@ -274,6 +274,7 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$server->setLog(new Logger('test_application'));
 		$server->init();
 		
+		/** @var \PHPUnit_Framework_MockObject_MockObject $socket */
 		$socket = $this->getMock('TheFox\Network\StreamSocket', array('enableEncryption'));
 		
 		$socket->expects($this->at(0))
