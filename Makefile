@@ -10,6 +10,10 @@ PHPUNIT = vendor/bin/phpunit
 COMPOSER = ./composer.phar
 COMPOSER_OPTIONS ?= --no-interaction
 
+# Local installed PHPStan while supporting PHP 5.
+# PHPStan requires PHP 7.
+PHPSTAN = ~/.composer/vendor/bin/phpstan
+
 
 .PHONY: all
 all: install test
@@ -24,6 +28,10 @@ update: $(COMPOSER)
 
 .PHONY: test
 test: test_phpcs test_phpunit
+
+.PHONY: test_phpstan
+test_phpstan:
+	$(PHPSTAN) analyse --level 5 --no-progress src tests
 
 .PHONY: test_phpcs
 test_phpcs: $(PHPCS) $(PHPCS_STANDARD)
