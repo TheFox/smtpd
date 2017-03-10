@@ -193,7 +193,6 @@ class Server extends Thread{
 	 */
 	public function clientNew($socket){
 		$this->clientsId++;
-		#print __CLASS__.'->'.__FUNCTION__.' ID: '.$this->clientsId."\n";
 		
 		$client = new Client($this->getHostname());
 		$client->setSocket($socket);
@@ -201,7 +200,6 @@ class Server extends Thread{
 		$client->setServer($this);
 		
 		$this->clients[$this->clientsId] = $client;
-		#print __CLASS__.'->'.__FUNCTION__.' clients: '.count($this->clients)."\n";
 		
 		return $client;
 	}

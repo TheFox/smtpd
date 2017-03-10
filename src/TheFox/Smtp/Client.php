@@ -109,8 +109,6 @@ class Client{
 	}
 	
 	public function getLog(){
-		#print __CLASS__.'->'.__FUNCTION__.''."\n";
-		
 		if($this->getServer()){
 			return $this->getServer()->getLog();
 		}
