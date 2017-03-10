@@ -88,7 +88,6 @@ class StreamSocket extends AbstractSocket{
 			$ip = substr($name, 0, $pos);
 			$port = substr($name, $pos + 1);
 		}
-		#print __CLASS__.'->'.__FUNCTION__.': '.$name.', "'.$ip.'", "'.$port.'"'."\n";
 	}
 	
 	public function lastError(){
@@ -109,8 +108,6 @@ class StreamSocket extends AbstractSocket{
 	
 	public function write($data){
 		$rv = @fwrite($this->getHandle(), $data);
-		
-		#print __CLASS__.'->'.__FUNCTION__.': '.$rv.', "'.substr($data, 0, -1).'"'."\n";
 		return $rv;
 	}
 	

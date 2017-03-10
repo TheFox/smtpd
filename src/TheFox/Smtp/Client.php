@@ -27,8 +27,6 @@ class Client{
 	private $extendedCommands = array('AUTH PLAIN LOGIN', 'STARTTLS', 'HELP');
 
 	public function __construct($hostname = 'localhost.localdomain'){
-		#print __CLASS__.'->'.__FUNCTION__.''."\n";
-		
 		$this->hostname = $hostname;
 		$this->status['hasHello'] = false;
 		$this->status['hasMail'] = false;
@@ -133,9 +131,6 @@ class Client{
 	}
 	
 	private function log($level, $msg){
-		#print __CLASS__.'->'.__FUNCTION__.': '.$level.', '.$msg."\n";
-		#fwrite(STDOUT, "log: $level, $msg\n");
-		
 		if($this->getLog()){
 			if(method_exists($this->getLog(), $level)){
 				$this->getLog()->$level($msg);
@@ -146,7 +141,6 @@ class Client{
 	public function dataRecv(){
 		$data = $this->getSocket()->read();
 		
-		#print __CLASS__.'->'.__FUNCTION__.': "'.$data.'"'."\n";
 		do{
 			$separatorPos = strpos($data, static::MSG_SEPARATOR);
 			if($separatorPos === false){
@@ -162,12 +156,14 @@ class Client{
 				$this->msgHandle($msg);
 				
 				$data = substr($data, $separatorPos + strlen(static::MSG_SEPARATOR));
-				
-				#print __CLASS__.'->'.__FUNCTION__.': rest data "'.$data.'"'."\n";
 			}
 		}while($data);
 	}
 	
+	/**
+	 * @param string $msgRaw
+	 * @return string
+	 */
 	public function msgHandle($msgRaw){
 		#$this->log('debug', 'client '.$this->id.' raw: /'.$msgRaw.'/');
 		
@@ -175,7 +171,6 @@ class Client{
 		
 		$str = new StringParser($msgRaw);
 		$args = $str->parse();
-		#ve($args);
 		
 		$command = array_shift($args);
 		$commandcmp = strtolower($command);
@@ -204,8 +199,6 @@ class Client{
 		elseif($commandcmp == 'mail'){
 			#$this->log('debug', 'client '.$this->id.' mail');
 			
-			#ve($args);
-			
 			if($this->getStatus('hasHello')){
 				if(isset($args[0]) && $args[0]){
 					$this->setStatus('hasMail', true);
@@ -228,8 +221,6 @@ class Client{
 		}
 		elseif($commandcmp == 'rcpt'){
 			#$this->log('debug', 'client '.$this->id.' rcpt');
-			
-			#ve($args);
 			
 			if($this->getStatus('hasHello')){
 				if(isset($args[0]) && $args[0]){
@@ -394,6 +385,10 @@ class Client{
 		return $output;
 	}
 	
+	/**
+	 * @param string $method
+	 * @return boolean
+	 */
 	public function authenticate($method){
 		$attempt = $this->getServer()->authenticateUser($method, $this->getCredentials());
 		

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Main Server
+ * Handles Sockets and Clients.
+ */
+
 namespace TheFox\Smtp;
 
 use Exception;
@@ -24,8 +29,6 @@ class Server extends Thread{
 	private $hostname;
 	
 	public function __construct($ip = '127.0.0.1', $port = 20025, $hostname = 'localhost.localdomain'){
-		#print __CLASS__.'->'.__FUNCTION__.''."\n";
-		
 		$this->setIp($ip);
 		$this->setPort($port);
 		$this->setHostname($hostname);
@@ -104,9 +107,6 @@ class Server extends Thread{
 	}
 	
 	public function run(){
-		#print __CLASS__.'->'.__FUNCTION__.''."\n";
-		#print __CLASS__.'->'.__FUNCTION__.': client '.count($this->clients)."\n";
-		
 		if(!$this->socket){
 			throw new RuntimeException('Socket not initialized. You need to execute listen().', 1);
 		}
@@ -121,10 +121,6 @@ class Server extends Thread{
 		foreach($this->clients as $clientId => $client){
 			// Collect client handles.
 			$readHandles[] = $client->getSocket()->getHandle();
-			
-			// Run client.
-			#print __CLASS__.'->'.__FUNCTION__.': client run'."\n";
-			#$client->run();
 		}
 		$readHandlesNum = count($readHandles);
 		
@@ -166,6 +162,9 @@ class Server extends Thread{
 		}
 	}
 	
+	/**
+	 * Main Thread Loop
+	 */
 	public function loop(){
 		while(!$this->getExit()){
 			$this->run();
@@ -187,6 +186,11 @@ class Server extends Thread{
 		$this->log->debug('shutdown done');
 	}
 	
+	/**
+	 * Create a new Client for a new incoming socket connection.
+	 * 
+	 * @return Client
+	 */
 	public function clientNew($socket){
 		$this->clientsId++;
 		#print __CLASS__.'->'.__FUNCTION__.' ID: '.$this->clientsId."\n";
@@ -202,19 +206,22 @@ class Server extends Thread{
 		return $client;
 	}
 	
+	/**
+	 * Find a Client by socket handle.
+	 * 
+	 * @return Client|null
+	 */
 	public function clientGetByHandle($handle){
-		$rv = null;
-		
 		foreach($this->clients as $clientId => $client){
 			if($client->getSocket()->getHandle() == $handle){
-				$rv = $client;
-				break;
+				return $client;
 			}
 		}
-		
-		return $rv;
 	}
 	
+	/**
+	 * @param Client $client
+	 */
 	public function clientRemove(Client $client){
 		$this->log->debug('client remove: '.$client->getId());
 		
@@ -224,36 +231,42 @@ class Server extends Thread{
 		unset($this->clients[$clientsId]);
 	}
 	
+	/**
+	 * @param Event $event
+	 */
 	public function eventAdd(Event $event){
-		#fwrite(STDOUT, __CLASS__.'->'.__FUNCTION__.''."\n");
-		
 		$this->eventsId++;
 		$this->events[$this->eventsId] = $event;
 	}
 	
+	/**
+	 * @param integer $trigger
+	 * @param array $args
+	 */
 	private function eventExecute($trigger, $args = array()){
-		#fwrite(STDOUT, __CLASS__.'->'.__FUNCTION__.''."\n");
-		
 		foreach($this->events as $eventId => $event){
-			#fwrite(STDOUT, __CLASS__.'->'.__FUNCTION__.' event: '.$eventId."\n");
 			if($event->getTrigger() == $trigger){
 				$event->execute($args);
 			}
 		}
 	}
 	
+	/**
+	 * @param string $from
+	 * @param array $rcpt
+	 * @param \Zend\Mail\Message $mail
+	 */
 	public function mailNew($from, $rcpt, $mail){
-		#$this->log->debug('mailNew: /'.$from.'/ /'.join(', ', $rcpt).'/');
-		#$this->log->debug('mail:');
-		#$this->log->debug("\n".$mail);
-		
 		$this->eventExecute(Event::TRIGGER_MAIL_NEW, array($from, $rcpt, $mail));
 	}
 	
 	/**
-	 * Execute authentication events
-	 * 
+	 * Execute authentication events.
 	 * All authentication events must return true for authentication to be successful
+	 * 
+	 * @param string $method
+	 * @param array $credentials
+	 * @return boolean
 	 */
 	public function authenticateUser($method, $credentials = array()){
 		$authenticated = false;

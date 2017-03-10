@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Parse a raw Client packet.
+ */
+
 namespace TheFox\Smtp;
 
 class StringParser{
@@ -73,10 +77,7 @@ class StringParser{
 			$char = $str[$pos];
 			$nextChar = ($pos < $this->len - 1) ? $str[$pos + 1] : '';
 			
-			#fwrite(STDOUT, 'pos: '.$pos.' /'.$char.'/'."\n");
-			
 			if($in){
-				#fwrite(STDOUT, ' -> in'."\n");
 				if($char == $endChar){
 					if($pos == $this->len - 1 || $this->argsMax === null || $this->argsLen < $this->argsMax){
 						if($char == '"'){
@@ -93,7 +94,6 @@ class StringParser{
 				}
 			}
 			else{
-				#fwrite(STDOUT, ' -> not in: '.(int)($this->argsMax === null).' '.$this->argsLen.' '.$this->argsMax."\n");
 				if($this->argsMax === null || $this->argsLen < $this->argsMax){
 					if($char == '"'){
 						$this->charNew($char);

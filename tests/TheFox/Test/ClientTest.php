@@ -303,7 +303,7 @@ class ClientTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals('454 TLS not available due to temporary reason'.Client::MSG_SEPARATOR, $msg);
 		
 		$msg = $client->msgHandle('STARTTLS');
-		$this->assertTrue($msg);
+		$this->assertTrue((bool)$msg);
 	}
 	
 }

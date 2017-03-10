@@ -13,6 +13,10 @@ class BsdSocket extends AbstractSocket{
 		}
 	}
 	
+	/**
+	 * Creates a new socket resource.
+	 * https://secure.php.net/manual/en/function.socket-create.php
+	 */
 	public function create(){
 		$socket = null;
 		
@@ -67,14 +71,13 @@ class BsdSocket extends AbstractSocket{
 	}
 	
 	public function accept(){
-		$socket = null;
 		$handle = socket_accept($this->getHandle());
 		if($handle !== false){
 			$class = __CLASS__;
 			$socket = new $class();
 			$socket->setHandle($handle);
+			return $socket;
 		}
-		return $socket;
 	}
 	
 	public function select(&$readHandles, &$writeHandles, &$exceptHandles){
