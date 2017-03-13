@@ -106,6 +106,10 @@ class Server extends Thread{
 		}
 	}
 	
+	/**
+	 * Main Function
+	 * Handles everything, keeps everything up-to-date.
+	 */
 	public function run(){
 		if(!$this->socket){
 			throw new RuntimeException('Socket not initialized. You need to execute listen().', 1);
@@ -163,7 +167,7 @@ class Server extends Thread{
 	}
 	
 	/**
-	 * Main Thread Loop
+	 * Main Loop
 	 */
 	public function loop(){
 		while(!$this->getExit()){
@@ -174,6 +178,10 @@ class Server extends Thread{
 		$this->shutdown();
 	}
 	
+	/**
+	 * Shutdown the server.
+	 * Should be executed before your application exits.
+	 */
 	public function shutdown(){
 		$this->log->debug('shutdown');
 		
@@ -190,6 +198,7 @@ class Server extends Thread{
 	 * Create a new Client for a new incoming socket connection.
 	 * 
 	 * @return Client
+	 * @FIXME rename this function to newClient
 	 */
 	public function clientNew($socket){
 		$this->clientsId++;
@@ -208,6 +217,7 @@ class Server extends Thread{
 	 * Find a Client by socket handle.
 	 * 
 	 * @return Client|null
+	 * @FIXME rename this function to getClientByHandle
 	 */
 	public function clientGetByHandle($handle){
 		foreach($this->clients as $clientId => $client){
@@ -219,6 +229,7 @@ class Server extends Thread{
 	
 	/**
 	 * @param Client $client
+	 * @FIXME rename this function to removeClient
 	 */
 	public function clientRemove(Client $client){
 		$this->log->debug('client remove: '.$client->getId());
@@ -231,6 +242,7 @@ class Server extends Thread{
 	
 	/**
 	 * @param Event $event
+	 * @FIXME rename this function to addEvent
 	 */
 	public function eventAdd(Event $event){
 		$this->eventsId++;
@@ -253,6 +265,7 @@ class Server extends Thread{
 	 * @param string $from
 	 * @param array $rcpt
 	 * @param \Zend\Mail\Message $mail
+	 * @FIXME rename this function to newMail
 	 */
 	public function mailNew($from, $rcpt, $mail){
 		$this->eventExecute(Event::TRIGGER_MAIL_NEW, array($from, $rcpt, $mail));

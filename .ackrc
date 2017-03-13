@@ -8,5 +8,8 @@
 --type-set=phar:ext:phar
 --type=nophar
 
+--type-set=markdown:ext:md
+--type=markdown
+
 --ignore-dir=log
 --ignore-dir=vendor

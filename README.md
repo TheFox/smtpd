@@ -1,6 +1,8 @@
 # SMTPd
 
-SMTP server (library) written in pure PHP. This library only provides an interface to the SMTP server-side protocol with PHP. You need to deliver the mails by yourself.
+SMTP server (library) for receiving emails, written in pure PHP. This library provides an interface to the SMTP server-side protocol with PHP. It creates a `\Zend\Mail\Message` Class object for every incoming email and hands this object to a custom PHP function for further processing. The project is in Beta status, so it's not recommended for production use.
+
+The `d` in `SMTPd` stands for [Daemon](https://en.wikipedia.org/wiki/Daemon_(computing)). This script can run in background like any other daemon processes. It's not meant for running as a webapplication.
 
 ## Why this project?
 
@@ -8,7 +10,11 @@ Believe it or not, **email is still the killer feature of the Internet**. There 
 
 With this interface you can do something like this for your app users:
 
-	User <-> MUA (like Thunderbird) <-> SMTP <-> Your PHP App
+```
++------+     +------------------------+     +-------+     +--------------+
+| User +---> | MUA (like Thunderbird) +---> | SMTPd +---> | Your PHP App |
++------+     +------------------------+     +-------+     +--------------+
+```
 
 This is useful when you have a messaging application written in PHP but no graphical user interface for it. So your graphical user interface can be any [email client](http://en.wikipedia.org/wiki/Email_client). [Thunderbird](https://www.mozilla.org/en-US/thunderbird/) for instance.
 

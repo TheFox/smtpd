@@ -78,6 +78,9 @@ $authEvent = new Event(Event::TRIGGER_AUTH_ATTEMPT, null, function ($event, $typ
 $server->eventAdd($sendEvent);
 $server->eventAdd($authEvent);
 
-// `loop()` is only a loop with `run()` executed.
-// So you need to execute `run()` in your own project to keep the SMTP server updated.
+// `$server->loop()` is only a while-loop with `$server->run()` executed.
+// If you also need to process other things in your application as well
+// it's recommded to execute `$server->run()` from time to time.
+// You need to execute `$server->run()` in your own project to keep the SMTP server updated.
+// If you use your own loop to keep everything running consider executing `$server->run()` from time to time.
 $server->loop();
