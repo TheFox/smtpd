@@ -35,7 +35,7 @@ test_phpstan:
 
 .PHONY: test_phpcs
 test_phpcs: $(PHPCS) $(PHPCS_STANDARD)
-	$(PHPCS) $(PHPCS_OPTIONS) src tests *.php
+	$(PHPCS) $(PHPCS_OPTIONS) src tests
 
 .PHONY: test_phpunit
 test_phpunit: $(PHPUNIT) phpunit.xml
