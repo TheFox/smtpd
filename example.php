@@ -44,7 +44,9 @@ $server->init();
 $server->listen($contextOptions);
 
 $sendEvent = new Event(Event::TRIGGER_MAIL_NEW, null, function($event, $from, $rcpts, $mail){
-	// Do stuff: DNS lookup the MX record for the recipient's domain, ...
+	// Do stuff: DNS lookup the MX record for the recipient's domain,
+	//           check whether the recipient is on a whitelist,
+	//           handle the email, etc, ...
 	
 	// For example, use PHPMailer to reply the mail through mail servers.
 	$mailer = new PHPMailer();
@@ -69,7 +71,7 @@ $sendEvent = new Event(Event::TRIGGER_MAIL_NEW, null, function($event, $from, $r
 	}
 });
 
-$authEvent = new Event(Event::TRIGGER_AUTH_ATTEMPT, null, function ($event, $type, $credentials) {
+$authEvent = new Event(Event::TRIGGER_AUTH_ATTEMPT, null, function $event, $type, $credentials){
 	// Do stuff: Check credentials against database, ...
 
 	return true;

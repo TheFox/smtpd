@@ -24,9 +24,66 @@ The preferred method of installation is via [Packagist](https://packagist.org/pa
 
 	composer.phar require "thefox/smtpd=~0.3"
 
-## Usage
+## Delivery
 
-See [`example.php`](example.php) file for more information.
+At the moment the server accepts all incoming emails. You decide what happens with incoming emails by adding `Event`s to the `Server` object (`$server->eventAdd($event)`). The server can handle certain events. Each event will be executed on a certain trigger. Even if you don't add any Events to the Server it accepts all incoming emails.
+
+## Events
+
+At the moment there are two Event Triggers.
+
+- `TRIGGER_MAIL_NEW`: will be triggered when a Client has finished transmitting a new email.
+- `TRIGGER_AUTH_ATTEMPT`: will be triggered when a Client wants to authenticate. Return a boolean from the callback function whether the authentication was successful or not.
+
+## Examples
+
+See also [`example.php`](example.php) file for full examples.
+
+### Trigger New Mail Example
+
+```php
+$server = new Server('127.0.0.1', 20025);
+$server->init();
+
+$event = new Event(Event::TRIGGER_MAIL_NEW, null, function($event, $from, $rcpts, $mail){
+	// Do stuff: handle email, ...
+});
+$server->eventAdd($event);
+$server->loop();
+```
+
+### Trigger Auth Example
+
+```php
+$server = new Server('127.0.0.1', 20025);
+$server->init();
+
+$event = new Event(Event::TRIGGER_AUTH_ATTEMPT, null, function $event, $type, $credentials){
+	// Do stuff: Check credentials against database, ...
+	return true;
+});
+$server->eventAdd($event);
+$server->loop();
+```
+
+### Use SMTP Server with own loop
+
+```php
+$server = new Server('127.0.0.1', 20025);
+$server->init();
+
+// Set up server here.
+// Add Events, etc, ...
+
+while(myApplicationRuns()){
+	// Do stuff your application needs.
+	// ...
+	
+	// Run main SMTPd loop, once.
+	$server->run();
+	usleep(10000); // Never run a main thread loop without sleep. Never!
+}
+```
 
 ## RFC 821 Implementation
 
