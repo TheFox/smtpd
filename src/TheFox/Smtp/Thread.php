@@ -16,7 +16,7 @@ class Thread
     /**
      * @param int $exit
      */
-    public function setExit($exit = 1)
+    public function setExit(int $exit = 1)
     {
         $this->exit = $exit;
     }
@@ -24,7 +24,7 @@ class Thread
     /**
      * @return int
      */
-    public function getExit()
+    public function getExit(): int
     {
         return $this->exit;
     }

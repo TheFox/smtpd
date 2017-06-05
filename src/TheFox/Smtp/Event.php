@@ -31,6 +31,12 @@ class Event
      */
     private $returnValue;
 
+    /**
+     * Event constructor.
+     * @param null|int $trigger
+     * @param null|object $object
+     * @param null|\Closure|string $function
+     */
     public function __construct($trigger = null, $object = null, $function = null)
     {
         $this->trigger = $trigger;
@@ -58,7 +64,7 @@ class Event
      * @param array $args
      * @return mixed
      */
-    public function execute($args = [])
+    public function execute(array $args = [])
     {
         $object = $this->object;
         $function = $this->function;

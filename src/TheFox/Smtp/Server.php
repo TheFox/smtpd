@@ -13,6 +13,7 @@ use TheFox\Logger\Logger;
 use TheFox\Logger\StreamHandler;
 use TheFox\Network\AbstractSocket;
 use TheFox\Network\Socket;
+use Zend\Mail\Message;
 
 class Server extends Thread
 {
@@ -49,7 +50,7 @@ class Server extends Thread
     private $clientsId = 0;
 
     /**
-     * @var array
+     * @var Client[]
      */
     private $clients = [];
 
@@ -82,16 +83,19 @@ class Server extends Thread
     }
 
     /**
+     * @param string $hostname
+     */
+    public function setHostname(string $hostname)
+    {
+        $this->hostname = $hostname;
+    }
+
+    /**
      * @return string
      */
     public function getHostname()
     {
         return $this->hostname;
-    }
-
-    public function setHostname($hostname)
-    {
-        $this->hostname = $hostname;
     }
 
     /**
@@ -103,7 +107,7 @@ class Server extends Thread
     }
 
     /**
-     * @return Logger
+     * @return Logger|null
      */
     public function getLog()
     {
@@ -113,7 +117,7 @@ class Server extends Thread
     /**
      * @param string $ip
      */
-    public function setIp($ip)
+    public function setIp(string $ip)
     {
         $this->ip = $ip;
     }
@@ -121,7 +125,7 @@ class Server extends Thread
     /**
      * @param int $port
      */
-    public function setPort($port)
+    public function setPort(int $port)
     {
         $this->port = $port;
     }
@@ -147,7 +151,7 @@ class Server extends Thread
      * @param array $contextOptions
      * @return bool
      */
-    public function listen(array $contextOptions)
+    public function listen(array $contextOptions): bool
     {
         if ($this->ip && $this->port) {
             return false;
@@ -189,8 +193,8 @@ class Server extends Thread
         }
 
         $readHandles = [];
-        $writeHandles = null;
-        $exceptHandles = null;
+        $writeHandles = [];
+        $exceptHandles = [];
 
         if ($this->isListening) {
             $readHandles[] = $this->socket->getHandle();
@@ -199,7 +203,7 @@ class Server extends Thread
             // Collect client handles.
             $readHandles[] = $client->getSocket()->getHandle();
         }
-        $readHandlesNum = count($readHandles);
+        //$readHandlesNum = count($readHandles);
 
         $handlesChanged = $this->socket->select($readHandles, $writeHandles, $exceptHandles);
         #$this->log->debug('collect readable sockets: '.(int)$handlesChanged.'/'.$readHandlesNum);
@@ -273,7 +277,7 @@ class Server extends Thread
      * @return Client
      * @FIXME rename this function to newClient
      */
-    public function clientNew($socket)
+    public function clientNew($socket): Client
     {
         $this->clientsId++;
 
@@ -290,16 +294,20 @@ class Server extends Thread
     /**
      * Find a Client by socket handle.
      *
+     * @param resource $handle
      * @return Client|null
      * @FIXME rename this function to getClientByHandle
      */
     public function clientGetByHandle($handle)
     {
         foreach ($this->clients as $clientId => $client) {
-            if ($client->getSocket()->getHandle() == $handle) {
+            $socket = $client->getSocket();
+            if ($socket->getHandle() == $handle) {
                 return $client;
             }
         }
+
+        return null;
     }
 
     /**
@@ -330,7 +338,7 @@ class Server extends Thread
      * @param integer $trigger
      * @param array $args
      */
-    private function eventExecute($trigger, $args = [])
+    private function eventExecute(int $trigger, array $args = [])
     {
         foreach ($this->events as $eventId => $event) {
             if ($event->getTrigger() == $trigger) {
@@ -345,7 +353,7 @@ class Server extends Thread
      * @param \Zend\Mail\Message $mail
      * @FIXME rename this function to newMail
      */
-    public function mailNew($from, $rcpt, $mail)
+    public function mailNew(string $from, array $rcpt, Message $mail)
     {
         $this->eventExecute(Event::TRIGGER_MAIL_NEW, [$from, $rcpt, $mail]);
     }
@@ -358,7 +366,7 @@ class Server extends Thread
      * @param array $credentials
      * @return boolean
      */
-    public function authenticateUser($method, $credentials = [])
+    public function authenticateUser(string $method, array $credentials = []): bool
     {
         $authenticated = false;
         $args = [$method, $credentials];

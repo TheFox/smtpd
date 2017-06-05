@@ -2,10 +2,10 @@
 
 namespace TheFox\Test;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use TheFox\Smtp\StringParser;
 
-class StringParserTest extends PHPUnit_Framework_TestCase
+class StringParserTest extends TestCase
 {
     public function testBasic1()
     {
@@ -126,8 +126,11 @@ class StringParserTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider providerParse
      * @group large
+     * @param string $msgRaw
+     * @param mixed $expect
+     * @param null|int $argsMax
      */
-    public function testParse1($msgRaw, $expect, $argsMax = null)
+    public function testParse1(string $msgRaw, $expect, $argsMax = null)
     {
         $str = new StringParser($msgRaw, $argsMax);
         $this->assertEquals($expect, $str->parse());
@@ -136,9 +139,7 @@ class StringParserTest extends PHPUnit_Framework_TestCase
     public function testParse2()
     {
         $str = new StringParser('arg1 arg2 arg3', 10);
-        $args = $str->parse();
-        #\Doctrine\Common\Util\Debug::dump($args);
-        #$this->assertEquals(array('arg1', 'arg2'), $args);
+        $str->parse();
         $this->assertTrue(true);
     }
 }

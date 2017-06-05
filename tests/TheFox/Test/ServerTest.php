@@ -4,7 +4,7 @@ namespace TheFox\Test;
 
 require_once 'TestObj.php';
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Mail\Message;
 use TheFox\Logger\Logger;
 use TheFox\Smtp\Server;
@@ -12,7 +12,7 @@ use TheFox\Smtp\Client;
 use TheFox\Smtp\Event;
 use TheFox\Network\Socket;
 
-class ServerTest extends PHPUnit_Framework_TestCase
+class ServerTest extends TestCase
 {
     public function testBasic()
     {
@@ -185,7 +185,6 @@ class ServerTest extends PHPUnit_Framework_TestCase
             Event::TRIGGER_AUTH_ATTEMPT,
             null,
             function ($event, $method, $credentials) {
-
                 return true;
             }
         );

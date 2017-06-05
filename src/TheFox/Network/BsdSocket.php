@@ -17,7 +17,7 @@ class BsdSocket extends AbstractSocket
     /**
      * Creates a new socket resource.
      * https://secure.php.net/manual/en/function.socket-create.php
-     * 
+     *
      * @return null|resource
      */
     public function create()
@@ -67,12 +67,12 @@ class BsdSocket extends AbstractSocket
      * @param int $port
      * @return bool
      */
-    public function bind($ip, $port)
+    public function bind(string $ip, int $port): bool
     {
         return socket_bind($this->getHandle(), $ip, $port);
     }
 
-    public function listen()
+    public function listen(): bool
     {
         return socket_listen($this->getHandle(), 0);
     }
@@ -80,21 +80,27 @@ class BsdSocket extends AbstractSocket
     /**
      * @param string $ip
      * @param int $port
+     * @return bool
      */
-    public function connect($ip, $port)
+    public function connect(string $ip, int $port): bool
     {
         socket_connect($this->getHandle(), $ip, $port);
+        return true;
     }
 
+    /**
+     * @return BsdSocket|null
+     */
     public function accept()
     {
         $handle = socket_accept($this->getHandle());
         if ($handle !== false) {
-            $class = __CLASS__;
-            $socket = new $class();
+            $socket = new BsdSocket();
             $socket->setHandle($handle);
             return $socket;
         }
+
+        return null;
     }
 
     /**
@@ -103,7 +109,7 @@ class BsdSocket extends AbstractSocket
      * @param array $exceptHandles
      * @return int
      */
-    public function select(&$readHandles, &$writeHandles, &$exceptHandles)
+    public function select(array &$readHandles, array &$writeHandles, array &$exceptHandles)
     {
         return socket_select($readHandles, $writeHandles, $exceptHandles, 0);
     }
@@ -113,7 +119,7 @@ class BsdSocket extends AbstractSocket
      * @param string $port
      * @return bool
      */
-    public function getPeerName(&$ip, &$port)
+    public function getPeerName(string &$ip, int &$port)
     {
         return socket_getpeername($this->getHandle(), $ip, $port);
     }
@@ -133,7 +139,10 @@ class BsdSocket extends AbstractSocket
         socket_clear_error($this->getHandle());
     }
 
-    public function read()
+    /**
+     * @return string
+     */
+    public function read(): string
     {
         return socket_read($this->getHandle(), 2048, PHP_BINARY_READ);
     }
@@ -142,7 +151,7 @@ class BsdSocket extends AbstractSocket
      * @param string $data
      * @return int
      */
-    public function write($data)
+    public function write(string $data): int
     {
         return socket_write($this->getHandle(), $data, strlen($data));
     }

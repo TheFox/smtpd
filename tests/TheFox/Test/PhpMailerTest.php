@@ -2,24 +2,19 @@
 
 namespace TheFox\Test;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use PHPMailer;
 use TheFox\Logger\Logger;
 use TheFox\Smtp\Server;
 use TheFox\Smtp\Client;
 
-class PhpMailerTest extends PHPUnit_Framework_TestCase
+class PhpMailerTest extends TestCase
 {
     /**
      * @group medium
      */
     public function testMailing()
     {
-        #$server = new Server('127.0.0.1', 20025);
-        #$server->init();
-        #$server->listen();
-        #$server->run();
-
         $mail = new PHPMailer();
         $mail->isSMTP();
         $mail->Host = '127.0.0.1:20025';
@@ -43,7 +38,6 @@ class PhpMailerTest extends PHPUnit_Framework_TestCase
 
         $mail->Subject = 'Here is the subject';
         $mail->Body = $body;
-        #$mail->AltBody = 'This is the body in plain text.';
 
         $this->assertTrue($mail->send());
 

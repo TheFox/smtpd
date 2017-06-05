@@ -3,11 +3,10 @@
 namespace TheFox\Smtp;
 
 use RuntimeException;
+use PHPUnit_Framework_MockObject_MockObject;
+use Zend\Mail\Message;
 use TheFox\Logger\Logger;
 use TheFox\Network\StreamSocket;
-use Zend\Mail\Message;
-//use TheFox\Network\AbstractSocket;
-//use TheFox\Smtp\StringParser;
 
 class Client
 {
@@ -76,13 +75,17 @@ class Client
     /**
      * @var array
      */
-    private $extendedCommands = ['AUTH PLAIN LOGIN', 'STARTTLS', 'HELP'];
+    private $extendedCommands = [
+        'AUTH PLAIN LOGIN',
+        'STARTTLS',
+        'HELP',
+    ];
 
     /**
      * Client constructor.
      * @param string $hostname
      */
-    public function __construct($hostname = 'localhost.localdomain')
+    public function __construct(string $hostname = 'localhost.localdomain')
     {
         $this->hostname = $hostname;
         $this->status['hasHello'] = false;
@@ -93,7 +96,7 @@ class Client
     /**
      * @param int $id
      */
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->id = $id;
     }
@@ -101,7 +104,7 @@ class Client
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -110,7 +113,7 @@ class Client
      * @param string $name
      * @return mixed|null
      */
-    public function getStatus($name)
+    public function getStatus(string $name)
     {
         if (array_key_exists($name, $this->status)) {
             return $this->status[$name];
@@ -122,7 +125,7 @@ class Client
      * @param string $name
      * @param mixed $value
      */
-    public function setStatus($name, $value)
+    public function setStatus(string $name, $value)
     {
         $this->status[$name] = $value;
     }
@@ -136,7 +139,7 @@ class Client
     }
 
     /**
-     * @return Server
+     * @return Server|null
      */
     public function getServer()
     {
@@ -144,7 +147,7 @@ class Client
     }
 
     /**
-     * @param StreamSocket $socket
+     * @param StreamSocket|PHPUnit_Framework_MockObject_MockObject $socket
      */
     public function setSocket(StreamSocket $socket)
     {
@@ -152,7 +155,7 @@ class Client
     }
 
     /**
-     * @return StreamSocket
+     * @return StreamSocket|null
      */
     public function getSocket()
     {
@@ -162,7 +165,7 @@ class Client
     /**
      * @param string $ip
      */
-    public function setIp($ip)
+    public function setIp(string $ip)
     {
         $this->ip = $ip;
     }
@@ -170,7 +173,7 @@ class Client
     /**
      * @return string
      */
-    public function getIp()
+    public function getIp(): string
     {
         if (!$this->ip) {
             $this->setIpPort();
@@ -181,7 +184,7 @@ class Client
     /**
      * @param int $port
      */
-    public function setPort($port)
+    public function setPort(int $port)
     {
         $this->port = $port;
     }
@@ -189,7 +192,7 @@ class Client
     /**
      * @return int
      */
-    public function getPort()
+    public function getPort(): int
     {
         if (!$this->port) {
             $this->setIpPort();
@@ -201,7 +204,7 @@ class Client
      * @param string $ip
      * @param int $port
      */
-    public function setIpPort($ip = '', $port = 0)
+    public function setIpPort(string $ip = '', int $port = 0)
     {
         // @codeCoverageIgnoreStart
         if (!defined('TEST')) {
@@ -216,7 +219,7 @@ class Client
     /**
      * @return string
      */
-    public function getIpPort()
+    public function getIpPort(): string
     {
         return $this->getIp() . ':' . $this->getPort();
     }
@@ -236,7 +239,7 @@ class Client
     /**
      * @param array $credentials
      */
-    public function setCredentials($credentials = [])
+    public function setCredentials(array $credentials = [])
     {
         $this->credentials = $credentials;
     }
@@ -244,7 +247,7 @@ class Client
     /**
      * @return array
      */
-    public function getCredentials()
+    public function getCredentials(): array
     {
         return $this->credentials;
     }
@@ -252,7 +255,7 @@ class Client
     /**
      * @return string
      */
-    public function getHostname()
+    public function getHostname(): string
     {
         return $this->hostname;
     }
@@ -261,7 +264,7 @@ class Client
      * @param string $level
      * @param string $msg
      */
-    private function log($level, $msg)
+    private function log(string $level, string $msg)
     {
         if ($this->getLog()) {
             if (method_exists($this->getLog(), $level)) {
@@ -280,7 +283,7 @@ class Client
                 $this->recvBufferTmp .= $data;
 
                 $this->log('debug', 'client ' . $this->id . ': collect data');
-                
+
                 break;
             } else {
                 $msg = $this->recvBufferTmp . substr($data, 0, $separatorPos);
@@ -297,7 +300,7 @@ class Client
      * @param string $msgRaw
      * @return string
      */
-    public function msgHandle($msgRaw)
+    public function msgHandle(string $msgRaw): string
     {
         #$this->log('debug', 'client '.$this->id.' raw: /'.$msgRaw.'/');
 
@@ -423,7 +426,7 @@ class Client
 
             try {
                 $socket = $this->getSocket();
-                return $socket->enableEncryption();
+                $socket->enableEncryption();
             } catch (RuntimeException $e) {
                 return $this->sendTemporaryErrorStartTls();
             }
@@ -489,7 +492,7 @@ class Client
      * @param string $msg
      * @return string
      */
-    private function dataSend($msg)
+    private function dataSend(string $msg): string
     {
         $output = $msg . static::MSG_SEPARATOR;
         if ($this->getSocket()) {
@@ -506,7 +509,7 @@ class Client
      * @param string $method
      * @return boolean
      */
-    public function authenticate($method)
+    public function authenticate(string $method): bool
     {
         $attempt = $this->getServer()->authenticateUser($method, $this->getCredentials());
 
@@ -524,7 +527,7 @@ class Client
     /**
      * @return string
      */
-    public function sendReady()
+    public function sendReady(): string
     {
         return $this->dataSend('220 ' . $this->getHostname() . ' SMTP Service Ready');
     }
@@ -532,7 +535,7 @@ class Client
     /**
      * @return string
      */
-    private function sendReadyStartTls()
+    private function sendReadyStartTls(): string
     {
         return $this->dataSend('220 Ready to start TLS');
     }
@@ -540,7 +543,7 @@ class Client
     /**
      * @return string
      */
-    public function sendQuit()
+    public function sendQuit(): string
     {
         return $this->dataSend('221 ' . $this->getHostname() . ' Service closing transmission channel');
     }
@@ -549,7 +552,7 @@ class Client
      * @param string $text
      * @return string
      */
-    private function sendOk($text = 'OK')
+    private function sendOk(string $text = 'OK'): string
     {
         return $this->dataSend('250 ' . $text);
     }
@@ -557,7 +560,7 @@ class Client
     /**
      * @return string
      */
-    private function sendDataResponse()
+    private function sendDataResponse(): string
     {
         return $this->dataSend('354 Start mail input; end with <CRLF>.<CRLF>');
     }
@@ -565,7 +568,7 @@ class Client
     /**
      * @return string
      */
-    private function sendAuthPlainResponse()
+    private function sendAuthPlainResponse(): string
     {
         return $this->dataSend('334 ');
     }
@@ -573,7 +576,7 @@ class Client
     /**
      * @return string
      */
-    private function sendAuthSuccessResponse()
+    private function sendAuthSuccessResponse(): string
     {
         return $this->dataSend('235 2.7.0 Authentication successful');
     }
@@ -581,7 +584,7 @@ class Client
     /**
      * @return string
      */
-    private function sendAskForUserResponse()
+    private function sendAskForUserResponse(): string
     {
         return $this->dataSend('334 VXNlcm5hbWU6');
     }
@@ -589,7 +592,7 @@ class Client
     /**
      * @return string
      */
-    private function sendAskForPasswordResponse()
+    private function sendAskForPasswordResponse(): string
     {
         return $this->dataSend('334 UGFzc3dvcmQ6');
     }
@@ -597,7 +600,7 @@ class Client
     /**
      * @return string
      */
-    private function sendTemporaryErrorStartTls()
+    private function sendTemporaryErrorStartTls(): string
     {
         return $this->dataSend('454 TLS not available due to temporary reason');
     }
@@ -605,7 +608,7 @@ class Client
     /**
      * @return string
      */
-    private function sendSyntaxErrorCommandUnrecognized()
+    private function sendSyntaxErrorCommandUnrecognized(): string
     {
         return $this->dataSend('500 Syntax error, command unrecognized');
     }
@@ -613,7 +616,7 @@ class Client
     /**
      * @return string
      */
-    private function sendSyntaxErrorInParameters()
+    private function sendSyntaxErrorInParameters(): string
     {
         return $this->dataSend('501 Syntax error in parameters or arguments');
     }
@@ -621,7 +624,7 @@ class Client
     /**
      * @return string
      */
-    private function sendCommandNotImplemented()
+    private function sendCommandNotImplemented(): string
     {
         return $this->dataSend('502 Command not implemented');
     }
@@ -629,7 +632,7 @@ class Client
     /**
      * @return string
      */
-    private function sendAuthInvalid()
+    private function sendAuthInvalid(): string
     {
         return $this->dataSend('535 Authentication credentials invalid');
     }

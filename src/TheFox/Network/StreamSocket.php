@@ -21,7 +21,7 @@ class StreamSocket extends AbstractSocket
      * @param int $port
      * @return bool
      */
-    public function bind($ip, $port)
+    public function bind(string $ip, int $port): bool
     {
         $this->ip = $ip;
         $this->port = $port;
@@ -32,7 +32,7 @@ class StreamSocket extends AbstractSocket
      * @param array $contextOptions
      * @return bool
      */
-    public function listen(array $contextOptions = [])
+    public function listen(array $contextOptions = []): bool
     {
         $local_socket = 'tcp://' . $this->ip . ':' . $this->port;
         $flags = STREAM_SERVER_BIND | STREAM_SERVER_LISTEN;
@@ -52,7 +52,7 @@ class StreamSocket extends AbstractSocket
      * @param int $port
      * @return bool
      */
-    public function connect($ip, $port)
+    public function connect(string $ip, int $port): bool
     {
         $handle = @stream_socket_client('tcp://' . $ip . ':' . $port, $errno, $errstr, 2);
         if ($handle !== false) {
@@ -63,6 +63,9 @@ class StreamSocket extends AbstractSocket
         }
     }
 
+    /**
+     * @return StreamSocket|null
+     */
     public function accept()
     {
         $handle = @stream_socket_accept($this->getHandle(), 2);
@@ -71,9 +74,14 @@ class StreamSocket extends AbstractSocket
             $socket->setHandle($handle);
             return $socket;
         }
+
+        return null;
     }
 
-    public function enableEncryption()
+    /**
+     * @return bool
+     */
+    public function enableEncryption(): bool
     {
         $crypto_method = STREAM_CRYPTO_METHOD_TLS_SERVER;
 
@@ -99,7 +107,7 @@ class StreamSocket extends AbstractSocket
      * @param array $exceptHandles
      * @return int
      */
-    public function select(&$readHandles, &$writeHandles, &$exceptHandles)
+    public function select(array &$readHandles, array &$writeHandles, array &$exceptHandles): int
     {
         return @stream_select($readHandles, $writeHandles, $exceptHandles, 0);
     }
@@ -108,7 +116,7 @@ class StreamSocket extends AbstractSocket
      * @param string $ip
      * @param int $port
      */
-    public function getPeerName(&$ip, &$port)
+    public function getPeerName(string &$ip, int &$port)
     {
         $ip = 'N/A';
         $port = -1;
@@ -134,7 +142,10 @@ class StreamSocket extends AbstractSocket
     {
     }
 
-    public function read()
+    /**
+     * @return bool|string
+     */
+    public function read(): string
     {
         return fread($this->getHandle(), 2048);
     }
@@ -143,7 +154,7 @@ class StreamSocket extends AbstractSocket
      * @param string $data
      * @return bool|int
      */
-    public function write($data)
+    public function write(string $data): int
     {
         $rv = @fwrite($this->getHandle(), $data);
         return $rv;

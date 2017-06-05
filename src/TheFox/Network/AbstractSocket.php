@@ -27,17 +27,17 @@ abstract class AbstractSocket
 
     #abstract public function create();
 
-    abstract public function bind($ip, $port);
+    abstract public function bind(string $ip, int $port): bool;
 
-    abstract public function listen();
+    abstract public function listen(): bool;
 
-    abstract public function connect($ip, $port);
+    abstract public function connect(string $ip, int $port): bool;
 
     abstract public function accept();
 
-    abstract public function select(&$readHandles, &$writeHandles, &$exceptHandles);
+    abstract public function select(array &$readHandles, array &$writeHandles, array &$exceptHandles);
 
-    abstract public function getPeerName(&$ip, &$port);
+    abstract public function getPeerName(string &$ip, int &$port);
 
     abstract public function lastError();
 
@@ -45,9 +45,9 @@ abstract class AbstractSocket
 
     abstract public function clearError();
 
-    abstract public function read();
+    abstract public function read(): string;
 
-    abstract public function write($data);
+    abstract public function write(string $data): int;
 
     abstract public function shutdown();
 

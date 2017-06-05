@@ -3,14 +3,15 @@
 namespace TheFox\Test;
 
 use RuntimeException;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit_Framework_MockObject_MockBuilder;
 use TheFox\Logger\Logger;
 use TheFox\Network\StreamSocket;
 use TheFox\Smtp\Server;
 use TheFox\Smtp\Client;
 
-class ClientTest extends PHPUnit_Framework_TestCase
+class ClientTest extends TestCase
 {
     public function testSetId()
     {
@@ -181,8 +182,12 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $server->setLog(new Logger('test_application'));
         $server->init();
 
+        /** @var PHPUnit_Framework_MockObject_MockBuilder $mockBuilder */
+        $mockBuilder = $this->getMockBuilder(Client::class);
+        $mockBuilder->setMethods(['authenticate']);
+        
         /** @var Client|PHPUnit_Framework_MockObject_MockObject $client */
-        $client = $this->getMock(Client::class, ['authenticate']);
+        $client = $mockBuilder->getMock();
 
         $client->expects($this->at(0))
             ->method('authenticate')
@@ -243,8 +248,12 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $server->setLog(new Logger('test_application'));
         $server->init();
 
+        /** @var PHPUnit_Framework_MockObject_MockBuilder $mockBuilder */
+        $mockBuilder = $this->getMockBuilder(Client::class);
+        $mockBuilder->setMethods(['authenticate']);
+
         /** @var Client|PHPUnit_Framework_MockObject_MockObject $client */
-        $client = $this->getMock(Client::class, ['authenticate']);
+        $client = $mockBuilder->getMock();
 
         $client->expects($this->at(0))
             ->method('authenticate')
@@ -290,12 +299,16 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $server->setLog(new Logger('test_application'));
         $server->init();
 
-        /** @var \PHPUnit_Framework_MockObject_MockObject|StreamSocket $socket */
-        $socket = $this->getMock('TheFox\Network\StreamSocket', ['enableEncryption']);
+        /** @var PHPUnit_Framework_MockObject_MockBuilder $mockBuilder */
+        $mockBuilder = $this->getMockBuilder(StreamSocket::class);
+        $mockBuilder->setMethods(['enableEncryption']);
+
+        /** @var StreamSocket|PHPUnit_Framework_MockObject_MockObject $client */
+        $socket = $mockBuilder->getMock();
 
         $socket->expects($this->at(0))
             ->method('enableEncryption')
-            ->will($this->throwException(new RuntimeException));
+            ->will($this->throwException(new RuntimeException()));
         $socket->expects($this->at(1))
             ->method('enableEncryption')
             ->will($this->returnValue(true));
@@ -319,6 +332,6 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('454 TLS not available due to temporary reason' . Client::MSG_SEPARATOR, $msg);
 
         $msg = $client->msgHandle('STARTTLS');
-        $this->assertTrue((bool)$msg);
+        $this->assertEquals('', $msg);
     }
 }
