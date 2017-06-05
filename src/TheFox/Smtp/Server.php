@@ -153,7 +153,7 @@ class Server extends Thread
      */
     public function listen(array $contextOptions): bool
     {
-        if ($this->ip && $this->port) {
+        if (!$this->ip && !$this->port) {
             return false;
         }
 
