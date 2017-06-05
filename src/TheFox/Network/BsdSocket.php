@@ -17,6 +17,8 @@ class BsdSocket extends AbstractSocket
     /**
      * Creates a new socket resource.
      * https://secure.php.net/manual/en/function.socket-create.php
+     * 
+     * @return null|resource
      */
     public function create()
     {
@@ -27,7 +29,7 @@ class BsdSocket extends AbstractSocket
             throw new RuntimeException('socket_create: ' . socket_strerror($errno), $errno);
         }
 
-        $ret = socket_set_option($socket, SOL_SOCKET, SO_KEEPALIVE, 1);
+        //$ret = socket_set_option($socket, SOL_SOCKET, SO_KEEPALIVE, 1);
         $ret = socket_get_option($socket, SOL_SOCKET, SO_KEEPALIVE);
         if ($ret === false) {
             $errno = socket_last_error($socket);
@@ -60,6 +62,11 @@ class BsdSocket extends AbstractSocket
         return $socket;
     }
 
+    /**
+     * @param string $ip
+     * @param int $port
+     * @return bool
+     */
     public function bind($ip, $port)
     {
         return socket_bind($this->getHandle(), $ip, $port);
@@ -70,6 +77,10 @@ class BsdSocket extends AbstractSocket
         return socket_listen($this->getHandle(), 0);
     }
 
+    /**
+     * @param string $ip
+     * @param int $port
+     */
     public function connect($ip, $port)
     {
         socket_connect($this->getHandle(), $ip, $port);
@@ -86,11 +97,22 @@ class BsdSocket extends AbstractSocket
         }
     }
 
+    /**
+     * @param array $readHandles
+     * @param array $writeHandles
+     * @param array $exceptHandles
+     * @return int
+     */
     public function select(&$readHandles, &$writeHandles, &$exceptHandles)
     {
         return socket_select($readHandles, $writeHandles, $exceptHandles, 0);
     }
 
+    /**
+     * @param string $ip
+     * @param string $port
+     * @return bool
+     */
     public function getPeerName(&$ip, &$port)
     {
         return socket_getpeername($this->getHandle(), $ip, $port);
@@ -116,6 +138,10 @@ class BsdSocket extends AbstractSocket
         return socket_read($this->getHandle(), 2048, PHP_BINARY_READ);
     }
 
+    /**
+     * @param string $data
+     * @return int
+     */
     public function write($data)
     {
         return socket_write($this->getHandle(), $data, strlen($data));

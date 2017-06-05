@@ -3,6 +3,7 @@
 namespace TheFox\Smtp;
 
 use RuntimeException;
+use TheFox\Logger\Logger;
 use Zend\Mail\Message;
 use TheFox\Network\AbstractSocket;
 use TheFox\Smtp\StringParser;
@@ -11,21 +12,75 @@ class Client
 {
     const MSG_SEPARATOR = "\r\n";
 
+    /**
+     * @var int
+     */
     private $id = 0;
+
+    /**
+     * @var array
+     */
     private $status = [];
 
-    private $server = null;
-    private $socket = null;
+    /**
+     * @var Server
+     */
+    private $server;
+
+    /**
+     * @var AbstractSocket
+     */
+    private $socket;
+
+    /**
+     * @var string
+     */
     private $ip = '';
+
+    /**
+     * @var int
+     */
     private $port = 0;
+
+    /**
+     * @var string
+     */
     private $recvBufferTmp = '';
+
+    /**
+     * @var string
+     */
     private $from = '';
+
+    /**
+     * @var array
+     */
     private $rcpt = [];
+
+    /**
+     * @var string
+     */
     private $mail = '';
+
+    /**
+     * @var string
+     */
     private $hostname = '';
+
+    /**
+     * @var array
+     */
     private $credentials = [];
+
+    /**
+     * @var array
+     */
     private $extendedCommands = ['AUTH PLAIN LOGIN', 'STARTTLS', 'HELP'];
 
+    /**
+     * Client constructor.
+     * @param string $hostname
+     */
     public function __construct($hostname = 'localhost.localdomain')
     {
         $this->hostname = $hostname;
@@ -34,16 +89,26 @@ class Client
         $this->status['hasShutdown'] = false;
     }
 
+    /**
+     * @param int $id
+     */
     public function setId($id)
     {
         $this->id = $id;
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @param string $name
+     * @return mixed|null
+     */
     public function getStatus($name)
     {
         if (array_key_exists($name, $this->status)) {
@@ -52,16 +117,26 @@ class Client
         return null;
     }
 
+    /**
+     * @param string $name
+     * @param string $value
+     */
     public function setStatus($name, $value)
     {
         $this->status[$name] = $value;
     }
 
+    /**
+     * @param Server $server
+     */
     public function setServer(Server $server)
     {
         $this->server = $server;
     }
 
+    /**
+     * @return Server
+     */
     public function getServer()
     {
         return $this->server;
@@ -75,16 +150,25 @@ class Client
         $this->socket = $socket;
     }
 
+    /**
+     * @return AbstractSocket
+     */
     public function getSocket()
     {
         return $this->socket;
     }
 
+    /**
+     * @param string $ip
+     */
     public function setIp($ip)
     {
         $this->ip = $ip;
     }
 
+    /**
+     * @return string
+     */
     public function getIp()
     {
         if (!$this->ip) {
@@ -93,11 +177,17 @@ class Client
         return $this->ip;
     }
 
+    /**
+     * @param int $port
+     */
     public function setPort($port)
     {
         $this->port = $port;
     }
 
+    /**
+     * @return int
+     */
     public function getPort()
     {
         if (!$this->port) {
@@ -106,6 +196,10 @@ class Client
         return $this->port;
     }
 
+    /**
+     * @param string $ip
+     * @param int $port
+     */
     public function setIpPort($ip = '', $port = 0)
     {
         // @codeCoverageIgnoreStart
@@ -118,11 +212,17 @@ class Client
         $this->setPort($port);
     }
 
+    /**
+     * @return string
+     */
     public function getIpPort()
     {
         return $this->getIp() . ':' . $this->getPort();
     }
 
+    /**
+     * @return null|Logger
+     */
     public function getLog()
     {
         if ($this->getServer()) {
@@ -132,21 +232,34 @@ class Client
         return null;
     }
 
+    /**
+     * @param array $credentials
+     */
     public function setCredentials($credentials = [])
     {
         $this->credentials = $credentials;
     }
 
+    /**
+     * @return array
+     */
     public function getCredentials()
     {
         return $this->credentials;
     }
 
+    /**
+     * @return string
+     */
     public function getHostname()
     {
         return $this->hostname;
     }
 
+    /**
+     * @param int $level
+     * @param string $msg
+     */
     private function log($level, $msg)
     {
         if ($this->getLog()) {
@@ -369,6 +482,10 @@ class Client
         return $rv;
     }
 
+    /**
+     * @param string $msg
+     * @return string
+     */
     private function dataSend($msg)
     {
         $output = $msg . static::MSG_SEPARATOR;
@@ -401,71 +518,114 @@ class Client
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function sendReady()
     {
         return $this->dataSend('220 ' . $this->getHostname() . ' SMTP Service Ready');
     }
 
+    /**
+     * @return string
+     */
     private function sendReadyStartTls()
     {
         return $this->dataSend('220 Ready to start TLS');
     }
 
+    /**
+     * @return string
+     */
     public function sendQuit()
     {
         return $this->dataSend('221 ' . $this->getHostname() . ' Service closing transmission channel');
     }
 
+    /**
+     * @param string $text
+     * @return string
+     */
     private function sendOk($text = 'OK')
     {
         return $this->dataSend('250 ' . $text);
     }
 
+    /**
+     * @return string
+     */
     private function sendDataResponse()
     {
         return $this->dataSend('354 Start mail input; end with <CRLF>.<CRLF>');
     }
 
+    /**
+     * @return string
+     */
     private function sendAuthPlainResponse()
     {
         return $this->dataSend('334 ');
     }
 
+    /**
+     * @return string
+     */
     private function sendAuthSuccessResponse()
     {
         return $this->dataSend('235 2.7.0 Authentication successful');
     }
 
+    /**
+     * @return string
+     */
     private function sendAskForUserResponse()
     {
         return $this->dataSend('334 VXNlcm5hbWU6');
     }
 
+    /**
+     * @return string
+     */
     private function sendAskForPasswordResponse()
     {
         return $this->dataSend('334 UGFzc3dvcmQ6');
     }
 
+    /**
+     * @return string
+     */
     private function sendTemporaryErrorStartTls()
     {
         return $this->dataSend('454 TLS not available due to temporary reason');
     }
 
+    /**
+     * @return string
+     */
     private function sendSyntaxErrorCommandUnrecognized()
     {
         return $this->dataSend('500 Syntax error, command unrecognized');
     }
 
+    /**
+     * @return string
+     */
     private function sendSyntaxErrorInParameters()
     {
         return $this->dataSend('501 Syntax error in parameters or arguments');
     }
 
+    /**
+     * @return string
+     */
     private function sendCommandNotImplemented()
     {
         return $this->dataSend('502 Command not implemented');
     }
 
+    /**
+     * @return string
+     */
     private function sendAuthInvalid()
     {
         return $this->dataSend('535 Authentication credentials invalid');
@@ -476,12 +636,10 @@ class Client
         if (!$this->getStatus('hasShutdown')) {
             $this->setStatus('hasShutdown', true);
 
-            // @codeCoverageIgnoreStart
             if ($this->getSocket()) {
                 $this->getSocket()->shutdown();
                 $this->getSocket()->close();
             }
-            // @codeCoverageIgnoreEnd
         }
     }
 }

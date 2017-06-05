@@ -11,23 +11,69 @@ use Exception;
 use RuntimeException;
 use TheFox\Logger\Logger;
 use TheFox\Logger\StreamHandler;
+use TheFox\Network\AbstractSocket;
 use TheFox\Network\Socket;
 
 class Server extends Thread
 {
     const LOOP_USLEEP = 10000;
 
+    /**
+     * @var Logger
+     */
     private $log;
+
+    /**
+     * @var AbstractSocket
+     */
     private $socket;
+
+    /**
+     * @var bool
+     */
     private $isListening = false;
+
+    /**
+     * @var string
+     */
     private $ip;
+
+    /**
+     * @var int
+     */
     private $port;
+
+    /**
+     * @var int
+     */
     private $clientsId = 0;
+
+    /**
+     * @var array
+     */
     private $clients = [];
+
+    /**
+     * @var int
+     */
     private $eventsId = 0;
+
+    /**
+     * @var array
+     */
     private $events = [];
+
+    /**
+     * @var string
+     */
     private $hostname;
 
+    /**
+     * Server constructor.
+     * @param string $ip
+     * @param int $port
+     * @param string $hostname
+     */
     public function __construct($ip = '127.0.0.1', $port = 20025, $hostname = 'localhost.localdomain')
     {
         $this->setIp($ip);
@@ -35,6 +81,9 @@ class Server extends Thread
         $this->setHostname($hostname);
     }
 
+    /**
+     * @return string
+     */
     public function getHostname()
     {
         return $this->hostname;
@@ -45,21 +94,33 @@ class Server extends Thread
         $this->hostname = $hostname;
     }
 
-    public function setLog($log)
+    /**
+     * @param Logger $log
+     */
+    public function setLog(Logger $log)
     {
         $this->log = $log;
     }
 
+    /**
+     * @return Logger
+     */
     public function getLog()
     {
         return $this->log;
     }
 
+    /**
+     * @param string $ip
+     */
     public function setIp($ip)
     {
         $this->ip = $ip;
     }
 
+    /**
+     * @param int $port
+     */
     public function setPort($port)
     {
         $this->port = $port;
@@ -74,43 +135,47 @@ class Server extends Thread
                 $this->log->pushHandler(new StreamHandler('log/server.log', Logger::DEBUG));
             }
         }
-        // @codeCoverageIgnoreStart
+
         if (!defined('TEST')) {
             $this->log->info('start');
             $this->log->info('ip = "' . $this->ip . '"');
             $this->log->info('port = "' . $this->port . '"');
         }
-        // @codeCoverageIgnoreEnd
     }
 
-    public function listen($contextOptions)
+    /**
+     * @param array $contextOptions
+     * @return bool
+     */
+    public function listen(array $contextOptions)
     {
         if ($this->ip && $this->port) {
-            #$this->log->notice('listen on '.$this->ip.':'.$this->port);
+            return false;
+        }
 
-            $this->socket = new Socket();
+        $this->socket = new Socket();
 
-            $bind = false;
+        $bind = false;
+        try {
+            $bind = $this->socket->bind($this->ip, $this->port);
+        } catch (Exception $e) {
+            $this->log->error($e->getMessage());
+        }
+
+        if ($bind) {
             try {
-                $bind = $this->socket->bind($this->ip, $this->port);
+                if ($this->socket->listen($contextOptions)) {
+                    $this->log->notice('listen ok');
+                    $this->isListening = true;
+
+                    return true;
+                }
             } catch (Exception $e) {
                 $this->log->error($e->getMessage());
             }
-
-            if ($bind) {
-                try {
-                    if ($this->socket->listen($contextOptions)) {
-                        $this->log->notice('listen ok');
-                        $this->isListening = true;
-
-                        return true;
-                    }
-                } catch (Exception $e) {
-                    $this->log->error($e->getMessage());
-                }
-            }
-
         }
+
+        return false;
     }
 
     /**

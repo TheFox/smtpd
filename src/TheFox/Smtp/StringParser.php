@@ -8,13 +8,38 @@ namespace TheFox\Smtp;
 
 class StringParser
 {
+    /**
+     * @var string
+     */
     private $str = '';
+    
     private $len = 0;
+
+    /**
+     * @var int
+     */
     private $argsMax;
+
+    /**
+     * @var int
+     */
     private $argsId = -1;
+
+    /**
+     * @var array
+     */
     private $args = [];
+
+    /**
+     * @var int
+     */
     private $argsLen = 0;
 
+    /**
+     * StringParser constructor.
+     * @param $str
+     * @param null|int $argsMax
+     */
     public function __construct($str, $argsMax = null)
     {
         $this->str = $str;
@@ -46,6 +71,9 @@ class StringParser
         }
     }
 
+    /**
+     * @param string $char
+     */
     private function charNew($char = '')
     {
         if ($this->argsMax === null || $this->argsLen < $this->argsMax) {
@@ -59,6 +87,9 @@ class StringParser
         }*/
     }
 
+    /**
+     * @param string $char
+     */
     private function charAppend($char)
     {
         if ($this->argsId != -1) {

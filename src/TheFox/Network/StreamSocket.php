@@ -6,9 +6,21 @@ use RuntimeException;
 
 class StreamSocket extends AbstractSocket
 {
+    /**
+     * @var string
+     */
     private $ip = '';
+
+    /**
+     * @var int
+     */
     private $port = 0;
 
+    /**
+     * @param string $ip
+     * @param int $port
+     * @return bool
+     */
     public function bind($ip, $port)
     {
         $this->ip = $ip;
@@ -16,7 +28,11 @@ class StreamSocket extends AbstractSocket
         return true;
     }
 
-    public function listen($contextOptions = [])
+    /**
+     * @param array $contextOptions
+     * @return bool
+     */
+    public function listen(array $contextOptions = [])
     {
         $local_socket = 'tcp://' . $this->ip . ':' . $this->port;
         $flags = STREAM_SERVER_BIND | STREAM_SERVER_LISTEN;
@@ -31,6 +47,11 @@ class StreamSocket extends AbstractSocket
         }
     }
 
+    /**
+     * @param string $ip
+     * @param int $port
+     * @return bool
+     */
     public function connect($ip, $port)
     {
         $handle = @stream_socket_client('tcp://' . $ip . ':' . $port, $errno, $errstr, 2);
@@ -73,11 +94,21 @@ class StreamSocket extends AbstractSocket
         return true;
     }
 
+    /**
+     * @param array $readHandles
+     * @param array $writeHandles
+     * @param array $exceptHandles
+     * @return int
+     */
     public function select(&$readHandles, &$writeHandles, &$exceptHandles)
     {
         return @stream_select($readHandles, $writeHandles, $exceptHandles, 0);
     }
 
+    /**
+     * @param string $ip
+     * @param int $port
+     */
     public function getPeerName(&$ip, &$port)
     {
         $ip = 'N/A';
@@ -109,6 +140,10 @@ class StreamSocket extends AbstractSocket
         return fread($this->getHandle(), 2048);
     }
 
+    /**
+     * @param string $data
+     * @return bool|int
+     */
     public function write($data)
     {
         $rv = @fwrite($this->getHandle(), $data);

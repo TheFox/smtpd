@@ -4,13 +4,22 @@ namespace TheFox\Network;
 
 abstract class AbstractSocket
 {
+    /**
+     * @var null|resource
+     */
     private $handle;
 
+    /**
+     * @param resource $handle
+     */
     public function setHandle($handle)
     {
         $this->handle = $handle;
     }
 
+    /**
+     * @return null|resource
+     */
     public function getHandle()
     {
         return $this->handle;

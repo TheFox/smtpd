@@ -11,10 +11,25 @@ class Event
     const TRIGGER_MAIL_NEW = 1000;
     const TRIGGER_AUTH_ATTEMPT = 9000;
 
-    private $trigger = null;
-    private $object = null;
-    private $function = null;
-    private $returnValue = null;
+    /**
+     * @var int
+     */
+    private $trigger;
+
+    /**
+     * @var object
+     */
+    private $object;
+
+    /**
+     * @var \Closure
+     */
+    private $function;
+
+    /**
+     * @var mixed
+     */
+    private $returnValue;
 
     public function __construct($trigger = null, $object = null, $function = null)
     {
@@ -23,16 +38,26 @@ class Event
         $this->function = $function;
     }
 
+    /**
+     * @return int|null
+     */
     public function getTrigger()
     {
         return $this->trigger;
     }
 
+    /**
+     * @return mixed
+     */
     public function getReturnValue()
     {
         return $this->returnValue;
     }
 
+    /**
+     * @param array $args
+     * @return mixed
+     */
     public function execute($args = [])
     {
         $object = $this->object;
