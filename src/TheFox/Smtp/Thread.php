@@ -26,6 +26,6 @@ class Thread
      */
     public function getExit()
     {
-        return (int)$this->exit;
+        return $this->exit;
     }
 }

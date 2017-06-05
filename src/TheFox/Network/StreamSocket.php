@@ -67,8 +67,7 @@ class StreamSocket extends AbstractSocket
     {
         $handle = @stream_socket_accept($this->getHandle(), 2);
         if ($handle !== false) {
-            $class = __CLASS__;
-            $socket = new $class();
+            $socket = new StreamSocket();
             $socket->setHandle($handle);
             return $socket;
         }

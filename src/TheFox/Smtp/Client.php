@@ -4,9 +4,10 @@ namespace TheFox\Smtp;
 
 use RuntimeException;
 use TheFox\Logger\Logger;
+use TheFox\Network\StreamSocket;
 use Zend\Mail\Message;
-use TheFox\Network\AbstractSocket;
-use TheFox\Smtp\StringParser;
+//use TheFox\Network\AbstractSocket;
+//use TheFox\Smtp\StringParser;
 
 class Client
 {
@@ -28,7 +29,7 @@ class Client
     private $server;
 
     /**
-     * @var AbstractSocket
+     * @var StreamSocket
      */
     private $socket;
 
@@ -119,7 +120,7 @@ class Client
 
     /**
      * @param string $name
-     * @param string $value
+     * @param mixed $value
      */
     public function setStatus($name, $value)
     {
@@ -143,15 +144,15 @@ class Client
     }
 
     /**
-     * @param AbstractSocket|\TheFox\Network\StreamSocket|\PHPUnit_Framework_MockObject_MockObject $socket
+     * @param StreamSocket $socket
      */
-    public function setSocket(AbstractSocket $socket)
+    public function setSocket(StreamSocket $socket)
     {
         $this->socket = $socket;
     }
 
     /**
-     * @return AbstractSocket
+     * @return StreamSocket
      */
     public function getSocket()
     {
@@ -257,7 +258,7 @@ class Client
     }
 
     /**
-     * @param int $level
+     * @param string $level
      * @param string $msg
      */
     private function log($level, $msg)
@@ -277,9 +278,10 @@ class Client
             $separatorPos = strpos($data, static::MSG_SEPARATOR);
             if ($separatorPos === false) {
                 $this->recvBufferTmp .= $data;
-                $data = '';
 
                 $this->log('debug', 'client ' . $this->id . ': collect data');
+                
+                break;
             } else {
                 $msg = $this->recvBufferTmp . substr($data, 0, $separatorPos);
                 $this->recvBufferTmp = '';
@@ -420,7 +422,8 @@ class Client
             $this->sendReadyStartTls();
 
             try {
-                return $this->getSocket()->enableEncryption();
+                $socket = $this->getSocket();
+                return $socket->enableEncryption();
             } catch (RuntimeException $e) {
                 return $this->sendTemporaryErrorStartTls();
             }
