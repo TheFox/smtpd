@@ -45,7 +45,7 @@ See also [`example.php`](example.php) file for full examples.
 $server = new Server('127.0.0.1', 20025);
 $server->init();
 
-$event = new Event(Event::TRIGGER_MAIL_NEW, null, function($event, $from, $rcpts, $mail){
+$event = new Event(Event::TRIGGER_MAIL_NEW, null, function(Event $event, $from, $rcpts, $mail){
 	// Do stuff: handle email, ...
 });
 $server->eventAdd($event);
@@ -58,7 +58,7 @@ $server->loop();
 $server = new Server('127.0.0.1', 20025);
 $server->init();
 
-$event = new Event(Event::TRIGGER_AUTH_ATTEMPT, null, function $event, $type, $credentials){
+$event = new Event(Event::TRIGGER_AUTH_ATTEMPT, null, function(Event $event, $type, $credentials): bool{
 	// Do stuff: Check credentials against database, ...
 	return true;
 });
