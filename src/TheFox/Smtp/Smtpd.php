@@ -4,9 +4,8 @@
 
 namespace TheFox\Smtp;
 
-class Smtpd{
-	
-	const NAME = 'SMTPd';
-	const VERSION = '0.4.0-dev';
-	
+class Smtpd
+{
+    const NAME = 'SMTPd';
+    const VERSION = '0.4.0-dev.1';
 }

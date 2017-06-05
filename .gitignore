@@ -1,6 +1,5 @@
-vendor
+CHANGELOG-*.txt
 composer.lock
 composer.phar
-build
-log
-pid
+/vendor/
+/tmp/
