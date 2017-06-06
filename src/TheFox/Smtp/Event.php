@@ -8,7 +8,7 @@ namespace TheFox\Smtp;
 
 class Event
 {
-    const TRIGGER_MAIL_NEW = 1000;
+    const TRIGGER_NEW_MAIL = 1000;
     const TRIGGER_AUTH_ATTEMPT = 9000;
 
     /**

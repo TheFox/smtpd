@@ -32,7 +32,7 @@ At the moment the server accepts all incoming emails. You decide what happens wi
 
 At the moment there are two Event Triggers.
 
-- `TRIGGER_MAIL_NEW`: will be triggered when a Client has finished transmitting a new email.
+- `TRIGGER_NEW_MAIL`: will be triggered when a Client has finished transmitting a new email.
 - `TRIGGER_AUTH_ATTEMPT`: will be triggered when a Client wants to authenticate. Return a boolean from the callback function whether the authentication was successful or not.
 
 ## Examples
@@ -45,10 +45,10 @@ See also [`example.php`](example.php) file for full examples.
 $server = new Server('127.0.0.1', 20025);
 $server->init();
 
-$event = new Event(Event::TRIGGER_MAIL_NEW, null, function(Event $event, $from, $rcpts, $mail){
+$event = new Event(Event::TRIGGER_NEW_MAIL, null, function(Event $event, $from, $rcpts, $mail){
 	// Do stuff: handle email, ...
 });
-$server->eventAdd($event);
+$server->addEvent($event);
 $server->loop();
 ```
 
@@ -62,7 +62,7 @@ $event = new Event(Event::TRIGGER_AUTH_ATTEMPT, null, function(Event $event, $ty
 	// Do stuff: Check credentials against database, ...
 	return true;
 });
-$server->eventAdd($event);
+$server->addEvent($event);
 $server->loop();
 ```
 

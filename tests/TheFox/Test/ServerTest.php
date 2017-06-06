@@ -41,7 +41,7 @@ class ServerTest extends TestCase
         $server->setLog(new Logger('test_application'));
         $server->init();
 
-        $client = $server->clientNew($socket);
+        $client = $server->newClient($socket);
         $this->assertTrue($client instanceof Client);
     }
 
@@ -56,8 +56,8 @@ class ServerTest extends TestCase
         $server->setLog(new Logger('test_application'));
         $server->init();
 
-        $client1 = $server->clientNew($socket);
-        $client2 = $server->clientGetByHandle($handle1);
+        $client1 = $server->newClient($socket);
+        $client2 = $server->getClientByHandle($handle1);
         #\Doctrine\Common\Util\Debug::dump($handle2);
         $this->assertEquals($client1, $client2);
 
@@ -74,8 +74,8 @@ class ServerTest extends TestCase
         $server->setLog(new Logger('test_application'));
         $server->init();
 
-        $client = $server->clientNew($socket);
-        $server->clientRemove($client);
+        $client = $server->newClient($socket);
+        $server->removeClient($client);
 
         #\Doctrine\Common\Util\Debug::dump($server);
         $this->assertTrue($client->getStatus('hasShutdown'));
@@ -91,7 +91,7 @@ class ServerTest extends TestCase
 
         $testData = 21;
         $phpunit = $this;
-        $event1 = new Event(Event::TRIGGER_MAIL_NEW, null, function ($event, $from, $rcpt, $mail) use ($phpunit, &$testData) {
+        $event1 = new Event(Event::TRIGGER_NEW_MAIL, null, function ($event, $from, $rcpt, $mail) use ($phpunit, &$testData) {
             #fwrite(STDOUT, 'my function: '.$event->getTrigger().', '.$testData."\n");
             $testData = 24;
 
@@ -109,11 +109,11 @@ class ServerTest extends TestCase
 
             return 42;
         });
-        $server->eventAdd($event1);
+        $server->addEvent($event1);
 
         $testObj = new TestObj();
-        $event2 = new Event(Event::TRIGGER_MAIL_NEW, $testObj, 'test1');
-        $server->eventAdd($event2);
+        $event2 = new Event(Event::TRIGGER_NEW_MAIL, $testObj, 'test1');
+        $server->addEvent($event2);
 
         $mail = '';
         $mail .= 'Date: Thu, 31 Jul 2014 22:18:51 +0200' . Client::MSG_SEPARATOR;
@@ -132,7 +132,7 @@ class ServerTest extends TestCase
         $zmail = Message::fromString($mail);
 
         $rcpt = ['to1@example.com', 'to2@example.com', 'cc@example.com', 'bcc@example.com'];
-        $server->mailNew('from@example.com', $rcpt, $zmail);
+        $server->newMail('from@example.com', $rcpt, $zmail);
 
         $this->assertEquals(24, $testData);
         $this->assertEquals(42, $event1->getReturnValue());
@@ -157,11 +157,11 @@ class ServerTest extends TestCase
                 return false;
             }
         );
-        $server->eventAdd($event1);
+        $server->addEvent($event1);
 
         $testObj = new TestObj();
         $event2 = new Event(Event::TRIGGER_AUTH_ATTEMPT, $testObj, 'test2');
-        $server->eventAdd($event2);
+        $server->addEvent($event2);
 
         $method = 'LOGIN';
         $credentials = ['user' => base64_encode($username), 'password' => base64_encode($password)];
@@ -188,11 +188,11 @@ class ServerTest extends TestCase
                 return true;
             }
         );
-        $server->eventAdd($event1);
+        $server->addEvent($event1);
 
         $testObj = new TestObj();
         $event2 = new Event(Event::TRIGGER_AUTH_ATTEMPT, $testObj, 'test2');
-        $server->eventAdd($event2);
+        $server->addEvent($event2);
 
         $method = 'LOGIN';
         $credentials = ['user' => base64_encode($username), 'password' => base64_encode($password)];

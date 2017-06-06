@@ -214,23 +214,23 @@ class Server extends Thread
                     // Server
                     $socket = $this->socket->accept();
                     if ($socket) {
-                        $client = $this->clientNew($socket);
+                        $client = $this->newClient($socket);
                         $client->sendReady();
 
                         #$this->log->debug('new client: '.$client->getId().', '.$client->getIpPort());
                     }
                 } else {
                     // Client
-                    $client = $this->clientGetByHandle($readableHandle);
+                    $client = $this->getClientByHandle($readableHandle);
                     if ($client) {
                         if (feof($client->getSocket()->getHandle())) {
-                            $this->clientRemove($client);
+                            $this->removeClient($client);
                         } else {
                             #$this->log->debug('old client: '.$client->getId().', '.$client->getIpPort());
                             $client->dataRecv();
 
                             if ($client->getStatus('hasShutdown')) {
-                                $this->clientRemove($client);
+                                $this->removeClient($client);
                             }
                         }
                     }
@@ -265,7 +265,7 @@ class Server extends Thread
         // Notify all clients.
         foreach ($this->clients as $clientId => $client) {
             $client->sendQuit();
-            $this->clientRemove($client);
+            $this->removeClient($client);
         }
 
         $this->log->debug('shutdown done');
@@ -275,9 +275,8 @@ class Server extends Thread
      * Create a new Client for a new incoming socket connection.
      *
      * @return Client
-     * @FIXME rename this function to newClient
      */
-    public function clientNew($socket): Client
+    public function newClient($socket): Client
     {
         $this->clientsId++;
 
@@ -296,9 +295,8 @@ class Server extends Thread
      *
      * @param resource $handle
      * @return Client|null
-     * @FIXME rename this function to getClientByHandle
      */
-    public function clientGetByHandle($handle)
+    public function getClientByHandle($handle)
     {
         foreach ($this->clients as $clientId => $client) {
             $socket = $client->getSocket();
@@ -312,9 +310,8 @@ class Server extends Thread
 
     /**
      * @param Client $client
-     * @FIXME rename this function to removeClient
      */
-    public function clientRemove(Client $client)
+    public function removeClient(Client $client)
     {
         $this->log->debug('client remove: ' . $client->getId());
 
@@ -326,9 +323,8 @@ class Server extends Thread
 
     /**
      * @param Event $event
-     * @FIXME rename this function to addEvent
      */
-    public function eventAdd(Event $event)
+    public function addEvent(Event $event)
     {
         $this->eventsId++;
         $this->events[$this->eventsId] = $event;
@@ -351,11 +347,10 @@ class Server extends Thread
      * @param string $from
      * @param array $rcpt
      * @param \Zend\Mail\Message $mail
-     * @FIXME rename this function to newMail
      */
-    public function mailNew(string $from, array $rcpt, Message $mail)
+    public function newMail(string $from, array $rcpt, Message $mail)
     {
-        $this->eventExecute(Event::TRIGGER_MAIL_NEW, [$from, $rcpt, $mail]);
+        $this->eventExecute(Event::TRIGGER_NEW_MAIL, [$from, $rcpt, $mail]);
     }
 
     /**

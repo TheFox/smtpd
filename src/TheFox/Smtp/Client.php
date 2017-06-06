@@ -470,7 +470,9 @@ class Client
 
                     $zmail = Message::fromString($this->mail);
 
-                    $this->getServer()->mailNew($this->from, $this->rcpt, $zmail);
+                    $server = $this->getServer();
+                    $server->newMail($this->from, $this->rcpt, $zmail);
+                    
                     $this->from = '';
                     $this->rcpt = [];
                     $this->mail = '';

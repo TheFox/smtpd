@@ -48,7 +48,7 @@ if (!$server->listen($contextOptions)) {
     exit(1);
 }
 
-$sendEvent = new Event(Event::TRIGGER_MAIL_NEW, null, function (Event $event, string $from, array $rcpts, Message $mail) {
+$sendEvent = new Event(Event::TRIGGER_NEW_MAIL, null, function (Event $event, string $from, array $rcpts, Message $mail) {
     // Do stuff: DNS lookup the MX record for the recipient's domain,
     //           check whether the recipient is on a whitelist,
     //           handle the email, etc, ...
@@ -82,8 +82,8 @@ $authEvent = new Event(Event::TRIGGER_AUTH_ATTEMPT, null, function ($event, $typ
     return true;
 });
 
-$server->eventAdd($sendEvent);
-$server->eventAdd($authEvent);
+$server->addEvent($sendEvent);
+$server->addEvent($authEvent);
 
 // `$server->loop()` is only a while-loop with `$server->run()` executed.
 // If you also need to process other things in your application as well
