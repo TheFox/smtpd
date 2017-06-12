@@ -22,7 +22,7 @@ class Server extends Thread
     /**
      * @var Logger
      */
-    private $log;
+    private $logger;
 
     /**
      * @var AbstractSocket
@@ -99,19 +99,19 @@ class Server extends Thread
     }
 
     /**
-     * @param Logger $log
+     * @param Logger $logger
      */
-    public function setLog(Logger $log)
+    public function setLogger(Logger $logger)
     {
-        $this->log = $log;
+        $this->logger = $logger;
     }
 
     /**
      * @return Logger|null
      */
-    public function getLog()
+    public function getLogger()
     {
-        return $this->log;
+        return $this->logger;
     }
 
     /**
@@ -132,18 +132,18 @@ class Server extends Thread
 
     public function init()
     {
-        if (!$this->log) {
-            $this->log = new Logger('server');
-            $this->log->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+        if (!$this->logger) {
+            $this->logger = new Logger('server');
+            $this->logger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
             if (file_exists('log')) {
-                $this->log->pushHandler(new StreamHandler('log/server.log', Logger::DEBUG));
+                $this->logger->pushHandler(new StreamHandler('log/server.log', Logger::DEBUG));
             }
         }
 
         if (!defined('TEST')) {
-            $this->log->info('start');
-            $this->log->info('ip = "' . $this->ip . '"');
-            $this->log->info('port = "' . $this->port . '"');
+            $this->logger->info('start');
+            $this->logger->info('ip = "' . $this->ip . '"');
+            $this->logger->info('port = "' . $this->port . '"');
         }
     }
 
@@ -163,19 +163,19 @@ class Server extends Thread
         try {
             $bind = $this->socket->bind($this->ip, $this->port);
         } catch (Exception $e) {
-            $this->log->error($e->getMessage());
+            $this->logger->error($e->getMessage());
         }
 
         if ($bind) {
             try {
                 if ($this->socket->listen($contextOptions)) {
-                    $this->log->notice('listen ok');
+                    $this->logger->notice('listen ok');
                     $this->isListening = true;
 
                     return true;
                 }
             } catch (Exception $e) {
-                $this->log->error($e->getMessage());
+                $this->logger->error($e->getMessage());
             }
         }
 
@@ -260,7 +260,7 @@ class Server extends Thread
      */
     public function shutdown()
     {
-        $this->log->debug('shutdown');
+        $this->logger->debug('shutdown');
 
         // Notify all clients.
         foreach ($this->clients as $clientId => $client) {
@@ -268,7 +268,7 @@ class Server extends Thread
             $this->removeClient($client);
         }
 
-        $this->log->debug('shutdown done');
+        $this->logger->debug('shutdown done');
     }
 
     /**
@@ -313,7 +313,7 @@ class Server extends Thread
      */
     public function removeClient(Client $client)
     {
-        $this->log->debug('client remove: ' . $client->getId());
+        $this->logger->debug('client remove: ' . $client->getId());
 
         $client->shutdown();
 

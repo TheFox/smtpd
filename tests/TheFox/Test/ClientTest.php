@@ -88,7 +88,7 @@ class ClientTest extends TestCase
     public function testMsgHandleHello()
     {
         $server = new Server('', 0);
-        $server->setLog(new Logger('test_application'));
+        $server->setLogger(new Logger('test_application'));
         $server->init();
 
         $client = new Client();
@@ -113,7 +113,7 @@ class ClientTest extends TestCase
     public function testMsgHandleMail()
     {
         $server = new Server('', 0);
-        $server->setLog(new Logger('test_application'));
+        $server->setLogger(new Logger('test_application'));
         $server->init();
 
         $client = new Client();
@@ -179,7 +179,7 @@ class ClientTest extends TestCase
     public function testMsgHandleAuthPlain()
     {
         $server = new Server('', 0);
-        $server->setLog(new Logger('test_application'));
+        $server->setLogger(new Logger('test_application'));
         $server->init();
 
         /** @var PHPUnit_Framework_MockObject_MockBuilder $mockBuilder */
@@ -245,7 +245,7 @@ class ClientTest extends TestCase
     public function testMsgHandleAuthLogin()
     {
         $server = new Server('', 0);
-        $server->setLog(new Logger('test_application'));
+        $server->setLogger(new Logger('test_application'));
         $server->init();
 
         /** @var PHPUnit_Framework_MockObject_MockBuilder $mockBuilder */
@@ -296,7 +296,7 @@ class ClientTest extends TestCase
     public function testMsgHandleStartTls()
     {
         $server = new Server('', 0);
-        $server->setLog(new Logger('test_application'));
+        $server->setLogger(new Logger('test_application'));
         $server->init();
 
         /** @var PHPUnit_Framework_MockObject_MockBuilder $mockBuilder */

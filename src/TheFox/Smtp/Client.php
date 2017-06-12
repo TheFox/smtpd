@@ -230,7 +230,7 @@ class Client
     public function getLog()
     {
         if ($this->getServer()) {
-            return $this->getServer()->getLog();
+            return $this->getServer()->getLogger();
         }
 
         return null;

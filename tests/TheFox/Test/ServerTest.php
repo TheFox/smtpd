@@ -17,18 +17,18 @@ class ServerTest extends TestCase
     public function testBasic()
     {
         $server = new Server('', 0);
-        $this->assertTrue($server->getLog() === null);
+        $this->assertTrue($server->getLogger() === null);
 
         $server = new Server('', 0);
-        $server->setLog(new Logger('test_application'));
-        $this->assertTrue($server->getLog() !== null);
+        $server->setLogger(new Logger('test_application'));
+        $this->assertTrue($server->getLogger() !== null);
     }
 
     public function testInit()
     {
         $server = new Server('', 0);
         $server->init();
-        $log = $server->getLog();
+        $log = $server->getLogger();
 
         $this->assertTrue($log instanceof Logger);
     }
@@ -38,7 +38,7 @@ class ServerTest extends TestCase
         $socket = new Socket();
 
         $server = new Server('', 0);
-        $server->setLog(new Logger('test_application'));
+        $server->setLogger(new Logger('test_application'));
         $server->init();
 
         $client = $server->newClient($socket);
@@ -53,7 +53,7 @@ class ServerTest extends TestCase
         $handle1 = $socket->getHandle();
 
         $server = new Server('', 0);
-        $server->setLog(new Logger('test_application'));
+        $server->setLogger(new Logger('test_application'));
         $server->init();
 
         $client1 = $server->newClient($socket);
@@ -71,7 +71,7 @@ class ServerTest extends TestCase
         $socket->listen();
 
         $server = new Server('', 0);
-        $server->setLog(new Logger('test_application'));
+        $server->setLogger(new Logger('test_application'));
         $server->init();
 
         $client = $server->newClient($socket);
@@ -86,7 +86,7 @@ class ServerTest extends TestCase
     public function testEvent()
     {
         $server = new Server('', 0);
-        $server->setLog(new Logger('test_application'));
+        $server->setLogger(new Logger('test_application'));
         $server->init();
 
         $testData = 21;
@@ -142,7 +142,7 @@ class ServerTest extends TestCase
     public function testEventAuthWithFalse()
     {
         $server = new Server('', 0);
-        $server->setLog(new Logger('test_application'));
+        $server->setLogger(new Logger('test_application'));
         $server->init();
 
         $username = 'testuser';
@@ -174,7 +174,7 @@ class ServerTest extends TestCase
     public function testEventAuthWithAllTrue()
     {
         $server = new Server('', 0);
-        $server->setLog(new Logger('test_application'));
+        $server->setLogger(new Logger('test_application'));
         $server->init();
 
         $username = 'testuser';
