@@ -6,7 +6,6 @@ require_once 'TestObj.php';
 
 use PHPUnit\Framework\TestCase;
 use Zend\Mail\Message;
-use Monolog\Logger;
 use TheFox\Smtp\Server;
 use TheFox\Smtp\Client;
 use TheFox\Smtp\Event;

@@ -6,7 +6,6 @@ use RuntimeException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_MockObject_MockBuilder;
-use Monolog\Logger;
 use TheFox\Network\StreamSocket;
 use TheFox\Smtp\Server;
 use TheFox\Smtp\Client;
@@ -104,7 +103,6 @@ class ClientTest extends TestCase
     public function testMsgHandleMail()
     {
         $server = new Server();
-        $server->setLogger(new Logger('test_application'));
 
         $client = new Client();
         $client->setServer($server);
