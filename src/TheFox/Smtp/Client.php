@@ -37,6 +37,11 @@ class Client
     private $socket;
 
     /**
+     * @var array
+     */
+    private $options;
+
+    /**
      * @var string
      */
     private $ip = '';
