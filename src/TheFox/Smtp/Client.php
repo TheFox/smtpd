@@ -5,11 +5,15 @@ namespace TheFox\Smtp;
 use RuntimeException;
 use PHPUnit_Framework_MockObject_MockObject;
 use Zend\Mail\Message;
-use TheFox\Logger\Logger;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Psr\Log\NullLogger;
+use Psr\Log\LoggerAwareTrait;
 use TheFox\Network\StreamSocket;
 
 class Client
 {
+    use LoggerAwareTrait;
+    
     const MSG_SEPARATOR = "\r\n";
 
     /**
@@ -20,7 +24,7 @@ class Client
     /**
      * @var array
      */
-    private $status = [];
+    private $status;
 
     /**
      * @var Server
@@ -64,6 +68,7 @@ class Client
 
     /**
      * @var string
+     * @deprecated
      */
     private $hostname = '';
 
@@ -83,11 +88,21 @@ class Client
 
     /**
      * Client constructor.
-     * @param string $hostname
+     * @param array $options
      */
-    public function __construct(string $hostname = 'localhost.localdomain')
+    public function __construct(array $options = [])
     {
-        $this->hostname = $hostname;
+        $resolver = new OptionsResolver();
+        $resolver->setDefaults([
+            'hostname' => 'localhost.localdomain',
+            'logger' => new NullLogger(),
+        ]);
+        $this->options = $resolver->resolve($options);
+        
+        $this->logger = $this->options['logger'];
+        $this->hostname = $this->options['hostname'];
+        
+        $this->status = [];
         $this->status['hasHello'] = false;
         $this->status['hasMail'] = false;
         $this->status['hasShutdown'] = false;
@@ -225,18 +240,6 @@ class Client
     }
 
     /**
-     * @return null|Logger
-     */
-    public function getLog()
-    {
-        if ($this->getServer()) {
-            return $this->getServer()->getLogger();
-        }
-
-        return null;
-    }
-
-    /**
      * @param array $credentials
      */
     public function setCredentials(array $credentials = [])
@@ -257,20 +260,7 @@ class Client
      */
     public function getHostname(): string
     {
-        return $this->hostname;
-    }
-
-    /**
-     * @param string $level
-     * @param string $msg
-     */
-    private function log(string $level, string $msg)
-    {
-        if ($this->getLog()) {
-            if (method_exists($this->getLog(), $level)) {
-                $this->getLog()->$level($msg);
-            }
-        }
+        return $this->options['hostname'];
     }
 
     public function dataRecv()
@@ -282,14 +272,14 @@ class Client
             if ($separatorPos === false) {
                 $this->recvBufferTmp .= $data;
 
-                $this->log('debug', 'client ' . $this->id . ': collect data');
+                $this->logger->debug('client ' . $this->id . ': collect data');
 
                 break;
             } else {
                 $msg = $this->recvBufferTmp . substr($data, 0, $separatorPos);
                 $this->recvBufferTmp = '';
 
-                $this->msgHandle($msg);
+                $this->handleMessage($msg);
 
                 $data = substr($data, $separatorPos + strlen(static::MSG_SEPARATOR));
             }
@@ -300,40 +290,32 @@ class Client
      * @param string $msgRaw
      * @return string
      */
-    public function msgHandle(string $msgRaw): string
+    public function handleMessage(string $msgRaw): string
     {
-        #$this->log('debug', 'client '.$this->id.' raw: /'.$msgRaw.'/');
-
-        $rv = '';
-
         $str = new StringParser($msgRaw);
         $args = $str->parse();
 
         $command = array_shift($args);
-        $commandcmp = strtolower($command);
+        $commandCmp = strtolower($command);
 
 
-        if ($commandcmp == 'helo') {
-            #$this->log('debug', 'client '.$this->id.' helo');
+        if ($commandCmp == 'helo') {
             $this->setStatus('hasHello', true);
 
             return $this->sendOk($this->getHostname());
-        } elseif ($commandcmp == 'ehlo') {
-            #$this->log('debug', 'client '.$this->id.' helo');
+        } elseif ($commandCmp == 'ehlo') {
             $this->setStatus('hasHello', true);
-            $msg = '250-' . $this->getHostname() . static::MSG_SEPARATOR;
+            $response = '250-' . $this->getHostname() . static::MSG_SEPARATOR;
             $count = count($this->extendedCommands) - 1;
 
             for ($i = 0; $i < $count; $i++) {
-                $msg .= '250-' . $this->extendedCommands[$i] . static::MSG_SEPARATOR;
+                $response .= '250-' . $this->extendedCommands[$i] . static::MSG_SEPARATOR;
             }
 
-            $msg .= '250 ' . end($this->extendedCommands);
+            $response .= '250 ' . end($this->extendedCommands);
 
-            return $this->dataSend($msg);
-        } elseif ($commandcmp == 'mail') {
-            #$this->log('debug', 'client '.$this->id.' mail');
-
+            return $this->dataSend($response);
+        } elseif ($commandCmp == 'mail') {
             if ($this->getStatus('hasHello')) {
                 if (isset($args[0]) && $args[0]) {
                     $this->setStatus('hasMail', true);
@@ -341,7 +323,6 @@ class Client
                     if (substr(strtolower($from), 0, 6) == 'from:<') {
                         $from = substr(substr($from, 6), 0, -1);
                     }
-                    #$this->log('debug', 'client '.$this->id.' from: /'.$from.'/');
                     $this->from = $from;
                     $this->mail = '';
                     return $this->sendOk();
@@ -351,9 +332,7 @@ class Client
             } else {
                 return $this->sendSyntaxErrorCommandUnrecognized();
             }
-        } elseif ($commandcmp == 'rcpt') {
-            #$this->log('debug', 'client '.$this->id.' rcpt');
-
+        } elseif ($commandCmp == 'rcpt') {
             if ($this->getStatus('hasHello')) {
                 if (isset($args[0]) && $args[0]) {
                     $this->setStatus('hasMail', true);
@@ -362,7 +341,6 @@ class Client
                         $rcpt = substr(substr($rcpt, 4), 0, -1);
                         $this->rcpt[] = $rcpt;
                     }
-                    #$this->log('debug', 'client '.$this->id.' rcpt: /'.$rcpt.'/');
                     return $this->sendOk();
                 } else {
                     return $this->sendSyntaxErrorInParameters();
@@ -370,21 +348,20 @@ class Client
             } else {
                 return $this->sendSyntaxErrorCommandUnrecognized();
             }
-        } elseif ($commandcmp == 'data') {
-            #$this->log('debug', 'client '.$this->id.' data');
-
+        } elseif ($commandCmp == 'data') {
             if ($this->getStatus('hasHello')) {
                 $this->setStatus('hasData', true);
                 return $this->sendDataResponse();
             } else {
                 return $this->sendSyntaxErrorCommandUnrecognized();
             }
-        } elseif ($commandcmp == 'noop') {
+        } elseif ($commandCmp == 'noop') {
             return $this->sendOk();
-        } elseif ($commandcmp == 'quit') {
-            $rv .= $this->sendQuit();
+        } elseif ($commandCmp == 'quit') {
+            $response = $this->sendQuit();
             $this->shutdown();
-        } elseif ($commandcmp == 'auth') {
+            return $response;
+        } elseif ($commandCmp == 'auth') {
             $this->setStatus('hasAuth', true);
 
             if (empty($args)) {
@@ -417,7 +394,7 @@ class Client
             } else {
                 return $this->sendSyntaxErrorInParameters();
             }
-        } elseif ($commandcmp == 'starttls') {
+        } elseif ($commandCmp == 'starttls') {
             if (!empty($args)) {
                 return $this->sendSyntaxErrorInParameters();
             }
@@ -430,7 +407,7 @@ class Client
             } catch (RuntimeException $e) {
                 return $this->sendTemporaryErrorStartTls();
             }
-        } elseif ($commandcmp == 'help') {
+        } elseif ($commandCmp == 'help') {
             return $this->sendOk('HELO, EHLO, MAIL FROM, RCPT TO, DATA, NOOP, QUIT');
         } else {
             if ($this->getStatus('hasAuth')) {
@@ -482,12 +459,12 @@ class Client
                     $this->mail .= $msgRaw . static::MSG_SEPARATOR;
                 }
             } else {
-                $this->log('debug', 'client ' . $this->id . ' not implemented: /' . $command . '/ - /' . join('/ /', $args) . '/');
+                $this->logger->debug('client ' . $this->id . ' not implemented: /' . $command . '/ - /' . join('/ /', $args) . '/');
                 return $this->sendSyntaxErrorCommandUnrecognized();
             }
         }
 
-        return $rv;
+        return '';
     }
 
     /**
@@ -501,7 +478,7 @@ class Client
             $tmp = $msg;
             $tmp = str_replace("\r", '', $tmp);
             $tmp = str_replace("\n", '\\n', $tmp);
-            $this->log('debug', 'client ' . $this->id . ' data send: "' . $tmp . '"');
+            $this->logger->debug('client ' . $this->id . ' data send: "' . $tmp . '"');
             $this->getSocket()->write($output);
         }
         return $output;

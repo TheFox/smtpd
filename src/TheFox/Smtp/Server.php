@@ -9,20 +9,18 @@ namespace TheFox\Smtp;
 
 use Exception;
 use RuntimeException;
-use TheFox\Logger\Logger;
-use TheFox\Logger\StreamHandler;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\NullLogger;
+use Zend\Mail\Message;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use TheFox\Network\AbstractSocket;
 use TheFox\Network\Socket;
-use Zend\Mail\Message;
 
 class Server extends Thread
 {
-    const LOOP_USLEEP = 10000;
+    use LoggerAwareTrait;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
+    const LOOP_USLEEP = 10000;
 
     /**
      * @var AbstractSocket
@@ -35,12 +33,19 @@ class Server extends Thread
     private $isListening = false;
 
     /**
+     * @var array
+     */
+    private $options;
+
+    /**
      * @var string
+     * @deprecated
      */
     private $ip;
 
     /**
      * @var int
+     * @deprecated
      */
     private $port;
 
@@ -66,22 +71,37 @@ class Server extends Thread
 
     /**
      * @var string
+     * @deprecated
      */
     private $hostname;
 
     /**
      * Server constructor.
-     * @param string $ip
-     * @param int $port
-     * @param string $hostname
+     * @param array $options
      */
-    public function __construct($ip = '127.0.0.1', $port = 20025, $hostname = 'localhost.localdomain')
+    public function __construct(array $options = [])
     {
-        $this->setIp($ip);
-        $this->setPort($port);
-        $this->setHostname($hostname);
-    }
+        $resolver = new OptionsResolver();
+        $resolver->setDefaults([
+            'ip' => '127.0.0.1',
+            'port' => 20025,
+            'hostname' => 'localhost.localdomain',
+            'logger' => new NullLogger(),
+        ]);
+        $this->options = $resolver->resolve($options);
 
+        $this->logger = $this->options['logger'];
+
+        $this->setIp($this->options['ip']);
+        $this->setPort($this->options['port']);
+        $this->setHostname($this->options['hostname']);
+
+        $this->logger->info('start');
+        $this->logger->info('ip = "' . $this->options['ip'] . '"');
+        $this->logger->info('port = "' . $this->options['port'] . '"');
+        $this->logger->info('hostname = "' . $this->options['hostname'] . '"');
+    }
+    
     /**
      * @param string $hostname
      */
@@ -99,22 +119,6 @@ class Server extends Thread
     }
 
     /**
-     * @param Logger $logger
-     */
-    public function setLogger(Logger $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * @return Logger|null
-     */
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
      * @param string $ip
      */
     public function setIp(string $ip)
@@ -128,23 +132,6 @@ class Server extends Thread
     public function setPort(int $port)
     {
         $this->port = $port;
-    }
-
-    public function init()
-    {
-        if (!$this->logger) {
-            $this->logger = new Logger('server');
-            $this->logger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
-            if (file_exists('log')) {
-                $this->logger->pushHandler(new StreamHandler('log/server.log', Logger::DEBUG));
-            }
-        }
-
-        if (!defined('TEST')) {
-            $this->logger->info('start');
-            $this->logger->info('ip = "' . $this->ip . '"');
-            $this->logger->info('port = "' . $this->port . '"');
-        }
     }
 
     /**
@@ -203,10 +190,8 @@ class Server extends Thread
             // Collect client handles.
             $readHandles[] = $client->getSocket()->getHandle();
         }
-        //$readHandlesNum = count($readHandles);
 
         $handlesChanged = $this->socket->select($readHandles, $writeHandles, $exceptHandles);
-        #$this->log->debug('collect readable sockets: '.(int)$handlesChanged.'/'.$readHandlesNum);
 
         if ($handlesChanged) {
             foreach ($readHandles as $readableHandle) {
@@ -217,7 +202,7 @@ class Server extends Thread
                         $client = $this->newClient($socket);
                         $client->sendReady();
 
-                        #$this->log->debug('new client: '.$client->getId().', '.$client->getIpPort());
+                        //$this->logger->debug('new client: '.$client->getId().', '.$client->getIpPort());
                     }
                 } else {
                     // Client
@@ -226,7 +211,7 @@ class Server extends Thread
                         if (feof($client->getSocket()->getHandle())) {
                             $this->removeClient($client);
                         } else {
-                            #$this->log->debug('old client: '.$client->getId().', '.$client->getIpPort());
+                            //$this->logger->debug('old client: '.$client->getId().', '.$client->getIpPort());
                             $client->dataRecv();
 
                             if ($client->getStatus('hasShutdown')) {
@@ -235,7 +220,7 @@ class Server extends Thread
                         }
                     }
 
-                    #$this->log->debug('old client: '.$client->getId().', '.$client->getIpPort());
+                    //$this->logger->debug('old client: '.$client->getId().', '.$client->getIpPort());
                 }
             }
         }
@@ -280,7 +265,11 @@ class Server extends Thread
     {
         $this->clientsId++;
 
-        $client = new Client($this->getHostname());
+        $options = [
+            'hostname' => $this->getHostname(),
+            'logger' => $this->logger,
+        ];
+        $client = new Client($options);
         $client->setSocket($socket);
         $client->setId($this->clientsId);
         $client->setServer($this);

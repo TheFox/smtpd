@@ -6,7 +6,7 @@ require_once 'TestObj.php';
 
 use PHPUnit\Framework\TestCase;
 use Zend\Mail\Message;
-use TheFox\Logger\Logger;
+use Monolog\Logger;
 use TheFox\Smtp\Server;
 use TheFox\Smtp\Client;
 use TheFox\Smtp\Event;
@@ -14,32 +14,11 @@ use TheFox\Network\Socket;
 
 class ServerTest extends TestCase
 {
-    public function testBasic()
-    {
-        $server = new Server('', 0);
-        $this->assertTrue($server->getLogger() === null);
-
-        $server = new Server('', 0);
-        $server->setLogger(new Logger('test_application'));
-        $this->assertTrue($server->getLogger() !== null);
-    }
-
-    public function testInit()
-    {
-        $server = new Server('', 0);
-        $server->init();
-        $log = $server->getLogger();
-
-        $this->assertTrue($log instanceof Logger);
-    }
-
     public function testClientNew()
     {
         $socket = new Socket();
 
-        $server = new Server('', 0);
-        $server->setLogger(new Logger('test_application'));
-        $server->init();
+        $server = new Server();
 
         $client = $server->newClient($socket);
         $this->assertTrue($client instanceof Client);
@@ -52,9 +31,7 @@ class ServerTest extends TestCase
         $socket->listen();
         $handle1 = $socket->getHandle();
 
-        $server = new Server('', 0);
-        $server->setLogger(new Logger('test_application'));
-        $server->init();
+        $server = new Server();
 
         $client1 = $server->newClient($socket);
         $client2 = $server->getClientByHandle($handle1);
@@ -70,14 +47,11 @@ class ServerTest extends TestCase
         $socket->bind('127.0.0.1', 22143);
         $socket->listen();
 
-        $server = new Server('', 0);
-        $server->setLogger(new Logger('test_application'));
-        $server->init();
+        $server = new Server();
 
         $client = $server->newClient($socket);
         $server->removeClient($client);
 
-        #\Doctrine\Common\Util\Debug::dump($server);
         $this->assertTrue($client->getStatus('hasShutdown'));
 
         $server->shutdown();
@@ -85,9 +59,7 @@ class ServerTest extends TestCase
 
     public function testEvent()
     {
-        $server = new Server('', 0);
-        $server->setLogger(new Logger('test_application'));
-        $server->init();
+        $server = new Server();
 
         $testData = 21;
         $phpunit = $this;
@@ -141,9 +113,7 @@ class ServerTest extends TestCase
 
     public function testEventAuthWithFalse()
     {
-        $server = new Server('', 0);
-        $server->setLogger(new Logger('test_application'));
-        $server->init();
+        $server = new Server();
 
         $username = 'testuser';
         $password = 'super_secret_password';
@@ -173,9 +143,7 @@ class ServerTest extends TestCase
 
     public function testEventAuthWithAllTrue()
     {
-        $server = new Server('', 0);
-        $server->setLogger(new Logger('test_application'));
-        $server->init();
+        $server = new Server();
 
         $username = 'testuser';
         $password = 'super_secret_password';

@@ -1,37 +1,50 @@
 {
-	"name": "thefox/smtpd",
-	"description": "SMTP server (library) written in pure PHP.",
-	"license": "GPL-3.0",
-	"type": "library",
-	"keywords": [ "smtp", "email", "mail", "server", "daemon" ],
-	"homepage": "https://fox21.at",
-	"authors": [
-		{
-			"name": "Christian Mayer",
-			"email": "christian@fox21.at",
-			"homepage": "https://fox21.at"
-		}
-	],
-	"require": {
-		"php": "^7.0",
-		"zendframework/zend-mail": "^2.3"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "^6.2",
-		"phpmailer/phpmailer": "^5.2",
-		"phpstan/phpstan": "^0.7",
-		"thefox/utilities": "^1.1",
-		"thefox/network": "^0.2"
-	},
-	"autoload": {
-		"psr-0": { "TheFox": "src" }
-	},
-	"autoload-dev": {
-		"psr-0": { "TheFox": "tests" }
-	},
-	"extra": {
-		"branch-alias": {
-			"dev-master": "1.x.x-dev"
-		}
-	}
+    "name": "thefox/smtpd",
+    "description": "SMTP server (library) written in pure PHP.",
+    "license": "GPL-3.0",
+    "type": "library",
+    "keywords": [
+        "smtp",
+        "email",
+        "mail",
+        "server",
+        "daemon"
+    ],
+    "homepage": "https://fox21.at",
+    "authors": [
+        {
+            "name": "Christian Mayer",
+            "email": "christian@fox21.at",
+            "homepage": "https://fox21.at"
+        }
+    ],
+    "require": {
+        "php": "^7.0",
+        "zendframework/zend-mail": "^2.3",
+        "symfony/options-resolver": "^3.3",
+        "psr/log": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.2",
+        "phpmailer/phpmailer": "^5.2",
+        "phpstan/phpstan": "^0.7",
+        "monolog/monolog": "^1.22",
+        "thefox/utilities": "^1.1",
+        "thefox/network": "^0.2"
+    },
+    "autoload": {
+        "psr-0": {
+            "TheFox": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "TheFox": "tests"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x.x-dev"
+        }
+    }
 }

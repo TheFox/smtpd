@@ -42,8 +42,7 @@ See also [`example.php`](example.php) file for full examples.
 ### Trigger New Mail Example
 
 ```php
-$server = new Server('127.0.0.1', 20025);
-$server->init();
+$server = new Server(...);
 
 $event = new Event(Event::TRIGGER_NEW_MAIL, null, function(Event $event, $from, $rcpts, $mail){
 	// Do stuff: handle email, ...
@@ -55,8 +54,7 @@ $server->loop();
 ### Trigger Auth Example
 
 ```php
-$server = new Server('127.0.0.1', 20025);
-$server->init();
+$server = new Server(...);
 
 $event = new Event(Event::TRIGGER_AUTH_ATTEMPT, null, function(Event $event, $type, $credentials): bool{
 	// Do stuff: Check credentials against database, ...
@@ -69,8 +67,7 @@ $server->loop();
 ### Use SMTP Server with own loop
 
 ```php
-$server = new Server('127.0.0.1', 20025);
-$server->init();
+$server = new Server(...);
 
 // Set up server here.
 // Add Events, etc, ...

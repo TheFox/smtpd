@@ -5,6 +5,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 use TheFox\Smtp\Server;
 use TheFox\Smtp\Event;
 use Zend\Mail\Message;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 // Certificate data:
 $dn = [
@@ -40,8 +42,16 @@ $contextOptions = [
     ],
 ];
 
-$server = new Server('127.0.0.1', 20025);
-$server->init();
+// Create a Logger with Monolog.
+$logger = new Logger('smtp_example');
+$logger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+
+$options = [
+    'ip' => '127.0.0.1',
+    'port' => 20026,
+    'logger' => $logger,
+];
+$server = new Server($options);
 
 if (!$server->listen($contextOptions)) {
     print 'Server could not listen.' . "\n";
