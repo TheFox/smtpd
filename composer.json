@@ -34,12 +34,12 @@
     },
     "autoload": {
         "psr-0": {
-            "TheFox": "src"
+            "TheFox\\": "src"
         }
     },
     "autoload-dev": {
         "psr-0": {
-            "TheFox": "tests"
+            "TheFox\\": "tests"
         }
     },
     "extra": {
