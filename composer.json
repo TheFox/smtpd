@@ -30,7 +30,7 @@
         "phpstan/phpstan": "^0.7",
         "monolog/monolog": "^1.22",
         "thefox/utilities": "^1.1",
-        "thefox/network": "^0.2"
+        "thefox/network": "^1.0"
     },
     "autoload": {
         "psr-0": {
