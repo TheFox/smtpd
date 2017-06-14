@@ -29,7 +29,6 @@
         "phpmailer/phpmailer": "^5.2",
         "phpstan/phpstan": "^0.7",
         "monolog/monolog": "^1.22",
-        "thefox/utilities": "^1.1",
         "thefox/network": "^1.0"
     },
     "autoload": {
