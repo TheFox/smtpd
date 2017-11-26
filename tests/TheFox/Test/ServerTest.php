@@ -67,8 +67,10 @@ class ServerTest extends TestCase
             $testData = 24;
 
             $phpunit->assertEquals('from@example.com', $from);
-            $phpunit->assertEquals(['to1@example.com', 'to2@example.com', 'cc@example.com', 'bcc@example.com'],
-                $rcpt);
+            $phpunit->assertEquals(
+                ['to1@example.com', 'to2@example.com', 'cc@example.com', 'bcc@example.com'],
+                $rcpt
+            );
 
             $current = [];
             foreach ($mail->getTo() as $n => $address) {

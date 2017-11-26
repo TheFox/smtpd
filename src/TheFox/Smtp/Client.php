@@ -447,7 +447,6 @@ class Client
                 }
             } elseif ($this->getStatus('hasData')) {
                 if ($msgRaw == '.') {
-
                     $this->mail = substr($this->mail, 0, -strlen(static::MSG_SEPARATOR));
 
                     $zmail = Message::fromString($this->mail);

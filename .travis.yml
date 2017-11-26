@@ -6,6 +6,9 @@ install:
     - composer install --prefer-source --no-interaction
 before_script:
     - phpenv rehash
+    - ./vendor/bin/phpcs --config-set ignore_warnings_on_exit 1
+    - ./vendor/bin/phpcs --config-show
 script:
     - ./bin/test.sh
     - ./bin/phpstan.sh
+    - ./vendor/bin/phpcs
