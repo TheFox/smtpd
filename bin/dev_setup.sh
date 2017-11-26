@@ -9,6 +9,10 @@ cd "${SCRIPT_BASEDIR}/.."
 which php &> /dev/null || { echo 'ERROR: php not found in PATH'; exit 1; }
 which curl &> /dev/null || { echo 'ERROR: curl not found in PATH'; exit 1; }
 
+if [[ ! -f .env ]]; then
+    cp .env.example .env
+fi
+
 if which composer &> /dev/null; then
     composer install --no-interaction
 else
