@@ -5,7 +5,7 @@ namespace TheFox\Test;
 use RuntimeException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_MockObject_MockBuilder;
+use PHPUnit\Framework\MockObject\MockBuilder;
 use TheFox\Network\StreamSocket;
 use TheFox\Smtp\Event;
 use TheFox\Smtp\Server;
@@ -177,7 +177,7 @@ class ClientTest extends TestCase
     {
         $server = new Server();
 
-        /** @var PHPUnit_Framework_MockObject_MockBuilder $mockBuilder */
+        /** @var MockBuilder $mockBuilder */
         $mockBuilder = $this->getMockBuilder(Client::class);
         $mockBuilder->setMethods(['authenticate']);
         
@@ -241,7 +241,7 @@ class ClientTest extends TestCase
     {
         $server = new Server();
 
-        /** @var PHPUnit_Framework_MockObject_MockBuilder $mockBuilder */
+        /** @var MockBuilder $mockBuilder */
         $mockBuilder = $this->getMockBuilder(Client::class);
         $mockBuilder->setMethods(['authenticate']);
 
@@ -290,7 +290,7 @@ class ClientTest extends TestCase
     {
         $server = new Server();
 
-        /** @var PHPUnit_Framework_MockObject_MockBuilder $mockBuilder */
+        /** @var MockBuilder $mockBuilder */
         $mockBuilder = $this->getMockBuilder(StreamSocket::class);
         $mockBuilder->setMethods(['enableEncryption']);
 
