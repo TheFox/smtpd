@@ -112,6 +112,21 @@ class ServerTest extends TestCase
         $this->assertEquals(43, $event2->getReturnValue());
     }
 
+    /** @dataProvider rcptProvider */
+    public function testEventNewRcpt($mail, $valid)
+    {
+        $server = new Server();
+        $phpunit = $this;
+        $event1 = new Event(Event::TRIGGER_NEW_RCPT, null, function ($event, $rcpt) use ($phpunit, $mail, $valid) {
+            $phpunit->assertEquals($mail, $rcpt);
+            return $valid;
+        });
+        $server->addEvent($event1);
+
+        $return = $server->newRcpt($mail);
+        $this->assertEquals($valid, $return);
+    }
+    
     public function testEventAuthWithFalse()
     {
         $server = new Server();
@@ -169,5 +184,13 @@ class ServerTest extends TestCase
         $authenticated = $server->authenticateUser($method, $credentials);
 
         $this->assertTrue($authenticated);
+    }
+
+    public function rcptProvider()
+    {
+        return [
+            'valid' => ['valid@example.com', true],
+            'invalid' => ['invalid@example.com', false],
+        ];
     }
 }

@@ -65,7 +65,7 @@ class Server extends Thread
     private $eventsId = 0;
 
     /**
-     * @var array
+     * @var Event[]
      */
     private $events = [];
 
@@ -340,6 +340,22 @@ class Server extends Thread
     public function newMail(string $from, array $rcpt, Message $mail)
     {
         $this->eventExecute(Event::TRIGGER_NEW_MAIL, [$from, $rcpt, $mail]);
+    }
+
+    /**
+     * @param string $rcpt
+     * @return bool
+     */
+    public function newRcpt(string $rcpt)
+    {
+        foreach ($this->events as $eventId => $event) {
+            if ($event->getTrigger() == Event::TRIGGER_NEW_RCPT) {
+                if (!$event->execute([$rcpt])) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**

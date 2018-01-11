@@ -10,6 +10,7 @@ class Event
 {
     const TRIGGER_NEW_MAIL = 1000;
     const TRIGGER_AUTH_ATTEMPT = 9000;
+    const TRIGGER_NEW_RCPT = 2000;
 
     /**
      * @var int

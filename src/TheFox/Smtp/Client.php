@@ -344,6 +344,11 @@ class Client
                     $rcpt = $args[0];
                     if (substr(strtolower($rcpt), 0, 4) == 'to:<') {
                         $rcpt = substr(substr($rcpt, 4), 0, -1);
+
+                        $server = $this->getServer();
+                        if (!$server->newRcpt($rcpt)) {
+                            return $this->sendUserUnknown();
+                        }
                         $this->rcpt[] = $rcpt;
                     }
                     return $this->sendOk();
@@ -618,6 +623,14 @@ class Client
     private function sendAuthInvalid(): string
     {
         return $this->dataSend('535 Authentication credentials invalid');
+    }
+
+    /**
+     * @return string
+     */
+    private function sendUserUnknown(): string
+    {
+        return $this->dataSend('550 User unknown');
     }
 
     public function shutdown()

@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_MockObject_MockBuilder;
 use TheFox\Network\StreamSocket;
+use TheFox\Smtp\Event;
 use TheFox\Smtp\Server;
 use TheFox\Smtp\Client;
 
@@ -104,6 +105,11 @@ class ClientTest extends TestCase
     {
         $server = new Server();
 
+        $event1 = new Event(Event::TRIGGER_NEW_RCPT, null, function ($event, $rcpt) {
+            return $rcpt !== 'invalid@example.com';
+        });
+        $server->addEvent($event1);
+
         $client = new Client();
         $client->setServer($server);
         $client->setId(1);
@@ -136,6 +142,9 @@ class ClientTest extends TestCase
 
         $msg = $client->handleMessage('RCPT TO:<Green@Beta.ARPA>');
         $this->assertEquals('250 OK' . Client::MSG_SEPARATOR, $msg);
+
+        $msg = $client->handleMessage('RCPT TO:<invalid@example.com>');
+        $this->assertEquals('550 User unknown' . Client::MSG_SEPARATOR, $msg);
 
         $msg = $client->handleMessage('DATA');
         $this->assertEquals('354 Start mail input; end with <CRLF>.<CRLF>' . Client::MSG_SEPARATOR, $msg);
