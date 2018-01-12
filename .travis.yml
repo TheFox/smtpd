@@ -3,13 +3,11 @@ php:
     - 7.0
     - 7.1
     - 7.2
+before_install:
+    - php --version
 install:
-    - composer install --prefer-source --no-interaction
+    - composer install --prefer-source --no-suggest --no-progress --no-interaction
 before_script:
     - phpenv rehash
-    - ./vendor/bin/phpcs --config-set ignore_warnings_on_exit 1
-    - ./vendor/bin/phpcs --config-show
 script:
     - ./bin/test.sh
-    - ./bin/phpstan.sh
-    - ./vendor/bin/phpcs
