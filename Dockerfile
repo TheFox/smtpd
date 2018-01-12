@@ -1,4 +1,4 @@
-FROM php:7.2-rc-cli
+FROM php:7.0-cli
 ARG COMPOSER_AUTH
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -17,15 +17,6 @@ WORKDIR /app
 ADD . /app
 
 # Install dependencies.
-RUN composer install --no-suggest --no-progress  --no-interaction
-
-RUN ls -la
-
-RUN rm -r /root/.composer/* /root/.composer
-RUN ls -la /root
-
-# Use to store the config inside a volume.
-RUN mkdir /data && chmod 777 /data
-VOLUME /data
+RUN composer install --no-suggest --no-progress --no-interaction
 
 ENTRYPOINT ["bash"]
