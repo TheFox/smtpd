@@ -34,10 +34,9 @@ class ServerTest extends TestCase
 
         $client1 = $server->newClient($socket);
         $client2 = $server->getClientByHandle($handle1);
-        #\Doctrine\Common\Util\Debug::dump($handle2);
         $this->assertEquals($client1, $client2);
 
-        $res = fopen('data://text/plain,string','r');
+        $res = fopen('data://text/plain,string', 'r');
         $this->assertNull($server->getClientByHandle($res));
 
         $server->shutdown();
@@ -66,7 +65,6 @@ class ServerTest extends TestCase
         $testData = 21;
         $phpunit = $this;
         $event1 = new Event(Event::TRIGGER_NEW_MAIL, null, function ($event, $from, $rcpt, $mail) use ($phpunit, &$testData) {
-            #fwrite(STDOUT, 'my function: '.$event->getTrigger().', '.$testData."\n");
             $testData = 24;
 
             $phpunit->assertEquals('from@example.com', $from);
@@ -154,7 +152,6 @@ class ServerTest extends TestCase
             Event::TRIGGER_AUTH_ATTEMPT,
             null,
             function ($event, $method, $credentials) {
-
                 return false;
             }
         );
