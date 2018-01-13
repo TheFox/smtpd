@@ -36,8 +36,9 @@ class ServerTest extends TestCase
         $client2 = $server->getClientByHandle($handle1);
         #\Doctrine\Common\Util\Debug::dump($handle2);
         $this->assertEquals($client1, $client2);
-        
-        $this->assertNull($server->getClientByHandle(null));
+
+        $res = fopen('data://text/plain,string','r');
+        $this->assertNull($server->getClientByHandle($res));
 
         $server->shutdown();
     }
