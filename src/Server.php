@@ -19,7 +19,6 @@ use TheFox\Network\Socket;
 class Server extends Thread
 {
     use LoggerAwareTrait;
-
     const LOOP_USLEEP = 10000;
 
     /**
@@ -101,7 +100,7 @@ class Server extends Thread
         $this->logger->info('port = "' . $this->options['port'] . '"');
         $this->logger->info('hostname = "' . $this->options['hostname'] . '"');
     }
-    
+
     /**
      * @param string $hostname
      */
@@ -201,7 +200,6 @@ class Server extends Thread
                     if ($socket) {
                         $client = $this->newClient($socket);
                         $client->sendReady();
-
                         //$this->logger->debug('new client: '.$client->getId().', '.$client->getIpPort());
                     }
                 } else {
@@ -219,7 +217,6 @@ class Server extends Thread
                             }
                         }
                     }
-
                     //$this->logger->debug('old client: '.$client->getId().', '.$client->getIpPort());
                 }
             }
@@ -349,10 +346,8 @@ class Server extends Thread
     public function newRcpt(string $rcpt)
     {
         foreach ($this->events as $eventId => $event) {
-            if ($event->getTrigger() == Event::TRIGGER_NEW_RCPT) {
-                if (!$event->execute([$rcpt])) {
-                    return false;
-                }
+            if ($event->getTrigger() == Event::TRIGGER_NEW_RCPT && !$event->execute([$rcpt])) {
+                return false;
             }
         }
         return true;
