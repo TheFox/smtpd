@@ -277,7 +277,10 @@ class Client
             $separatorLen = strlen(static::MSG_SEPARATOR);
             // handle separators broken over multiple recvs
             if (($separatorPos === false) && $this->recvBufferTmp) {
-                $separatorPos = strpos( substr($this->recvBufferTmp, -$separatorLen) . substr($data, 0, $separatorLen), static::MSG_SEPARATOR) - $separatorLen;
+                $separatorPos = strpos(
+                    substr($this->recvBufferTmp, -$separatorLen) .substr($data, 0, $separatorLen),
+                    static::MSG_SEPARATOR
+                ) - $separatorLen;
             }
             if ($separatorPos === false) {
                 $this->recvBufferTmp .= $data;
@@ -285,7 +288,11 @@ class Client
                 $this->logger->debug('client ' . $this->id . ': collect data');
                 break;
             } else {
-                $msg = substr($this->recvBufferTmp . $data, 0, strlen($this->recvBufferTmp) + $separatorPos);
+                $msg = substr(
+                    $this->recvBufferTmp . $data,
+                    0,
+                    strlen($this->recvBufferTmp) + $separatorPos
+                );
                 $this->recvBufferTmp = '';
 
                 $this->handleMessage($msg);
