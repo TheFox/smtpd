@@ -274,19 +274,23 @@ class Client
 
         do {
             $separatorPos = strpos($data, static::MSG_SEPARATOR);
+            $separatorLen = strlen(static::MSG_SEPARATOR);
+            // handle separators broken over multiple recvs
+            if (($separatorPos === false) && $this->recvBufferTmp) {
+                $separatorPos = strpos( substr($this->recvBufferTmp, -$separatorLen) . substr($data, 0, $separatorLen), static::MSG_SEPARATOR) - $separatorLen;
+            }
             if ($separatorPos === false) {
                 $this->recvBufferTmp .= $data;
 
                 $this->logger->debug('client ' . $this->id . ': collect data');
-
                 break;
             } else {
-                $msg = $this->recvBufferTmp . substr($data, 0, $separatorPos);
+                $msg = substr($this->recvBufferTmp . $data, 0, strlen($this->recvBufferTmp) + $separatorPos);
                 $this->recvBufferTmp = '';
 
                 $this->handleMessage($msg);
 
-                $data = substr($data, $separatorPos + strlen(static::MSG_SEPARATOR));
+                $data = substr($data, $separatorPos + $separatorLen);
             }
         } while ($data);
     }
