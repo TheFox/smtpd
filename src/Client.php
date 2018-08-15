@@ -13,7 +13,7 @@ use TheFox\Network\StreamSocket;
 class Client
 {
     use LoggerAwareTrait;
-    
+
     const MSG_SEPARATOR = "\r\n";
 
     /**
@@ -103,10 +103,10 @@ class Client
             'logger' => new NullLogger(),
         ]);
         $this->options = $resolver->resolve($options);
-        
+
         $this->logger = $this->options['logger'];
         $this->hostname = $this->options['hostname'];
-        
+
         $this->status = [];
         $this->status['hasHello'] = false;
         $this->status['hasMail'] = false;
@@ -275,12 +275,11 @@ class Client
         do {
             $separatorPos = strpos($data, static::MSG_SEPARATOR);
             $separatorLen = strlen(static::MSG_SEPARATOR);
+
             // handle separators broken over multiple recvs
             if (($separatorPos === false) && $this->recvBufferTmp) {
-                $separatorPos = strpos(
-                    substr($this->recvBufferTmp, -$separatorLen) .substr($data, 0, $separatorLen),
-                    static::MSG_SEPARATOR
-                ) - $separatorLen;
+                $tmp = substr($this->recvBufferTmp, -$separatorLen) . substr($data, 0, $separatorLen);
+                $separatorPos = strpos($tmp, static::MSG_SEPARATOR) - $separatorLen;
             }
             if ($separatorPos === false) {
                 $this->recvBufferTmp .= $data;
@@ -313,7 +312,6 @@ class Client
 
         $command = array_shift($args);
         $commandCmp = strtolower($command);
-
 
         if ($commandCmp == 'helo') {
             $this->setStatus('hasHello', true);
@@ -469,7 +467,7 @@ class Client
 
                     $server = $this->getServer();
                     $server->newMail($this->from, $this->rcpt, $zmail);
-                    
+
                     $this->from = '';
                     $this->rcpt = [];
                     $this->mail = '';
@@ -479,7 +477,8 @@ class Client
                     $this->mail .= $msgRaw . static::MSG_SEPARATOR;
                 }
             } else {
-                $this->logger->debug('client ' . $this->id . ' not implemented: /' . $command . '/ - /' . join('/ /', $args) . '/');
+                $tmp = [$this->id, $command, join('/ /', $args)];
+                $this->logger->debug(vsprintf('client %d not implemented: /%s/ - /%s/', $tmp));
                 return $this->sendSyntaxErrorCommandUnrecognized();
             }
         }

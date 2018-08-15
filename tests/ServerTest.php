@@ -2,8 +2,6 @@
 
 namespace TheFox\Test;
 
-require_once 'TestObj.php';
-
 use PHPUnit\Framework\TestCase;
 use Zend\Mail\Message;
 use TheFox\Smtp\Server;
@@ -64,7 +62,7 @@ class ServerTest extends TestCase
 
         $testData = 21;
         $phpunit = $this;
-        $event1 = new Event(Event::TRIGGER_NEW_MAIL, null, function ($event, $from, $rcpt, $mail) use ($phpunit, &$testData) {
+        $fn = function ($event, $from, $rcpt, $mail) use ($phpunit, &$testData) {
             $testData = 24;
 
             $phpunit->assertEquals('from@example.com', $from);
@@ -82,7 +80,8 @@ class ServerTest extends TestCase
             $phpunit->assertEquals('Here is the subject', $mail->getSubject());
 
             return 42;
-        });
+        };
+        $event1 = new Event(Event::TRIGGER_NEW_MAIL, null, $fn);
         $server->addEvent($event1);
 
         $testObj = new TestObj();

@@ -86,7 +86,6 @@ class ClientTest extends TestCase
         $client->setServer($server);
         $client->setId(1);
 
-
         $msg = $client->handleMessage('HELO localhost.localdomain');
         $this->assertEquals('250 localhost.localdomain' . Client::MSG_SEPARATOR, $msg);
 
@@ -114,7 +113,6 @@ class ClientTest extends TestCase
         $client->setServer($server);
         $client->setId(1);
 
-
         $msg = $client->handleMessage('MAIL FROM:<Smith@Alpha.ARPA>');
         $this->assertEquals('500 Syntax error, command unrecognized' . Client::MSG_SEPARATOR, $msg);
 
@@ -123,7 +121,6 @@ class ClientTest extends TestCase
 
         $msg = $client->handleMessage('DATA');
         $this->assertEquals('500 Syntax error, command unrecognized' . Client::MSG_SEPARATOR, $msg);
-
 
         $msg = $client->handleMessage('HELO localhost.localdomain');
         $this->assertEquals('250 localhost.localdomain' . Client::MSG_SEPARATOR, $msg);
@@ -170,7 +167,8 @@ class ClientTest extends TestCase
         $this->assertEquals('250 OK' . Client::MSG_SEPARATOR, $msg);
 
         $msg = $client->handleMessage('QUIT');
-        $this->assertEquals('221 localhost.localdomain Service closing transmission channel' . Client::MSG_SEPARATOR, $msg);
+        $expected = '221 localhost.localdomain Service closing transmission channel' . Client::MSG_SEPARATOR;
+        $this->assertEquals($expected, $msg);
     }
 
     public function testMsgHandleAuthPlain()
@@ -180,26 +178,30 @@ class ClientTest extends TestCase
         /** @var MockBuilder $mockBuilder */
         $mockBuilder = $this->getMockBuilder(Client::class);
         $mockBuilder->setMethods(['authenticate']);
-        
+
         /** @var Client|PHPUnit_Framework_MockObject_MockObject $client */
         $client = $mockBuilder->getMock();
 
         $client->expects($this->at(0))
             ->method('authenticate')
             ->with('plain')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(false))
+        ;
         $client->expects($this->at(1))
             ->method('authenticate')
             ->with('plain')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
         $client->expects($this->at(2))
             ->method('authenticate')
             ->with('plain')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(false))
+        ;
         $client->expects($this->at(3))
             ->method('authenticate')
             ->with('plain')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $client->setServer($server);
         $client->setId(1);
@@ -251,11 +253,13 @@ class ClientTest extends TestCase
         $client->expects($this->at(0))
             ->method('authenticate')
             ->with('login')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(false))
+        ;
         $client->expects($this->at(1))
             ->method('authenticate')
             ->with('login')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $client->setServer($server);
         $client->setId(1);
@@ -299,10 +303,12 @@ class ClientTest extends TestCase
 
         $socket->expects($this->at(0))
             ->method('enableEncryption')
-            ->will($this->throwException(new RuntimeException()));
+            ->will($this->throwException(new RuntimeException()))
+        ;
         $socket->expects($this->at(1))
             ->method('enableEncryption')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
         $client = new Client();
         $client->setServer($server);
