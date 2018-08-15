@@ -19,6 +19,7 @@ use TheFox\Network\Socket;
 class Server extends Thread
 {
     use LoggerAwareTrait;
+    
     const LOOP_USLEEP = 10000;
 
     /**
