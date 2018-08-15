@@ -4,4 +4,5 @@ composer.phar
 /vendor/
 /tmp/
 /.idea/
+/.vagrant/
 .env
