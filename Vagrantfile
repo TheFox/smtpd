@@ -27,7 +27,7 @@ Vagrant.configure("2") do |config|
       
       apt-get install -y apt-transport-https ca-certificates
       
-      cp /app/php/php.list /etc/apt/sources.list.d/php.list
+      cp ${WORKING_DIR}/php/php.list /etc/apt/sources.list.d/php.list
       [[ ! -f /etc/apt/trusted.gpg.d/php.gpg ]] && wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
       
       apt-get update -yqq
