@@ -179,8 +179,13 @@ class Server extends Thread
             throw new RuntimeException('Socket not initialized. You need to execute listen().', 1);
         }
 
+        /** @var \resource[] $readHandles */
         $readHandles = [];
+        
+        /** @var \resource[] $writeHandles */
         $writeHandles = [];
+        
+        /** @var \resource[] $exceptHandles */
         $exceptHandles = [];
 
         if ($this->isListening) {
