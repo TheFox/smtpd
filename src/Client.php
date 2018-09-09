@@ -5,6 +5,7 @@ namespace TheFox\Smtp;
 use RuntimeException;
 use PHPUnit_Framework_MockObject_MockObject;
 use TheFox\Network\AbstractSocket;
+use Zend\Mail\Header\Exception\InvalidArgumentException;
 use Zend\Mail\Message;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Psr\Log\NullLogger;
@@ -468,7 +469,11 @@ class Client
                 if ($msgRaw == '.') {
                     $this->mail = substr($this->mail, 0, -strlen(static::MSG_SEPARATOR));
 
-                    $zmail = Message::fromString($this->mail);
+                    try {
+                        $zmail = Message::fromString($this->mail);
+                    } catch (InvalidArgumentException $e) {
+                        return $this->sendSyntaxErrorInParameters();
+                    }
 
                     $server = $this->getServer();
                     $server->newMail($this->from, $this->rcpt, $zmail);
@@ -631,6 +636,14 @@ class Client
     private function sendCommandNotImplemented(): string
     {
         return $this->dataSend('502 Command not implemented');
+    }
+
+    /**
+     * @return string
+     */
+    private function sendBadSequenceOrAuth(): string
+    {
+        return $this->dataSend('503 Bad sequence of commands');
     }
 
     /**
