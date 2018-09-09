@@ -339,7 +339,7 @@ class Client
                     }
                     $this->from = $from;
                     $this->mail = '';
-                    
+
                     return $this->sendOk();
                 }
                 return $this->sendSyntaxErrorInParameters();
@@ -359,7 +359,7 @@ class Client
                         }
                         $this->rcpt[] = $rcpt;
                     }
-                    
+
                     return $this->sendOk();
                 }
                 return $this->sendSyntaxErrorInParameters();
@@ -368,17 +368,17 @@ class Client
         } elseif ($commandCmp == 'data') {
             if ($this->getStatus('hasHello')) {
                 $this->setStatus('hasData', true);
-                
+
                 return $this->sendDataResponse();
             }
-            
+
             return $this->sendSyntaxErrorCommandUnrecognized();
         } elseif ($commandCmp == 'noop') {
             return $this->sendOk();
         } elseif ($commandCmp == 'quit') {
             $response = $this->sendQuit();
             $this->shutdown();
-            
+
             return $response;
         } elseif ($commandCmp == 'auth') {
             $this->setStatus('hasAuth', true);
@@ -411,7 +411,7 @@ class Client
             } elseif ($authentication == 'cram-md5') {
                 return $this->sendCommandNotImplemented();
             }
-            
+
             return $this->sendSyntaxErrorInParameters();
         } elseif ($commandCmp == 'starttls') {
             if (!empty($args)) {
@@ -484,7 +484,7 @@ class Client
             } else {
                 $tmp = [$this->id, $command, join('/ /', $args)];
                 $this->logger->debug(vsprintf('client %d not implemented: /%s/ - /%s/', $tmp));
-                
+
                 return $this->sendSyntaxErrorCommandUnrecognized();
             }
         }
