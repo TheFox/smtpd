@@ -138,7 +138,7 @@ class Server extends Thread
      * @param array $contextOptions
      * @return bool
      */
-    public function listen(array $contextOptions): bool
+    public function listen(array $contextOptions = []): bool
     {
         if (!$this->ip && !$this->port) {
             return false;
