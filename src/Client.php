@@ -4,11 +4,11 @@ namespace TheFox\Smtp;
 
 use RuntimeException;
 use PHPUnit_Framework_MockObject_MockObject;
+use TheFox\Network\AbstractSocket;
 use Zend\Mail\Message;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Psr\Log\NullLogger;
 use Psr\Log\LoggerAwareTrait;
-use TheFox\Network\StreamSocket;
 
 class Client
 {
@@ -32,7 +32,7 @@ class Client
     private $server;
 
     /**
-     * @var StreamSocket
+     * @var AbstractSocket
      */
     private $socket;
 
@@ -167,15 +167,15 @@ class Client
     }
 
     /**
-     * @param StreamSocket|PHPUnit_Framework_MockObject_MockObject $socket
+     * @param AbstractSocket|PHPUnit_Framework_MockObject_MockObject $socket
      */
-    public function setSocket(StreamSocket $socket)
+    public function setSocket(AbstractSocket $socket)
     {
         $this->socket = $socket;
     }
 
     /**
-     * @return StreamSocket|null
+     * @return AbstractSocket|null
      */
     public function getSocket()
     {

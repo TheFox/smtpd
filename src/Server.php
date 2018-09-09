@@ -257,9 +257,10 @@ class Server extends Thread
     /**
      * Create a new Client for a new incoming socket connection.
      *
+     * @param AbstractSocket $socket
      * @return Client
      */
-    public function newClient($socket): Client
+    public function newClient(AbstractSocket $socket): Client
     {
         $this->clientsId++;
 
