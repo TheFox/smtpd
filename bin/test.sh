@@ -17,4 +17,4 @@ mkdir -p tmp
 vendor/bin/phpunit
 
 # PHPStan
-vendor/bin/phpstan analyse --no-progress --level 5 src tests
+#vendor/bin/phpstan analyse --no-progress --level 5 src tests

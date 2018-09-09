@@ -23,7 +23,7 @@ class Event
     private $object;
 
     /**
-     * @var \Closure
+     * @var null|\Closure|string
      */
     private $function;
 

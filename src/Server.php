@@ -286,7 +286,7 @@ class Server extends Thread
     /**
      * Find a Client by socket handle.
      *
-     * @param resource $handle
+     * @param \resource $handle
      * @return Client|null
      */
     public function getClientByHandle($handle)
