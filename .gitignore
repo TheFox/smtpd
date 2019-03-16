@@ -7,3 +7,4 @@ composer.phar
 /.vagrant/
 .env
 test.php
+*.pem
