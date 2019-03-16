@@ -1,4 +1,4 @@
-# Release Notes for SMTP v0.x
+# Release Notes for SMTPd v0.x
 
 ## v0.7.0
 
