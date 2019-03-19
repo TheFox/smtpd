@@ -18,11 +18,28 @@ With this interface you can do something like this for your app users:
 
 This is useful when you have a messaging application written in PHP but no graphical user interface for it. So your graphical user interface can be any [email client](http://en.wikipedia.org/wiki/Email_client). [Thunderbird](https://www.mozilla.org/en-US/thunderbird/) for instance.
 
+## Project Outlines
+
+The project outlines as described in my blog post about [Open Source Software Collaboration](https://blog.fox21.at/2019/02/21/open-source-software-collaboration.html).
+
+- The main purpose of this software is to provide a server-side SMTP API for PHP scripts.
+- Although the RFC implementations are not completed yet, they must be strict.
+- More features can be possible in the future. In perspective of the protocols the features must be a RFC implementation.
+- This list is open. Feel free to request features.
+
+## Planned Features
+
+- Full RFC 821 Implementation.
+- Full RFC 1651 Implementation.
+- Replace `Zend\Mail` with a better solution.
+
 ## Installation
 
 The preferred method of installation is via [Packagist](https://packagist.org/packages/thefox/smtpd) and [Composer](https://getcomposer.org/). Run the following command to install the package and add it as a requirement to composer.json:
 
-	composer.phar require "thefox/smtpd=~0.3"
+```bash
+composer require thefox/smtpd
+```
 
 ## Delivery
 
