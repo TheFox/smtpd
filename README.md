@@ -29,8 +29,9 @@ The project outlines as described in my blog post about [Open Source Software Co
 
 ## Planned Features
 
-- Full RFC 821 Implementation.
-- Full RFC 1651 Implementation.
+- Full [RFC 821](https://tools.ietf.org/html/rfc821) implementation.
+- Full [RFC 1651](https://tools.ietf.org/html/rfc1651) implementation.
+- Full [RFC 1869](https://tools.ietf.org/html/rfc1869) implementation.
 - Replace `Zend\Mail` with a better solution.
 
 ## Installation
