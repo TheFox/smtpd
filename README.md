@@ -147,4 +147,3 @@ while(myApplicationRuns()){
 ## Project Links
 
 - [Packagist Package](https://packagist.org/packages/thefox/smtpd)
-- [Travis CI Repository](https://travis-ci.org/TheFox/smtpd)

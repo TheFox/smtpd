@@ -66,7 +66,7 @@
 ## v0.1.2
 
 - PHP 5.3 support fixes.
-- [Travis](https://travis-ci.org/TheFox/smtpd) support added.
+- Travis support added.
 
 ## v0.1.1
 
