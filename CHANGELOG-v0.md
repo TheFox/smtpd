@@ -1,5 +1,9 @@
 # Release Notes for SMTPd v0.x
 
+## v0.8.0 [unreleased]
+
+- MIT License
+
 ## v0.7.0
 
 - Add capability to reject RCPT addresses via an event handler. #11
